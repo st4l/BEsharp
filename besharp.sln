@@ -19,13 +19,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{73A203AA-688
 		SQL\createBNetDb.sql = SQL\createBNetDb.sql
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "besharp", "bnet.client\besharp.csproj", "{F1C5E9B6-4050-4591-B91E-21CFAB0E8E1C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "besharp", "besharp\besharp.csproj", "{F1C5E9B6-4050-4591-B91E-21CFAB0E8E1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "besharp.Tests", "bnet.client.Tests\besharp.Tests.csproj", "{9EF9969E-EAF0-49B3-9AFD-73B237B749F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "besharp.Tests", "besharp.Tests\besharp.Tests.csproj", "{9EF9969E-EAF0-49B3-9AFD-73B237B749F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "besharp.WinClient", "bnet.WinClient\besharp.WinClient.csproj", "{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "besharp.WinClient", "besharp.WinClient\besharp.WinClient.csproj", "{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C}"
 EndProject
-Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "besharp.arch", "bnet.arch\besharp.arch.modelproj", "{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}"
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "besharp.arch", "besharp.arch\besharp.arch.modelproj", "{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,7 +105,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{73A203AA-688D-417D-BB27-EB57C45CCF35} = {98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}
 		{F1C5E9B6-4050-4591-B91E-21CFAB0E8E1C} = {98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}
 		{9EF9969E-EAF0-49B3-9AFD-73B237B749F3} = {98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}
 		{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C} = {98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}

@@ -88,7 +88,7 @@
     <Fakes Include="Fakes\mscorlib.fakes" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\bnet.client\besharp.csproj">
+    <ProjectReference Include="..\besharp\besharp.csproj">
       <Project>{F1C5E9B6-4050-4591-B91E-21CFAB0E8E1C}</Project>
       <Name>besharp</Name>
     </ProjectReference>
