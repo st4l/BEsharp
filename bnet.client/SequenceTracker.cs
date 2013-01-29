@@ -1,6 +1,6 @@
 using System;
 
-namespace BNet.Client
+namespace BESharp
 {
     /// <summary>
     ///     Uses a byte buffer to store the last n sequence numbers

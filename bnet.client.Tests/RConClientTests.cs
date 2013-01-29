@@ -4,13 +4,13 @@
 
 using System.Diagnostics;
 using System.Threading.Tasks;
-using BNet.Client.Datagrams;
+using BESharp.Datagrams;
 
-namespace bnet.client.Tests
+namespace BESharp.Tests
 {
     using System;
     using System.Security.Authentication;
-    using BNet.Client;
+    using BESharp;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using log4net.Config;
     using log4net.Core;

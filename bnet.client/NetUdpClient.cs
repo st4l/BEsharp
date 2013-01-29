@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace BNet.Client
+namespace BESharp
 {
     internal class NetUdpClient : UdpClient, IUdpClient
     {

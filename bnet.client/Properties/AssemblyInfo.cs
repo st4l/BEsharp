@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("bnet.client")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("BESharp")]
+[assembly: AssemblyDescription("BattlEye Remote Console Library")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("bnet.client")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyProduct("BESharp Library")]
+[assembly: AssemblyCopyright("Copyright © St4l 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -37,4 +37,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: CLSCompliant(true)]
-[assembly: InternalsVisibleTo("bnet.client.Tests")]
+[assembly: InternalsVisibleTo("BESharp.Tests")]

@@ -1,13 +1,16 @@
 ﻿// ----------------------------------------------------------------------------------------------------
 // <copyright file="ResponseHandler.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
-namespace BNet.Client
+
+using BESharp.Datagrams;
+
+namespace BESharp
 {
     using System;
     using System.Security.Permissions;
     using System.Threading;
     using System.Threading.Tasks;
-    using BNet.Client.Datagrams;
+    using BESharp.Datagrams;
 
 
     public class ResponseHandler : IDisposable

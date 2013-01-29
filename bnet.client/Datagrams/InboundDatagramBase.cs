@@ -5,7 +5,7 @@
 using System;
 using System.Linq;
 
-namespace BNet.Client.Datagrams
+namespace BESharp.Datagrams
 {
     public abstract class InboundDatagramBase : DatagramBase, IInboundDatagram
     {

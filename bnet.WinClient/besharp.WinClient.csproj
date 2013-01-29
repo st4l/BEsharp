@@ -7,8 +7,8 @@
     <ProjectGuid>{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>bnet.WinClient</RootNamespace>
-    <AssemblyName>bnet.WinClient</AssemblyName>
+    <RootNamespace>BESharp.WinClient</RootNamespace>
+    <AssemblyName>besharp.WinClient</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -113,9 +113,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\bnet.client\bnet.client.csproj">
+    <ProjectReference Include="..\bnet.client\besharp.csproj">
       <Project>{F1C5E9B6-4050-4591-B91E-21CFAB0E8E1C}</Project>
-      <Name>bnet.client</Name>
+      <Name>besharp</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

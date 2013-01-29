@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using BNet.Client;
-
-namespace bnet.client.Tests
+﻿namespace BESharp.Tests
 {
+    using System.Net.Sockets;
+    using System.Threading.Tasks;
+
     public class MockUdpClient : UdpClient, IUdpClient
     {
         public MockServer Server { get; set; }
@@ -16,25 +10,14 @@ namespace bnet.client.Tests
         public MockServerSetup ServerSetup { get; private set; }
 
 
-        public MockUdpClient()
-        {
-        }
-
-
-        internal void Setup(MockServerSetup setup)
-        {
-            this.Server = new MockServer(setup);
-            this.ServerSetup = setup;
-        }
-
-
+        #region IUdpClient Members
 
         /// <summary>
         /// Should spawn a new thread on continuation.
         /// </summary>
-        public Task<int> SendAsync(byte[] buffer, int length)
+        public new Task<int> SendAsync(byte[] buffer, int length)
         {
-            var task = Task.Factory.StartNew<int>(
+            Task<int> task = Task.Factory.StartNew(
                 () => this.Server.ReceivePacket(buffer, length));
             return task;
         }
@@ -43,19 +26,26 @@ namespace bnet.client.Tests
         /// <summary>
         /// Should spawn a new thread on continuation.
         /// </summary>
-        public Task<UdpReceiveResult> ReceiveAsync()
+        public new Task<UdpReceiveResult> ReceiveAsync()
         {
-            var task = Task.Factory.StartNew<UdpReceiveResult>(
+            Task<UdpReceiveResult> task = Task.Factory.StartNew(
                 () => this.Server.SendPacket());
             return task;
         }
 
 
-        public void Close()
+        public new void Close()
         {
             this.Server.Shutdown();
         }
 
+        #endregion
 
+
+        internal void Setup(MockServerSetup setup)
+        {
+            this.Server = new MockServer(setup);
+            this.ServerSetup = setup;
+        }
     }
 }

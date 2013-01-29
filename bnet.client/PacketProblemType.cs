@@ -1,4 +1,4 @@
-namespace BNet.Client
+namespace BESharp
 {
     public enum PacketProblemType
     {

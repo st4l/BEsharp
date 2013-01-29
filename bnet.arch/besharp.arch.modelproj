@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{12010cc3-2aa6-4ce6-8efe-25b45b070f85}</ProjectGuid>
     <ArchitectureToolsVersion>2.0.0.0</ArchitectureToolsVersion>
-    <Name>bnet.arch</Name>
+    <Name>besharp.arch</Name>
     <RootNamespace>bnet.arch</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -92,8 +92,8 @@
     </Validate>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\bnet.client\bnet.client.csproj">
-      <Name>bnet.client</Name>
+    <ProjectReference Include="..\bnet.client\besharp.csproj">
+      <Name>besharp</Name>
       <Project>{f1c5e9b6-4050-4591-b91e-21cfab0e8e1c}</Project>
     </ProjectReference>
   </ItemGroup>

@@ -2,22 +2,25 @@
 // <copyright file="MessageDispatcher.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
 
-using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Net.Sockets;
-using System.Runtime.ExceptionServices;
-using System.Security.Permissions;
-using System.Threading;
-using System.Threading.Tasks;
-using BNet.Client.Datagrams;
-using log4net;
-using log4net.Core;
 
-namespace BNet.Client
+namespace BESharp
 {
+
+    using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Linq;
+    using System.Net.Sockets;
+    using System.Runtime.ExceptionServices;
+    using System.Security.Permissions;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Datagrams;
+    using log4net;
+    using log4net.Core;
+
+    
     /// <summary>
     ///     Receives messages from a remote Battleye RCon server
     ///     using the supplied <see cref="UdpClient" /> and

@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using BNet.Client.Datagrams;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace bnet.client.Tests
+﻿namespace BESharp.Tests
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Net.Sockets;
+    using System.Text;
+    using System.Threading;
+    using Datagrams;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     public class MockServer
     {
         private readonly int avgResponseTime;

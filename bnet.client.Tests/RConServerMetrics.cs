@@ -1,4 +1,4 @@
-namespace bnet.client.Tests
+namespace BESharp.Tests
 {
     public class RConServerMetrics
     {

@@ -1,7 +1,7 @@
 ﻿// ----------------------------------------------------------------------------------------------------
 // <copyright file="IOutboundDatagram.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
-namespace BNet.Client.Datagrams
+namespace BESharp.Datagrams
 {
     using System;
 

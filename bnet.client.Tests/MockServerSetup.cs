@@ -1,8 +1,9 @@
-﻿using System;
-using System.Net;
-
-namespace bnet.client.Tests
+﻿
+namespace BESharp.Tests
 {
+    using System;
+    using System.Net;
+
     public class MockServerSetup
     {
         private DateTime startTime;

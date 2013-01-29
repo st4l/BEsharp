@@ -1,4 +1,4 @@
-namespace BNet.Client.Datagrams
+namespace BESharp.Datagrams
 {
     public class CommandResponseDatagram : InboundDatagramBase
     {

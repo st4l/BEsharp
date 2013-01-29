@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace BNet.Client.Datagrams
+namespace BESharp.Datagrams
 {
     public class CommandMultiPacketResponseDatagram : CommandResponseDatagram
     {

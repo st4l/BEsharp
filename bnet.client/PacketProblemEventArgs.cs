@@ -1,6 +1,6 @@
 using System;
 
-namespace BNet.Client
+namespace BESharp
 {
     public class PacketProblemEventArgs : EventArgs
     {

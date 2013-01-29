@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using BNet.Client.Datagrams;
+using BESharp.Datagrams;
 
-namespace BNet.Client
+namespace BESharp
 {
     internal sealed partial class MessageDispatcher
     {

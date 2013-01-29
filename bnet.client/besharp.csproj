@@ -7,8 +7,8 @@
     <ProjectGuid>{F1C5E9B6-4050-4591-B91E-21CFAB0E8E1C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BNet.Client</RootNamespace>
-    <AssemblyName>bnet.client</AssemblyName>
+    <RootNamespace>BESharp</RootNamespace>
+    <AssemblyName>besharp</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>

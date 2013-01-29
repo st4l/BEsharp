@@ -4,9 +4,9 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-using BNet.Client.Datagrams;
+using BESharp.Datagrams;
 
-namespace BNet.Client
+namespace BESharp
 {
     internal class ResponseMessageDispatcher
     {

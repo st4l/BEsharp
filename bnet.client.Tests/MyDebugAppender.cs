@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using log4net.Appender;
 using log4net.Core;
 
-namespace bnet.client.Tests
+namespace BESharp.Tests
 {
     public class MyDebugAppender : DebugAppender
     {

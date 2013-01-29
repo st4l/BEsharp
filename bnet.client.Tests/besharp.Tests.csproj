@@ -6,8 +6,8 @@
     <ProjectGuid>{9EF9969E-EAF0-49B3-9AFD-73B237B749F3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>bnet.client.Tests</RootNamespace>
-    <AssemblyName>bnet.client.Tests</AssemblyName>
+    <RootNamespace>BESharp.Tests</RootNamespace>
+    <AssemblyName>besharp.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -88,9 +88,9 @@
     <Fakes Include="Fakes\mscorlib.fakes" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\bnet.client\bnet.client.csproj">
+    <ProjectReference Include="..\bnet.client\besharp.csproj">
       <Project>{F1C5E9B6-4050-4591-B91E-21CFAB0E8E1C}</Project>
-      <Name>bnet.client</Name>
+      <Name>besharp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

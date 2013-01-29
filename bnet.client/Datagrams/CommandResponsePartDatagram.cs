@@ -1,6 +1,6 @@
 using System;
 
-namespace BNet.Client.Datagrams
+namespace BESharp.Datagrams
 {
     public class CommandResponsePartDatagram : CommandResponseDatagram
     {

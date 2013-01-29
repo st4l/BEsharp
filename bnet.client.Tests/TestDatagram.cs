@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace bnet.client.Tests
+﻿
+namespace BESharp.Tests
 {
+    using System;
+
     public class TestDatagram
     {
         public TestDatagram(byte[] payload)

@@ -2,20 +2,20 @@
 // <copyright file="RConClient.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
 
-using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Net.Sockets;
-using System.Runtime.ExceptionServices;
-using System.Security.Authentication;
-using System.Threading;
-using System.Threading.Tasks;
-using BNet.Client.Datagrams;
-using log4net;
-using log4net.Core;
-
-namespace BNet.Client
+namespace BESharp
 {
+    using System;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Runtime.ExceptionServices;
+    using System.Security.Authentication;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Datagrams;
+    using log4net;
+    using log4net.Core;
+
+    
     /// <summary>
     ///     The <see cref='RConClient' /> class provides access to BattlEye RCon services.
     /// </summary>
@@ -69,9 +69,8 @@ namespace BNet.Client
         internal IUdpClient Client { get; set; }
 
         public ShutdownReason ShutdownReason { get; private set; }
-        
-        private ILog Log { get; set; }
 
+        private ILog Log { get; set; }
 
 
 #if DEBUG
@@ -86,7 +85,7 @@ namespace BNet.Client
             this.port = port;
 
             this.password = password;
-            
+
             NetUdpClient client = null;
             try
             {
@@ -493,8 +492,5 @@ namespace BNet.Client
             this.ShutdownReason = this.msgDispatcher.ShutdownReason;
             this.msgDispatcher = null;
         }
-
-
-        
     }
 }
