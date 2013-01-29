@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6E6D72
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}"
 	ProjectSection(SolutionItems) = preProject
-		..\BERConProtocol.txt = ..\BERConProtocol.txt
+		BERConProtocol.txt = BERConProtocol.txt
 		Settings.StyleCop = Settings.StyleCop
 	EndProjectSection
 EndProject
@@ -107,7 +107,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{F1C5E9B6-4050-4591-B91E-21CFAB0E8E1C} = {98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}
 		{9EF9969E-EAF0-49B3-9AFD-73B237B749F3} = {98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}
-		{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C} = {98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}
 		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85} = {98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}
 	EndGlobalSection
 EndGlobal
