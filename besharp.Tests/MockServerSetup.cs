@@ -32,7 +32,6 @@ namespace BESharp.Tests
 
         internal int AverageResponseTime { get; set; } // ms
 
-        public bool LoginAtOnce { get; set; }
         public bool LoginAtThirdTry { get; set; }
         public bool LoginIncorrect { get; set; }
         public bool LoginServerDown { get; set; }
