@@ -469,9 +469,35 @@ namespace BESharp.Tests
         [TestCategory("Not Yet Implemented")]
         [Ignore]
         [TestCategory("Correctness")]
-        public void ShouldRetrySendingCommand()
+        public async Task ShouldRetrySendingCommand()
         {
-            throw new NotImplementedException();
+            var rcc = new RConClient("ip", 3333, "pass");
+            var connected = await rcc.ConnectAsync();
+            Assert.IsTrue(connected, "not connected");
+            var handler1 = await rcc.SendCommandAsync(0, "missions");
+            var handler2 = await rcc.SendCommandAsync(0, "missions");
+            var handler3 = await rcc.SendCommandAsync(0, "#shutdown");
+            Task.WaitAll(handler1.WaitForResponse(), handler2.WaitForResponse(), handler3.WaitForResponse());
+            rcc.Close();
+
+            Assert.IsTrue(handler1.Completed);
+            Assert.IsTrue(handler2.Completed);
+            Assert.IsTrue(handler3.Completed);
+            var response1 = (CommandResponseDatagram)handler1.ResponseDatagram;
+            var response2 = (CommandResponseDatagram)handler2.ResponseDatagram;
+            var response3 = (CommandResponseDatagram)handler3.ResponseDatagram;
+            Assert.AreEqual(response1.OriginalSequenceNumber, 0);
+            Assert.AreEqual(response2.OriginalSequenceNumber, 0);
+            Assert.AreEqual(response3.OriginalSequenceNumber, 0);
+            string body1 = response1.Body;
+            string body2 = response2.Body;
+            string body3 = response3.Body;
+            Assert.IsTrue(body1.Length > 0);
+            Assert.IsTrue(body2.Length > 0);
+            Assert.IsTrue(body3.Length > 0);
+            
+            // WOW. We can't retry sending commands, it executes the three of 
+            // them including #shutdown. Maybe contact BattlEye with a bug report.
         }
 
 

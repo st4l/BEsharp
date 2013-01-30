@@ -290,6 +290,13 @@ namespace BESharp
         }
 
 
+        internal async Task<ResponseHandler> SendCommandAsync(byte sequenceNumber, string commandText)
+        {
+            var dgram = new CommandDatagram(sequenceNumber, commandText);
+            return await this.msgDispatcher.SendDatagramAsync(dgram);
+        }
+
+
         /// <summary>
         ///   Stops all processing gracefully and disposes this instance.
         /// </summary>
