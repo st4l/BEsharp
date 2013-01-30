@@ -9,6 +9,8 @@ namespace BESharp.Datagrams
 
         Command = 1, 
 
-        Message = 2
+        Message = 2,
+
+        TestServerShutdown = 0xFF
     }
 }
