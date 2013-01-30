@@ -11,21 +11,25 @@ namespace BESharp
     {
         #region Nested type: KeepAliveTracker
 
-        internal class KeepAliveTracker
+        private class KeepAliveTracker
         {
-            public bool Acknowledged { get; set; }
+            private bool Acknowledged { get; set; }
             private readonly MessageDispatcher msgDispatcher;
             private readonly TimeSpan period = TimeSpan.FromSeconds(1);
             private readonly List<ResponseHandler> sentHandlers = new List<ResponseHandler>();
             private DateTime lastSendTime = DateTime.MinValue;
-            private int maxTries = 5;
             private int sentCount;
             private SpinWait spinWait = new SpinWait();
+            private int sequenceNumber = -1;
 
-            public bool Expired { get; set; }
+            public bool Expired { get; private set; }
+            private int MaxTries { get; set; }
+
+
 
             public KeepAliveTracker(MessageDispatcher msgDispatcher)
             {
+                this.MaxTries = 5;
                 this.msgDispatcher = msgDispatcher;
             }
 
@@ -54,7 +58,7 @@ namespace BESharp
                 // or last one sent more than (period) ago
                 if (DateTime.Now - this.lastSendTime > this.period)
                 {
-                    if (this.sentCount == this.maxTries)
+                    if (this.sentCount == this.MaxTries)
                     {
                         // we already sent (maxTries) and we're past waiting for the last sent one
                         this.Expired = true;
@@ -68,19 +72,19 @@ namespace BESharp
             }
 
 
-
-
             private void SendKeepAlivePacket()
             {
+                if (this.sequenceNumber == -1)
+                {
+                    this.sequenceNumber = this.msgDispatcher.GetNextCommandSequenceNumber();
+                }
                 Debug.WriteLine("keep alive packet {0} sent", this.sentCount + 1);
-                var keepAliveDgram = new CommandDatagram(
-                    this.msgDispatcher.GetNextCommandSequenceNumber(), 
-                    string.Empty);
+                var keepAliveDgram = new CommandDatagram((byte)this.sequenceNumber, string.Empty);
                 this.sentHandlers.Add(this.msgDispatcher.SendDatagramAsync(keepAliveDgram).Result);
                 this.lastSendTime = DateTime.Now;
                 this.sentCount++;
                 this.msgDispatcher.keepAlivePacketsSent++;
-                this.msgDispatcher.LogTraceFormat("C#{0:000} Sent keep alive command.", keepAliveDgram.SequenceNumber);
+                this.msgDispatcher.Log.TraceFormat("C#{0:000} Sent keep alive command.", keepAliveDgram.SequenceNumber);
             }
         }
 
