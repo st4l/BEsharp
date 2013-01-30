@@ -25,8 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "besharp.Tests", "besharp.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "besharp.WinClient", "besharp.WinClient\besharp.WinClient.csproj", "{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C}"
 EndProject
-Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "besharp.arch", "besharp.arch\besharp.arch.modelproj", "{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,21 +83,6 @@ Global
 		{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C}.Trace|Mixed Platforms.ActiveCfg = Trace|Any CPU
 		{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C}.Trace|Mixed Platforms.Build.0 = Trace|Any CPU
 		{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C}.Trace|x86.ActiveCfg = Trace|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Release|Any CPU.Build.0 = Release|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Release|x86.ActiveCfg = Release|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Trace|Any CPU.ActiveCfg = Trace|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Trace|Any CPU.Build.0 = Trace|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Trace|Mixed Platforms.ActiveCfg = Trace|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Trace|Mixed Platforms.Build.0 = Trace|Any CPU
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85}.Trace|x86.ActiveCfg = Trace|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +90,5 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{F1C5E9B6-4050-4591-B91E-21CFAB0E8E1C} = {98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}
 		{9EF9969E-EAF0-49B3-9AFD-73B237B749F3} = {98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}
-		{12010CC3-2AA6-4CE6-8EFE-25B45B070F85} = {98B7E69B-DF2D-4E33-AF47-CA6FD6E08B12}
 	EndGlobalSection
 EndGlobal
