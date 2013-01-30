@@ -65,14 +65,6 @@ namespace BESharp.Tests
 
 
         [TestMethod]
-        [TestCategory("Correctness")]
-        public void ShouldLoginOnThirdTry()
-        {
-            Assert.Fail();
-        }
-
-
-        [TestMethod]
         [TestCategory("Protocol Compliance")]
         public void ShouldThrowOnLoginWithWrongPassword()
         {
@@ -157,8 +149,7 @@ namespace BESharp.Tests
             };
 
             var client = CreateClient(conf);
-            var rcc = new RConClient(client, client.ServerSetup.Password);
-            rcc.DiscardConsoleMessages = true;
+            var rcc = new RConClient(client, client.ServerSetup.Password) {DiscardConsoleMessages = true};
             RunUntilShutdown(rcc);
             Assert.IsTrue(rcc.Metrics.DispatchedConsoleMessages == 0);
         }
@@ -237,10 +228,7 @@ namespace BESharp.Tests
         [TestCategory("Protocol Compliance")]
         public async Task ShouldReturnCommandResponsesCorrectly()
         {
-            var conf = new MockServerSetup
-                           {
-                               LoginAtOnce = true
-                           };
+            var conf = new MockServerSetup();
             var client = CreateClient(conf);
             var rcc = new RConClient(client, client.ServerSetup.Password);
             var connected = rcc.ConnectAsync().Result;
@@ -265,10 +253,7 @@ namespace BESharp.Tests
         [TestCategory("Protocol Compliance")]
         public async Task ShouldParseMultipartCommandResponsesCorrectly()
         {
-            var conf = new MockServerSetup
-            {
-                LoginAtOnce = true
-            };
+            var conf = new MockServerSetup();
             var client = CreateClient(conf);
             var rcc = new RConClient(client, client.ServerSetup.Password);
             var connected = rcc.ConnectAsync().Result;
@@ -284,6 +269,7 @@ namespace BESharp.Tests
             }
 
             Assert.IsNotNull(multiPacketResponseDatagram);
+            Assert.IsNotNull(multiPacketResponseDatagram.Body);
             Assert.IsTrue(multiPacketResponseDatagram.Body.StartsWith("Players on server:"));
             for (int i = 1; i <= 10; i++)
             {
@@ -300,7 +286,6 @@ namespace BESharp.Tests
         {
             var conf = new MockServerSetup
             {
-                LoginAtOnce = true,
                 DisorderedMultiPacketResponses = true
             };
             var client = CreateClient(conf);
@@ -432,6 +417,18 @@ namespace BESharp.Tests
 
 
         [TestMethod]
+        [Ignore]
+        [TestCategory("Not Yet Implemented")]
+        [TestCategory("Correctness")]
+        public void ShouldLoginOnThirdTry()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        [TestMethod]
+        [TestCategory("Not Yet Implemented")]
+        [Ignore]
         [TestCategory("Correctness")]
         public void ShoulNotifyPacketLoss()
         {
@@ -440,20 +437,35 @@ namespace BESharp.Tests
 
 
         [TestMethod]
+        [TestCategory("Not Yet Implemented")]
+        [Ignore]
         [TestCategory("Protocol Compliance")]
         public void ShouldDiscardRepeatedCommandResponses()
         {
             // TODO: should be working, but I need to write this test
-            Assert.Fail();
+            throw new NotImplementedException();
         }
 
 
         [TestMethod]
+        [TestCategory("Not Yet Implemented")]
+        [Ignore]
         [TestCategory("Protocol Compliance")]
         public void ShouldDiscardRepeatedCommandResponseParts()
         {
             // TODO: should be working, but I need to write this test
-            Assert.Fail();
+            throw new NotImplementedException();
+        }
+
+
+
+        [TestMethod]
+        [TestCategory("Not Yet Implemented")]
+        [Ignore]
+        [TestCategory("Correctness")]
+        public void ShouldRetrySendingCommand()
+        {
+            throw new NotImplementedException();
         }
 
 
