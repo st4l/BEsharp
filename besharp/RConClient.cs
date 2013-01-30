@@ -283,13 +283,13 @@ namespace BESharp
             bool loggedIn = false;
             try
             {
-                this.LogTrace("BEFORE LOGIN await Login()");
+                this.Log.Trace("BEFORE LOGIN await Login()");
                 loggedIn = await this.Login();
-                this.LogTrace("AFTER LOGIN await Login()");
+                this.Log.Trace("AFTER LOGIN await Login()");
             }
             finally
             {
-                this.LogTrace("FINALLY LOGIN await Login()");
+                this.Log.Trace("FINALLY LOGIN await Login()");
                 if (!loggedIn)
                 {
                     this.StopListening();
@@ -376,54 +376,33 @@ namespace BESharp
             }
         }
 
-
-        [Conditional("TRACE")]
-        private void LogTrace(string msg)
-        {
-            this.Log.Logger.Log(
-                this.Log.GetType(),
-                Level.Trace,
-                msg,
-                null);
-        }
-
-
-        [Conditional("TRACE")]
-        private void LogTraceFormat(string fmt, params object[] args)
-        {
-            this.Log.Logger.Log(
-                this.Log.GetType(),
-                Level.Trace,
-                string.Format(CultureInfo.InvariantCulture, fmt, args),
-                null);
-        }
-
+        
 
         private async Task<bool> Login()
         {
-            this.LogTrace("BEFORE LOGIN await SendDatagramAsync");
+            this.Log.Trace("BEFORE LOGIN await SendDatagramAsync");
             ResponseHandler responseHandler =
                 await this.msgDispatcher.SendDatagramAsync(new LoginDatagram(this.password));
-            this.LogTrace("AFTER  LOGIN await SendDatagramAsync");
+            this.Log.Trace("AFTER  LOGIN await SendDatagramAsync");
 
-            this.LogTrace("BEFORE LOGIN await WaitForResponse");
+            this.Log.Trace("BEFORE LOGIN await WaitForResponse");
             bool received = await responseHandler.WaitForResponse();
-            this.LogTrace("AFTER  LOGIN await WaitForResponse");
+            this.Log.Trace("AFTER  LOGIN await WaitForResponse");
             if (!received)
             {
-                this.LogTrace("       LOGIN TIMEOUT");
+                this.Log.Trace("       LOGIN TIMEOUT");
                 throw new TimeoutException("Timeout while trying to login to the remote host.");
             }
 
             var result = (LoginResponseDatagram)responseHandler.ResponseDatagram;
             if (!result.Success)
             {
-                this.LogTrace("       LOGIN INCORRECT");
+                this.Log.Trace("       LOGIN INCORRECT");
                 throw new InvalidCredentialException(
                     "RCon server actively refused access with the specified password.");
             }
 
-            this.LogTrace("       LOGIN SUCCESS");
+            this.Log.Trace("       LOGIN SUCCESS");
             return result.Success;
         }
 
