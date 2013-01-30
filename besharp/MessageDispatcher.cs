@@ -41,8 +41,6 @@ namespace BESharp
         private int inCount;
         private int keepAlivePacketsAcks;
         private KeepAliveTracker keepAliveTracker;
-        private DateTime lastCmdSentTime;
-        // private DateTime lastDgramReceivedTime;
 
         private bool mainLoopDead;
         private int outCount;
@@ -52,6 +50,8 @@ namespace BESharp
         private int keepAlivePacketsSent;
 
         private int lastCommandSequenceNumber = -1;
+        private DateTime lastCommandSentTime;
+        private DateTime lastAcknowledgedCmdSentTime;
 
 
         /// <summary>
@@ -66,10 +66,9 @@ namespace BESharp
         {
             // throw new ArgumentException("Test shall not pass.");
             this.udpClient = udpClient;
-            this.responseDispatcher = new ResponseMessageDispatcher();
+            this.responseDispatcher = new ResponseMessageDispatcher(this);
             this.Log = LogManager.GetLogger(this.GetType());
         }
-
 
         public ShutdownReason ShutdownReason { get; private set; }
 
@@ -121,9 +120,16 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Occurs when a console message is received from the RCon server.
+        ///     Occurs when a disconnection is detected.
         /// </summary>
         internal event EventHandler<DisconnectedEventArgs> Disconnected;
+
+
+        /// <summary>
+        ///     Occurs when a problem is detected in the incoming packets,
+        ///     such as corrupted data.
+        /// </summary>
+        public event EventHandler<PacketProblemEventArgs> PacketProblem;
 
 
         /// <summary>
@@ -151,7 +157,7 @@ namespace BESharp
 
         private void AfterMainLoop(Task task)
         {
-            this.LogTrace("AFTER MAIN LOOP");
+            this.Log.Trace("AFTER MAIN LOOP");
             this.InternalClose();
         }
 
@@ -185,10 +191,10 @@ namespace BESharp
         ///     Registers a handler to be notified when a response
         ///     message arrives, and which accepts the response message itself.
         /// </summary>
-        /// <param name="handler"></param>
-        internal void RegisterResponseHandler(ResponseHandler handler)
+        /// <param name="dgram"></param>
+        internal ResponseHandler GetResponseHandler(IOutboundDatagram dgram)
         {
-            this.responseDispatcher.Register(handler);
+            return this.responseDispatcher.CreateOrGetHandler(dgram);
         }
 
 
@@ -233,13 +239,12 @@ namespace BESharp
             ResponseHandler handler = null;
             if (dgram.ExpectsResponse)
             {
-                handler = new ResponseHandler(dgram);
-                this.RegisterResponseHandler(handler);
+                handler = this.GetResponseHandler(dgram);
             }
 
             // socket is thread safe
             // i.e. it is ok to send & receive at the same time from different threads
-            this.LogTrace("BEFORE await SendDatagramAsync");
+            this.Log.Trace("BEFORE await SendDatagramAsync");
             int transferredBytes =
                 await
                 this.udpClient.SendAsync(bytes, bytes.Length)
@@ -251,7 +256,7 @@ namespace BESharp
                 this.lastCommandSequenceNumber++;
             }
 
-            this.LogTrace("AFTER  await SendDatagramAsync");
+            this.Log.Trace("AFTER  await SendDatagramAsync");
 
             Debug.Assert(
                 transferredBytes == bytes.Length,
@@ -259,7 +264,7 @@ namespace BESharp
 
             if (dgram.Type == DatagramType.Command)
             {
-                this.lastCmdSentTime = DateTime.Now;
+                this.lastCommandSentTime = DateTime.Now;
             }
 
             return handler;
@@ -339,19 +344,26 @@ namespace BESharp
             }
 
             TimeSpan keepAlivePeriod = TimeSpan.FromSeconds(25);
-            this.lastCmdSentTime = DateTime.Now.AddSeconds(-10);
+            this.lastCommandSentTime = this.lastAcknowledgedCmdSentTime = DateTime.Now.AddSeconds(-10);
 
             while (this.ShutdownReason == ShutdownReason.None)
             {
-                this.LogTrace("Scheduling new receive task.");
+                this.Log.Trace("Scheduling new receive task.");
                 Task task = this.ReceiveDatagramAsync();
-                this.LogTrace("AFTER  scheduling new receive task.");
+                this.Log.Trace("AFTER  scheduling new receive task.");
 
                 // do the following at least once and until the receive task
                 // has completed (or we're shutting down for some reason)
                 do
                 {
-                    if (DateTime.Now - this.lastCmdSentTime > keepAlivePeriod)
+                    // test whether we sent a command too long ago, or
+                    // whether we received the last acknowledgment from the server too long ago
+                    // (prevents case: 
+                    //      * we sent a command 10 secs ago but wasn't received by the server
+                    //        and not acknowledged, but we have "10 secs ago" in lastCommandSentTime)
+                    var keepAliveAgo = DateTime.Now.Subtract(keepAlivePeriod);
+                    if (this.lastCommandSentTime < keepAliveAgo ||
+                        this.lastAcknowledgedCmdSentTime < keepAliveAgo)
                     {
                         // spawn a keep alive tracker until server acknowledges
                         if (this.keepAliveTracker == null)
@@ -375,15 +387,15 @@ namespace BESharp
                         }
                     }
 
-                    this.LogTraceFormat("===== WAITING RECEIVE =====, Status={0}", task.Status);
+                    this.Log.TraceFormat("===== WAITING RECEIVE =====, Status={0}", task.Status);
                     task.Wait(500);
-                    this.LogTraceFormat("====== DONE WAITING =======, Status={0}", task.Status);
+                    this.Log.TraceFormat("====== DONE WAITING =======, Status={0}", task.Status);
                 }
                 while (!task.IsCompleted && this.ShutdownReason == ShutdownReason.None );
             }
 
             this.mainLoopDead = true;
-            this.LogTrace("Main loop exited.");
+            this.Log.Trace("Main loop exited.");
 
             // signal we're exiting the thread
             this.ExitMainLoop();
@@ -392,12 +404,12 @@ namespace BESharp
 
         private void ExitMainLoop()
         {
-            this.LogTrace("EXIT MAIN LOOP");
+            this.Log.Trace("EXIT MAIN LOOP");
 
             if (this.shutdownLock != null)
             {
                 // signal we're exiting the thread
-                this.LogTrace("shutdownLock set.");
+                this.Log.Trace("shutdownLock set.");
                 this.shutdownLock.Set();
             }
         }
@@ -405,22 +417,22 @@ namespace BESharp
 
         private void InternalClose()
         {
-            this.LogTrace("CLOSE");
+            this.Log.Trace("CLOSE");
 
             if (!this.forceShutdown)
             {
-                this.LogTrace("SHUTDOWN COMMENCING");
+                this.Log.Trace("SHUTDOWN COMMENCING");
 
                 if (!this.mainLoopDead)
                 {
                     this.shutdownLock = new ManualResetEventSlim(false);
 
                     // wait until the main thread is exited
-                    this.LogTrace("WAITING FOR THREADS TO EXIT");
+                    this.Log.Trace("WAITING FOR THREADS TO EXIT");
                     this.shutdownLock.Wait();
                 }
 
-                this.LogTrace("SHUTDOWN ACHIEVED - DISPOSING");
+                this.Log.Trace("SHUTDOWN ACHIEVED - DISPOSING");
             }
 
             this.Dispose();
@@ -449,88 +461,120 @@ namespace BESharp
             // http://msdn.microsoft.com/en-us/library/windows/desktop/aa364986(v=vs.85).aspx
             Task<UdpReceiveResult> task = this.udpClient.ReceiveAsync();
 
-            this.LogTrace("BEFORE await ReceiveAsync");
+            this.Log.Trace("BEFORE await ReceiveAsync");
             UdpReceiveResult result = await task
-
                                                 // do not incurr in ANOTHER context switch cost
                                                 .ConfigureAwait(false);
-            this.LogTrace("AFTER  await ReceiveAsync");
-            if (!this.ValidateReceivedDatagram(result))
+
+            this.Log.Trace("AFTER  await ReceiveAsync");
+            byte[] buffer = result.Buffer;
+            if (!this.PreValidateReceivedDatagram(buffer))
             {
                 this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.InvalidLength));
-                this.LogTrace("INVALID datagram received");
+                this.Log.Trace("INVALID datagram received");
                 return;
             }
 
-            byte dgramType = result.Buffer[Constants.DatagramTypeIndex];
             this.inCount++;
-            this.LogTraceFormat("{0:0}    Type dgram received.", dgramType);
+
+            bool proceed = await this.PreProcessReceivedDatagram(buffer);
+            if (!proceed)
+            {
+                return;
+            }
+
+            if (!VerifyCrc(buffer))
+            {
+                this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.Corrupted));
+                return;
+            }
+
+            await this.DispatchReceivedDatagram(buffer);
+        }
+
+
+        private async Task<bool> PreProcessReceivedDatagram(byte[] buffer)
+        {
+            byte dgramType = Buffer.GetByte(buffer, Constants.DatagramTypeIndex);
+            this.Log.TraceFormat("{0:0}    Type dgram received.", dgramType);
 
 #if DEBUG
             // shutdown msg from server (not in protocol, used only for testing)
-            if (dgramType == 0xFF && this.ShutdownReason == ShutdownReason.None)
+            if (dgramType == (byte)DatagramType.TestServerShutdown
+                && this.ShutdownReason == ShutdownReason.None)
             {
-                this.LogTrace("SHUTDOWN DATAGRAM RECEIVED - SHUTTING DOWN.");
+                this.Log.Trace("SHUTDOWN DATAGRAM RECEIVED - SHUTTING DOWN.");
                 this.ShutdownReason = ShutdownReason.ServerRequested;
-                return;
+                return false;
             }
 #endif
 
             if (dgramType == (byte)DatagramType.Message)
             {
-                byte conMsgSeq = result.Buffer[Constants.ConsoleMessageSequenceNumberIndex];
-                this.LogTraceFormat("M#{0:000} Received", conMsgSeq);
-
-                if (this.DiscardConsoleMessages)
-                {
-                    await this.AcknowledgeMessage(conMsgSeq);
-                    return;
-                }
-
-                // if we already received a console message with this seq number
-                bool repeated = this.conMsgsTracker.Contains(conMsgSeq);
-                if (repeated)
-                {
-                    // if we did, just acknowledge it and don't process it
-                    // (the server probably didn't receive our previous ack)
-                    await this.AcknowledgeMessage(conMsgSeq);
-                    return;
-                }
-
-                // register the sequence number and continue processing the msg
-                this.conMsgsTracker.StartTracking(conMsgSeq);
+                return await this.PreProcessConsoleMessage(buffer);
             }
-
 
             if (dgramType == (byte)DatagramType.Command)
             {
-                // command response
-                byte cmdSeq = result.Buffer[Constants.CommandResponseSequenceNumberIndex];
-                bool repeated = this.cmdsTracker.Contains(cmdSeq);
-                if (repeated)
-                {
-                    // doesn't repeat because multipart?
-                    if (result.Buffer[Constants.CommandResponseMultipartFlag] != 0x00)
-                    {
-                        return;
-                    } // else go ahead and dispatch the part
-                }
-                else
-                {
-                    this.cmdsTracker.StartTracking(cmdSeq);
-                }
+                return this.PreProcessCommandResponse(buffer);
             }
 
-
-            await this.DispatchReceivedDatagram(result.Buffer);
+            return true;
         }
 
 
-        private bool ValidateReceivedDatagram(UdpReceiveResult result)
+        private bool PreValidateReceivedDatagram(byte[] buffer)
         {
-            if (result.Buffer == null || result.Buffer.Length < 7)
+            if (buffer == null || buffer.Length < 7)
             {
                 return false;
+            }
+            return true;
+        }
+
+
+        private async Task<bool> PreProcessConsoleMessage(byte[] buffer)
+        {
+            byte conMsgSeq = Buffer.GetByte(buffer, Constants.ConsoleMessageSequenceNumberIndex);
+            this.Log.TraceFormat("M#{0:000} Received", conMsgSeq);
+
+            if (this.DiscardConsoleMessages)
+            {
+                await this.AcknowledgeMessage(conMsgSeq);
+                return false;
+            }
+
+            // if we already received a console message with this seq number
+            bool repeated = this.conMsgsTracker.Contains(conMsgSeq);
+            if (repeated)
+            {
+                // if we did, just acknowledge it and don't process it
+                // (the server probably didn't receive our previous ack)
+                await this.AcknowledgeMessage(conMsgSeq);
+                return false;
+            }
+
+            // register the sequence number and continue processing the msg
+            this.conMsgsTracker.StartTracking(conMsgSeq);
+            return true;
+        }
+
+
+        private bool PreProcessCommandResponse(byte[] buffer)
+        {
+            byte cmdSeq = Buffer.GetByte(buffer, Constants.CommandResponseSequenceNumberIndex);
+            bool repeated = this.cmdsTracker.Contains(cmdSeq);
+            if (repeated)
+            {
+                // doesn't repeat because multipart?
+                if (Buffer.GetByte(buffer, Constants.CommandResponseMultipartFlag) != 0x00)
+                {
+                    return false;
+                } // else go ahead and dispatch the part
+            }
+            else
+            {
+                this.cmdsTracker.StartTracking(cmdSeq);
             }
             return true;
         }
@@ -544,12 +588,6 @@ namespace BESharp
         /// </param>
         private async Task DispatchReceivedDatagram(byte[] buffer)
         {
-            if (!VerifyCrc(buffer))
-            {
-                this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.Corrupted));
-                return;
-            }
-
             IInboundDatagram dgram = InboundDatagramBase.ParseReceivedBytes(buffer);
             this.parsedDatagramsCount++;
             if (dgram.Type == DatagramType.Message)
@@ -560,10 +598,10 @@ namespace BESharp
                 return;
             }
 
-            // else, dgram is either login or command response
-            this.LogTrace("BEFORE response.Dispatch");
+            // else, dgram is a response (to either a login or a command)
+            this.Log.Trace("BEFORE response.Dispatch");
             this.responseDispatcher.Dispatch(dgram);
-            this.LogTrace("AFTER  response.Dispatch");
+            this.Log.Trace("AFTER  response.Dispatch");
         }
 
 
@@ -577,7 +615,7 @@ namespace BESharp
         private async Task AcknowledgeMessage(byte seqNumber)
         {
             await this.SendDatagramAsync(new AcknowledgeMessageDatagram(seqNumber));
-            this.LogTraceFormat("M#{0:000} Acknowledged", seqNumber);
+            this.Log.TraceFormat("M#{0:000} Acknowledged", seqNumber);
         }
 
 
@@ -649,8 +687,9 @@ namespace BESharp
 
         private void ExceptionHandler(Task task)
         {
-            ExceptionDispatchInfo exInfo = ExceptionDispatchInfo.Capture(task.Exception);
+            var exInfo = ExceptionDispatchInfo.Capture(task.Exception);
             this.forceShutdown = true;
+            this.ShutdownReason = ShutdownReason.FatalException;
             exInfo.Throw();
         }
 
@@ -674,28 +713,12 @@ namespace BESharp
         }
 
 
-        [Conditional("TRACE")]
-        private void LogTrace(string msg)
+        private void UpdateLastAckSentTime(DateTime sentTime)
         {
-            this.Log.Logger.Log(
-                this.Log.GetType(),
-                Level.Debug,
-                msg,
-                null);
+            if (sentTime > this.lastAcknowledgedCmdSentTime)
+            {
+                this.lastAcknowledgedCmdSentTime = sentTime;
+            }
         }
-
-
-        [Conditional("TRACE")]
-        private void LogTraceFormat(string fmt, params object[] args)
-        {
-            this.Log.Logger.Log(
-                this.Log.GetType(),
-                Level.Debug,
-                string.Format(CultureInfo.InvariantCulture, fmt, args),
-                null);
-        }
-
-
-        public event EventHandler<PacketProblemEventArgs> PacketProblem;
     }
 }
