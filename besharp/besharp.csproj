@@ -72,6 +72,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IUdpClient.cs" />
     <Compile Include="KeepAliveTracker.cs" />
+    <Compile Include="LogExtensions.cs" />
     <Compile Include="MessageDispatcher.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="NetUdpClient.cs" />
