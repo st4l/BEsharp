@@ -5,6 +5,7 @@ namespace BESharp
         None,
         NoResponseFromServer,
         UserRequested,
-        ServerRequested
+        ServerRequested,
+        FatalException
     }
 }
