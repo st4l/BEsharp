@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------------------------
-// <copyright file="OutboundDatagramBase.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
+// <copyright file="OutboundDatagramBase.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
 namespace BESharp.Datagrams
 {
@@ -9,8 +9,8 @@ namespace BESharp.Datagrams
     public abstract class OutboundDatagramBase : DatagramBase, IOutboundDatagram
     {
         /// <summary>
-        /// The date and time this message was sent. Set automatically by 
-        /// <see cref="RConClient"/>.
+        ///   The date and time this message was sent. Set automatically by 
+        ///   <see cref="RConClient" />.
         /// </summary>
         public DateTime SentTime { get; set; }
 
@@ -27,7 +27,7 @@ namespace BESharp.Datagrams
                 checksum = crc.ComputeHash(payload);
                 Array.Reverse(checksum);
             }
-            
+
             var payloadLen = Buffer.ByteLength(payload);
             var result = new byte[6 + payloadLen];
             Buffer.SetByte(result, 0, 0x42); // "B"

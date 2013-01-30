@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------------------------
-// <copyright file="CRC32.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
+// <copyright file="CRC32.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
 namespace BESharp.Datagrams
 {
@@ -17,12 +17,13 @@ namespace BESharp.Datagrams
 
         private static uint[] defaultTable;
 
+        private static uint[] defaultTableReversed;
+
         private readonly uint seed;
 
         private readonly uint[] table;
 
         private uint hash;
-        private static uint[] defaultTableReversed;
 
 
         public Crc32()
@@ -45,7 +46,6 @@ namespace BESharp.Datagrams
         {
             get { return 32; }
         }
-
 
 
         public override sealed void Initialize()
@@ -114,7 +114,7 @@ namespace BESharp.Datagrams
 
 
         private static uint CalculateHash(
-            uint[] table, uint seed, byte[] buffer, int start, int size)
+                uint[] table, uint seed, byte[] buffer, int start, int size)
         {
             uint crc = seed;
             for (int i = start; i < size; i++)
@@ -133,8 +133,8 @@ namespace BESharp.Datagrams
         {
             return new[]
                        {
-                           (byte)((x >> 24) & 0xff), (byte)((x >> 16) & 0xff), (byte)((x >> 8) & 0xff), 
-                           (byte)(x & 0xff)
+                               (byte)((x >> 24) & 0xff), (byte)((x >> 16) & 0xff), (byte)((x >> 8) & 0xff),
+                               (byte)(x & 0xff)
                        };
         }
     }

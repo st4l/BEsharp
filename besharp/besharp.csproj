@@ -69,14 +69,13 @@
     <Compile Include="Datagrams\LoginDatagram.cs" />
     <Compile Include="Datagrams\LoginResponseDatagram.cs" />
     <Compile Include="DisconnectedEventArgs.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="IUdpClient.cs" />
     <Compile Include="KeepAliveTracker.cs" />
     <Compile Include="LogExtensions.cs" />
     <Compile Include="MessageDispatcher.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="NetUdpClient.cs" />
-    <Compile Include="OutboundDatagramQueue.cs" />
     <Compile Include="PacketProblemEventArgs.cs" />
     <Compile Include="PacketProblemType.cs" />
     <Compile Include="RConClient.cs" />

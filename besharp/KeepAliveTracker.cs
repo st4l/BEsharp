@@ -1,30 +1,33 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using BESharp.Datagrams;
-
+// ----------------------------------------------------------------------------------------------------
+// <copyright file="KeepAliveTracker.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
+// ----------------------------------------------------------------------------------------------------
 namespace BESharp
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Threading;
+    using Datagrams;
+
+
     internal sealed partial class MessageDispatcher
     {
-        #region Nested type: KeepAliveTracker
-
         private class KeepAliveTracker
         {
-            private bool Acknowledged { get; set; }
             private readonly MessageDispatcher msgDispatcher;
+
             private readonly TimeSpan period = TimeSpan.FromSeconds(1);
+
             private readonly List<ResponseHandler> sentHandlers = new List<ResponseHandler>();
+
             private DateTime lastSendTime = DateTime.MinValue;
+
             private int sentCount;
+
             private SpinWait spinWait = new SpinWait();
+
             private int sequenceNumber = -1;
-
-            public bool Expired { get; private set; }
-            private int MaxTries { get; set; }
-
 
 
             public KeepAliveTracker(MessageDispatcher msgDispatcher)
@@ -34,9 +37,15 @@ namespace BESharp
             }
 
 
+            public bool Expired { get; private set; }
+
+            private bool Acknowledged { get; set; }
+
+            private int MaxTries { get; set; }
+
+
             public bool Ping()
             {
-                
                 if (this.Acknowledged)
                 {
                     return true;
@@ -46,14 +55,14 @@ namespace BESharp
 
                 // check if we received an ack for any of the sent ones
                 int acks = this.sentHandlers.Count(handler => handler.ResponseDatagram != null);
-                // Debug.WriteLine("{1:mm:ss:fffff} acks = {0}", acks, DateTime.Now);
+                //// Debug.WriteLine("{1:mm:ss:fffff} acks = {0}", acks, DateTime.Now);
                 if (acks > 0)
                 {
                     this.msgDispatcher.keepAlivePacketsAcks += acks;
                     this.Acknowledged = true;
                     return true;
                 }
-                
+
                 // if we haven't sent one
                 // or last one sent more than (period) ago
                 if (DateTime.Now - this.lastSendTime > this.period)
@@ -78,6 +87,7 @@ namespace BESharp
                 {
                     this.sequenceNumber = this.msgDispatcher.GetNextCommandSequenceNumber();
                 }
+
                 Debug.WriteLine("keep alive packet {0} sent", this.sentCount + 1);
                 var keepAliveDgram = new CommandDatagram((byte)this.sequenceNumber, string.Empty);
                 this.sentHandlers.Add(this.msgDispatcher.SendDatagramAsync(keepAliveDgram).Result);
@@ -87,7 +97,5 @@ namespace BESharp
                 this.msgDispatcher.Log.TraceFormat("C#{0:000} Sent keep alive command.", keepAliveDgram.SequenceNumber);
             }
         }
-
-        #endregion
     }
 }

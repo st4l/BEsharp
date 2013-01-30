@@ -1,13 +1,10 @@
 ﻿// ----------------------------------------------------------------------------------------------------
-// <copyright file="MessageReceivedHandlerArgs.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
+// <copyright file="MessageReceivedEventArgs.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
-
-using BESharp.Datagrams;
-
 namespace BESharp
 {
     using System;
-    using BESharp.Datagrams;
+    using Datagrams;
 
 
     public class MessageReceivedEventArgs : EventArgs

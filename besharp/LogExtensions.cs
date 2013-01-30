@@ -1,39 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using log4net;
-using log4net.Core;
+﻿// ----------------------------------------------------------------------------------------------------
+// <copyright file="LogExtensions.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
+// ----------------------------------------------------------------------------------------------------
 
 namespace BESharp
 {
+    using System;
+    using System.Diagnostics;
+    using System.Globalization;
+    using log4net.Core;
+
     public static class LogExtensions
     {
         [Conditional("TRACE")]
-        public static void Trace(this ILog logger, string msg)
+        public static void Trace(this ILoggerWrapper logger, string message)
         {
+            if (logger == null || logger.Logger == null)
+            {
+                throw new ArgumentNullException("logger");
+            }
+            
             logger.Logger.Log(
-                logger.GetType(),
-                Level.Debug, // Level.Trace
-                msg,
-                null);
+                              logger.GetType(),
+                              Level.Debug, // Level.Trace
+                              message,
+                              null);
         }
 
 
         [Conditional("TRACE")]
-        public static void TraceFormat(this ILog logger, string fmt, params object[] args)
+        public static void TraceFormat(this ILoggerWrapper logger, string format, params object[] args)
         {
+            if (logger == null || logger.Logger == null)
+            {
+                throw new ArgumentNullException("logger");
+            }
+
             logger.Logger.Log(
-                logger.GetType(),
-                Level.Debug, // Level.Trace
-                string.Format(CultureInfo.InvariantCulture, fmt, args),
-                null);
+                              logger.GetType(),
+                              Level.Debug, // Level.Trace
+                              string.Format(CultureInfo.InvariantCulture, format, args),
+                              null);
         }
-
-
-
     }
 }

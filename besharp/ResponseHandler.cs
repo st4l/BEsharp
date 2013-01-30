@@ -1,9 +1,6 @@
 ﻿// ----------------------------------------------------------------------------------------------------
-// <copyright file="ResponseHandler.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
+// <copyright file="ResponseHandler.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
-
-using log4net;
-
 namespace BESharp
 {
     using System;
@@ -11,6 +8,7 @@ namespace BESharp
     using System.Threading;
     using System.Threading.Tasks;
     using Datagrams;
+    using log4net;
 
 
     public class ResponseHandler : IDisposable
@@ -21,10 +19,10 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Creates a new instance of <see cref="ResponseHandler" /> for
-        ///     the specified sent datagram and timeout in milliseconds.
+        ///   Creates a new instance of <see cref="ResponseHandler" /> for
+        ///   the specified sent datagram and timeout in milliseconds.
         /// </summary>
-        /// <param name="sentDatagram">The sent datagram of which a response is awaited.</param>
+        /// <param name="sentDatagram"> The sent datagram of which a response is awaited. </param>
         public ResponseHandler(IOutboundDatagram sentDatagram)
         {
             this.SentDatagram = sentDatagram;
@@ -32,17 +30,14 @@ namespace BESharp
         }
 
 
-        protected ILog Log { get; set; }
-
-
         /// <summary>
-        ///     Use C# destructor syntax for finalization code. 
+        ///   Use C# destructor syntax for finalization code.
         /// </summary>
         /// <remarks>
-        ///     This destructor will run only if the Dispose method 
-        ///     does not get called. 
-        ///     It gives your base class the opportunity to finalize. 
-        ///     Do not provide destructors in types derived from this class.
+        ///   This destructor will run only if the Dispose method 
+        ///   does not get called. 
+        ///   It gives your base class the opportunity to finalize. 
+        ///   Do not provide destructors in types derived from this class.
         /// </remarks>
         ~ResponseHandler()
         {
@@ -51,31 +46,31 @@ namespace BESharp
 
 
         /// <summary>
-        ///     The Datagram that was sent, the response of which
-        ///     this handler can wait for.
+        ///   The Datagram that was sent, the response of which
+        ///   this handler can wait for.
         /// </summary>
         public IOutboundDatagram SentDatagram { get; private set; }
 
         /// <summary>
-        ///     After the response is received, the received response 
-        ///     message.
+        ///   After the response is received, the received response 
+        ///   message.
         /// </summary>
         public IInboundDatagram ResponseDatagram { get; internal set; }
 
 
         public bool Completed { get; set; }
 
+        protected ILog Log { get; set; }
+
 
         /// <summary>
-        ///     Blocks the current thread until a response is received
-        ///     or the timeout elapses. If a response is received, 
-        ///     the <see cref="ResponseDatagram"/> property
-        ///     will contain the received datagram.
+        ///   Blocks the current thread until a response is received
+        ///   or the timeout elapses. If a response is received, 
+        ///   the <see cref="ResponseDatagram" /> property
+        ///   will contain the received datagram.
         /// </summary>
-        /// <param name="timeout">Timeout in milliseconds.</param>
-        /// <returns>
-        ///     True if the response was received; otherwise, false.
-        /// </returns>
+        /// <param name="timeout"> Timeout in milliseconds. </param>
+        /// <returns> True if the response was received; otherwise, false. </returns>
         [HostProtection(Synchronization = true, ExternalThreading = true)]
         public Task<bool> WaitForResponse(int timeout)
         {
@@ -86,42 +81,40 @@ namespace BESharp
             }
 
             this.waitHandle = new ManualResetEventSlim(false);
-            var task = Task.Factory.StartNew(() => this.DoWait(timeout));
+            Task<bool> task = Task.Factory.StartNew(() => this.DoWait(timeout));
             task.ConfigureAwait(false);
             return task;
         }
 
 
-        private bool DoWait(int timeout)
-        {
-            this.Log.TraceFormat("Handler for type {0} starting wait.", this.SentDatagram.Type);
-            bool result = this.waitHandle.Wait(timeout);
-            this.Log.TraceFormat("Handler for type {0} done waiting, result={1}.", this.SentDatagram.Type, result);
-            return result;
-        }
-
-
-
         /// <summary>
-        ///     Blocks the current thread until a response is received
-        ///     or 3 seconds elapse. If a response is received,
-        ///     the <see cref="ResponseDatagram"/> property
-        ///     will contain the received datagram.
+        ///   Blocks the current thread until a response is received
+        ///   or 3 seconds elapse. If a response is received,
+        ///   the <see cref="ResponseDatagram" /> property
+        ///   will contain the received datagram.
         /// </summary>
-        /// <returns>
-        ///     True if the response was received; otherwise, false.
-        /// </returns>
+        /// <returns> True if the response was received; otherwise, false. </returns>
         public Task<bool> WaitForResponse()
         {
-            return WaitForResponse(1000 * 3);
+            return this.WaitForResponse(1000 * 3);
         }
 
 
         /// <summary>
-        ///     Accepts the response datagram and signals the waiting
-        ///     thread to continue.
+        ///   Implement IDisposable.
         /// </summary>
-        /// <param name="result"></param>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+
+        /// <summary>
+        ///   Accepts the response datagram and signals the waiting
+        ///   thread to continue.
+        /// </summary>
+        /// <param name="result"> </param>
         [HostProtection(Synchronization = true, ExternalThreading = true)]
         internal void Complete(IInboundDatagram result)
         {
@@ -134,23 +127,19 @@ namespace BESharp
         }
 
 
-        /// <summary>
-        ///     Implement IDisposable.
-        /// </summary>
-        public void Dispose()
+        private bool DoWait(int timeout)
         {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
+            this.Log.TraceFormat("Handler for type {0} starting wait.", this.SentDatagram.Type);
+            bool result = this.waitHandle.Wait(timeout);
+            this.Log.TraceFormat("Handler for type {0} done waiting, result={1}.", this.SentDatagram.Type, result);
+            return result;
         }
 
 
         /// <summary>
-        ///     Dispose managed and unmanaged resources.
+        ///   Dispose managed and unmanaged resources.
         /// </summary>
-        /// <param name="disposing">
-        ///     True unless we're called from the finalizer,
-        ///     in which case only unmanaged resources can be disposed.
-        /// </param>
+        /// <param name="disposing"> True unless we're called from the finalizer, in which case only unmanaged resources can be disposed. </param>
         private void Dispose(bool disposing)
         {
             // Check to see if Dispose has already been called. 
@@ -163,6 +152,7 @@ namespace BESharp
                     // Dispose managed resources.
                     if (this.waitHandle != null)
                     {
+                        this.waitHandle.Set();
                         this.waitHandle.Dispose();
                     }
                 }
@@ -171,7 +161,5 @@ namespace BESharp
                 this.disposed = true;
             }
         }
-
-
     }
 }

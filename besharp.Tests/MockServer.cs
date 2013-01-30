@@ -1,4 +1,7 @@
-﻿namespace BESharp.Tests
+﻿// ----------------------------------------------------------------------------------------------------
+// <copyright file="MockServer.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
+// ----------------------------------------------------------------------------------------------------
+namespace BESharp.Tests
 {
     using System;
     using System.Collections.Concurrent;
@@ -16,17 +19,25 @@
         private readonly int avgResponseTime;
 
         private readonly ConcurrentQueue<byte[]> outboundQueue = new ConcurrentQueue<byte[]>();
+
         private readonly List<TestDatagram> receivedDatagrams = new List<TestDatagram>();
+
         private readonly MockServerSetup setup;
+
         private int ackPacketsReceivedCount;
-        private bool clientLoggedIn;
 
         private byte conMsgSequenceNum;
+
         private int keepAlivePacketsReceivedCount;
+
         private int loginAttempts;
+
         private bool shutdown;
+
         private int totalConMsgsGenerated;
+
         private bool lastConMsgRepeated;
+
         private int waitShutdown;
 
 
@@ -90,32 +101,6 @@
         }
 
 
-        private byte[] BuildShutdownPacket()
-        {
-            var shutdownPayload = new byte[2];
-            Buffer.SetByte(shutdownPayload, 0, 0xFF);
-            Buffer.SetByte(shutdownPayload, 1, 0xFF);
-            return this.BuildOutboundPacket(shutdownPayload);
-        }
-
-
-        private byte[] CheckSendLoadTestMsg()
-        {
-            if (this.setup.LoadTestConsoleMessages == -1 ||
-                this.totalConMsgsGenerated < this.setup.LoadTestConsoleMessages)
-            {
-                return this.GenerateRandomConsoleMessage();
-            }
-
-            if (this.setup.LoadTestConsoleMessages > 0 &&
-                this.setup.LoadTestOnly)
-            {
-                return this.BuildShutdownPacket();
-            }
-            return null;
-        }
-
-
         public int ReceivePacket(byte[] bytes, int length)
         {
             byte[] payload = ValidateInboundHeader(bytes, length);
@@ -155,9 +140,9 @@
         {
             return new RConServerMetrics
                        {
-                           AckPacketsReceived = this.ackPacketsReceivedCount,
-                           KeepAlivePacketsReceived = this.keepAlivePacketsReceivedCount,
-                           TotalConsoleMessagesGenerated = this.totalConMsgsGenerated
+                               AckPacketsReceived = this.ackPacketsReceivedCount,
+                               KeepAlivePacketsReceived = this.keepAlivePacketsReceivedCount,
+                               TotalConsoleMessagesGenerated = this.totalConMsgsGenerated
                        };
         }
 
@@ -191,6 +176,32 @@
 
             Assert.AreEqual(Buffer.GetByte(payload, 0), 0xFF);
             return payload;
+        }
+
+
+        private byte[] BuildShutdownPacket()
+        {
+            var shutdownPayload = new byte[2];
+            Buffer.SetByte(shutdownPayload, 0, 0xFF);
+            Buffer.SetByte(shutdownPayload, 1, 0xFF);
+            return this.BuildOutboundPacket(shutdownPayload);
+        }
+
+
+        private byte[] CheckSendLoadTestMsg()
+        {
+            if (this.setup.LoadTestConsoleMessages == -1 ||
+                this.totalConMsgsGenerated < this.setup.LoadTestConsoleMessages)
+            {
+                return this.GenerateRandomConsoleMessage();
+            }
+
+            if (this.setup.LoadTestConsoleMessages > 0 &&
+                this.setup.LoadTestOnly)
+            {
+                return this.BuildShutdownPacket();
+            }
+            return null;
         }
 
 
@@ -232,7 +243,6 @@
 
         private void LoggedIn()
         {
-            this.clientLoggedIn = true;
         }
 
 
@@ -301,7 +311,6 @@
             }
 
             this.ProcessCommand(payload);
-
         }
 
 
@@ -329,7 +338,6 @@
             {
                 this.SendGetPlayersMulti(seqNum);
             }
-
         }
 
 
@@ -349,7 +357,6 @@
                     this.SendGetPlayersPart(seqNum, i, 10);
                 }
             }
-
         }
 
 

@@ -1,76 +1,33 @@
 ﻿// ----------------------------------------------------------------------------------------------------
-// <copyright file="RConClient.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
+// <copyright file="RConClient.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
-
 namespace BESharp
 {
     using System;
-    using System.Diagnostics;
-    using System.Globalization;
     using System.Runtime.ExceptionServices;
     using System.Security.Authentication;
     using System.Threading;
     using System.Threading.Tasks;
     using Datagrams;
     using log4net;
-    using log4net.Core;
 
-    
+
     /// <summary>
-    ///     The <see cref='RConClient' /> class provides access to BattlEye RCon services.
+    ///   The <see cref='RConClient' /> class provides access to BattlEye RCon services.
     /// </summary>
     /// <remarks>
-    ///     <para>
-    ///         The [BattlEye RCon protocol](http://www.battleye.com/downloads/BERConProtocol.txt)
-    ///         uses the ArmA game server's network interface, i.e. its UDP game port.
-    ///     </para>
-    ///     <para>
-    ///         The use of the underlying UDP protocol means that a persistent connection
-    ///         to the server is not maintained, and the client only registers with the
-    ///         server in order to receive messages from it, and subsequently be able to
-    ///         send further messages which the server will interpret as belonging to the
-    ///         same session.
-    ///     </para>
-    ///     <para>
-    ///         The use of UDP also implies networking constraints that this client deals
-    ///         with: inbound and outbound UDP messages are not guaranteed to arrive, nor
-    ///         are they guaranteed to arrive in the order in which they were sent by either
-    ///         the server or the client.
-    ///     </para>
-    ///     <para>
-    ///         <see cref="RConClient" /> encapsulates and augments
-    ///         <see cref='System.Net.Sockets.UdpClient' />.
-    ///     </para>
+    ///   <para> The [BattlEye RCon protocol](http://www.battleye.com/downloads/BERConProtocol.txt) uses the ArmA game server's network interface, i.e. its UDP game port. </para>
+    ///   <para> The use of the underlying UDP protocol means that a persistent connection to the server is not maintained, and the client only registers with the server in order to receive messages from it, and subsequently be able to send further messages which the server will interpret as belonging to the same session. </para>
+    ///   <para> The use of UDP also implies networking constraints that this client deals with: inbound and outbound UDP messages are not guaranteed to arrive, nor are they guaranteed to arrive in the order in which they were sent by either the server or the client. </para>
+    ///   <para> <see cref="RConClient" /> encapsulates and augments <see cref='System.Net.Sockets.UdpClient' /> . </para>
     /// </remarks>
     public sealed class RConClient : IDisposable
     {
-        private readonly string host;
-
-        private readonly int port;
-
         private readonly string password;
-
-        private MessageDispatcher msgDispatcher;
-
-        private bool closed;
-
-        private bool disposed;
 
         private readonly object msgReceivedEventAccesorsLockObject = new object();
 
         private readonly object packetProblemEventAccesorsLockObject = new object();
-
-        private EventHandler<MessageReceivedEventArgs> subscribedMsgReceivedHandler;
-
-        private EventHandler<PacketProblemEventArgs> subscribedPktProblemHandler;
-
-        internal RConMetrics Metrics { get; set; }
-
-        internal IUdpClient Client { get; set; }
-
-        public ShutdownReason ShutdownReason { get; private set; }
-
-        private ILog Log { get; set; }
 
 
 #if DEBUG
@@ -79,11 +36,19 @@ namespace BESharp
 #endif
 
 
+        private MessageDispatcher msgDispatcher;
+
+        private bool closed;
+
+        private bool disposed;
+
+        private EventHandler<MessageReceivedEventArgs> subscribedMsgReceivedHandler;
+
+        private EventHandler<PacketProblemEventArgs> subscribedPktProblemHandler;
+
+
         public RConClient(string host, int port, string password)
         {
-            this.host = host;
-            this.port = port;
-
             this.password = password;
 
             NetUdpClient client = null;
@@ -91,10 +56,10 @@ namespace BESharp
             {
                 client = new NetUdpClient
                              {
-                                 ExclusiveAddressUse = true,
-                                 DontFragment = true,
-                                 EnableBroadcast = false,
-                                 MulticastLoopback = false
+                                     ExclusiveAddressUse = true,
+                                     DontFragment = true,
+                                     EnableBroadcast = false,
+                                     MulticastLoopback = false
                              };
                 client.Connect(host, port);
             }
@@ -104,9 +69,11 @@ namespace BESharp
                 {
                     client.Close();
                 }
+
                 ExceptionDispatchInfo nex = ExceptionDispatchInfo.Capture(ex);
                 nex.Throw();
             }
+
             this.Client = client;
             this.Initialize();
         }
@@ -114,7 +81,6 @@ namespace BESharp
 
         internal RConClient(IUdpClient client, string password)
         {
-            //throw new ArgumentException("asdf");
             this.Client = client;
             this.password = password;
             this.Initialize();
@@ -122,13 +88,12 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Use C# destructor syntax for finalization code. 
+        ///   Use C# destructor syntax for finalization code.
         /// </summary>
         /// <remarks>
-        ///     This destructor will run only if the Dispose method 
-        ///     does not get called. 
-        ///     It gives your base class the opportunity to finalize. 
-        ///     Do not provide destructors in types derived from this class.
+        ///   This destructor will run only if the Dispose method 
+        ///   does not get called. 
+        ///   Do not provide destructors in types derived from this class.
         /// </remarks>
         ~RConClient()
         {
@@ -137,13 +102,13 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Occurs when a console message is received from the RCon server.
+        ///   Occurs when a console message is received from the RCon server.
         /// </summary>
         /// <remarks>
-        ///     In <see cref="StartListening" /> we are passing along the
-        ///     multicast delegate directly to
-        ///     <see cref="MessageDispatcher.MessageReceived" />, so we
-        ///     need to update it if we already passed it (subscribed).
+        ///   In <see cref="StartListening" /> we are passing along the
+        ///   multicast delegate directly to
+        ///   <see cref="MessageDispatcher.MessageReceived" />, so we
+        ///   need to update it if we already passed it (subscribed).
         /// </remarks>
         public event EventHandler<MessageReceivedEventArgs> MessageReceived
         {
@@ -156,10 +121,12 @@ namespace BESharp
                     {
                         return;
                     }
+
                     if (this.subscribedMsgReceivedHandler != null)
                     {
                         this.msgDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
                     }
+
                     this.subscribedMsgReceivedHandler = this.MsgReceived;
                     this.msgDispatcher.MessageReceived += this.MsgReceived;
                 }
@@ -174,29 +141,29 @@ namespace BESharp
                     {
                         return;
                     }
+
                     if (this.subscribedMsgReceivedHandler != null)
                     {
                         this.msgDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
                     }
+
                     this.subscribedMsgReceivedHandler = this.MsgReceived;
                     this.msgDispatcher.MessageReceived += this.MsgReceived;
                 }
             }
         }
 
-        private event EventHandler<MessageReceivedEventArgs> MsgReceived;
-
 
         /// <summary>
-        ///     Occurs when some problem is detected in the incoming 
-        ///     packets from the server, such as corrupted packets or
-        ///     lost packets.
+        ///   Occurs when some problem is detected in the incoming 
+        ///   packets from the server, such as corrupted packets or
+        ///   lost packets.
         /// </summary>
         /// <remarks>
-        ///     In <see cref="StartListening" /> we are passing along the
-        ///     multicast delegate directly to
-        ///     <see cref="MessageDispatcher.PacketProblem" />, so we
-        ///     need to update it if we already passed it (subscribed).
+        ///   In <see cref="StartListening" /> we are passing along the
+        ///   multicast delegate directly to
+        ///   <see cref="MessageDispatcher.PacketProblem" />, so we
+        ///   need to update it if we already passed it (subscribed).
         /// </remarks>
         public event EventHandler<PacketProblemEventArgs> PacketProblem
         {
@@ -209,10 +176,12 @@ namespace BESharp
                     {
                         return;
                     }
+
                     if (this.subscribedPktProblemHandler != null)
                     {
                         this.msgDispatcher.PacketProblem -= this.subscribedPktProblemHandler;
                     }
+
                     this.subscribedPktProblemHandler = this.PktProblem;
                     this.msgDispatcher.PacketProblem += this.PktProblem;
                 }
@@ -227,23 +196,30 @@ namespace BESharp
                     {
                         return;
                     }
+
                     if (this.subscribedPktProblemHandler != null)
                     {
                         this.msgDispatcher.PacketProblem -= this.subscribedPktProblemHandler;
                     }
+
                     this.subscribedPktProblemHandler = this.PktProblem;
                     this.msgDispatcher.PacketProblem += this.PktProblem;
                 }
             }
         }
 
+        public event EventHandler<DisconnectedEventArgs> Disconnected;
+
+
         private event EventHandler<PacketProblemEventArgs> PktProblem;
+
+        private event EventHandler<MessageReceivedEventArgs> MsgReceived;
 
 
         /// <summary>
-        ///     Gets or sets a <see cref="bool" /> value that specifies
-        ///     whether this <see cref="RConClient" /> tries to keep the
-        ///     connection to the remote RCon server alive.
+        ///   Gets or sets a <see cref="bool" /> value that specifies
+        ///   whether this <see cref="RConClient" /> tries to keep the
+        ///   connection to the remote RCon server alive.
         /// </summary>
         public bool KeepAlive
         {
@@ -253,29 +229,36 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Gets or sets a <see cref="bool" /> value that specifies
-        ///     whether this <see cref="RConClient" /> discards all
-        ///     console message datagrams received (the <see cref="MessageReceived" />
-        ///     event is never raised).
+        ///   Gets or sets a <see cref="bool" /> value that specifies
+        ///   whether this <see cref="RConClient" /> discards all
+        ///   console message datagrams received (the <see cref="MessageReceived" />
+        ///   event is never raised).
         /// </summary>
         public bool DiscardConsoleMessages { get; set; }
 
 
+        public ShutdownReason ShutdownReason { get; private set; }
+
+
+        internal RConMetrics Metrics { get; set; }
+
+        internal IUdpClient Client { get; set; }
+
+        private ILog Log { get; set; }
+
+
         /// <summary>
-        ///     Registers with the established remote Battleye RCon server
-        ///     using the provided password and starts listening for messages
-        ///     from it.
+        ///   Registers with the established remote Battleye RCon server
+        ///   using the provided password and starts listening for messages
+        ///   from it.
         /// </summary>
-        /// <returns>
-        ///     True if connection and login are successful,
-        ///     false otherwise.
-        /// </returns>
+        /// <returns> True if connection and login are successful, false otherwise. </returns>
         public async Task<bool> ConnectAsync()
         {
             if (this.closed)
             {
                 throw new ObjectDisposedException(
-                    "RConClient", "This RConClient has been disposed.");
+                        "RConClient", "This RConClient has been disposed.");
             }
 
             this.StartListening();
@@ -308,7 +291,7 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Stops all processing gracefully and disposes this instance.
+        ///   Stops all processing gracefully and disposes this instance.
         /// </summary>
         public void Close()
         {
@@ -320,13 +303,30 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Implement IDisposable.
+        ///   Implement IDisposable.
         /// </summary>
         public void Dispose()
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+
+        public void OnDisconnected(DisconnectedEventArgs e)
+        {
+            if (this.Disconnected != null)
+            {
+                this.Disconnected(this, e);
+            }
+        }
+
+
+#if DEBUG
+        internal void WaitUntilShutdown()
+        {
+            this.runningLock.WaitOne();
+        }
+#endif
 
 
         private void Initialize()
@@ -337,12 +337,9 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Dispose managed and unmanaged resources.
+        ///   Dispose managed and unmanaged resources.
         /// </summary>
-        /// <param name="disposing">
-        ///     True unless we're called from the finalizer,
-        ///     in which case only unmanaged resources can be disposed.
-        /// </param>
+        /// <param name="disposing"> True unless we're called from the finalizer, in which case only unmanaged resources can be disposed. </param>
         private void Dispose(bool disposing)
         {
             // Check to see if Dispose has already been called. 
@@ -376,13 +373,12 @@ namespace BESharp
             }
         }
 
-        
 
         private async Task<bool> Login()
         {
             this.Log.Trace("BEFORE LOGIN await SendDatagramAsync");
             ResponseHandler responseHandler =
-                await this.msgDispatcher.SendDatagramAsync(new LoginDatagram(this.password));
+                    await this.msgDispatcher.SendDatagramAsync(new LoginDatagram(this.password));
             this.Log.Trace("AFTER  LOGIN await SendDatagramAsync");
 
             this.Log.Trace("BEFORE LOGIN await WaitForResponse");
@@ -399,7 +395,7 @@ namespace BESharp
             {
                 this.Log.Trace("       LOGIN INCORRECT");
                 throw new InvalidCredentialException(
-                    "RCon server actively refused access with the specified password.");
+                        "RCon server actively refused access with the specified password.");
             }
 
             this.Log.Trace("       LOGIN SUCCESS");
@@ -410,7 +406,9 @@ namespace BESharp
         private void StartListening()
         {
             this.msgDispatcher = new MessageDispatcher(this.Client)
-                                     {DiscardConsoleMessages = this.DiscardConsoleMessages};
+                                     {
+                                             DiscardConsoleMessages = this.DiscardConsoleMessages
+                                     };
             this.subscribedMsgReceivedHandler = this.MsgReceived;
             this.msgDispatcher.MessageReceived += this.subscribedMsgReceivedHandler;
             this.subscribedPktProblemHandler = this.PktProblem;
@@ -430,40 +428,24 @@ namespace BESharp
         }
 
 
-#if DEBUG
-        internal void WaitUntilShutdown()
-        {
-            this.runningLock.WaitOne();
-        }
-#endif
-
-        public event EventHandler<DisconnectedEventArgs> Disconnected;
-
-
-        public void OnDisconnected(DisconnectedEventArgs e)
-        {
-            if (this.Disconnected != null)
-            {
-                this.Disconnected(this, e);
-            }
-        }
-
-
         private void StopListening()
         {
             if (this.msgDispatcher == null)
             {
                 return;
             }
+
             if (this.subscribedMsgReceivedHandler != null)
             {
                 this.msgDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
             }
+
             this.subscribedMsgReceivedHandler = null;
             if (this.subscribedPktProblemHandler != null)
             {
                 this.msgDispatcher.PacketProblem -= this.subscribedPktProblemHandler;
             }
+
             this.subscribedMsgReceivedHandler = null;
             this.msgDispatcher.Disconnected -= this.MsgDispatcherOnDisconnected;
             this.msgDispatcher.UpdateMetrics(this.Metrics);

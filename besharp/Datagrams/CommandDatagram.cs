@@ -1,15 +1,13 @@
 ﻿// ----------------------------------------------------------------------------------------------------
-// <copyright file="CommandDatagram.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
+// <copyright file="CommandDatagram.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
 namespace BESharp.Datagrams
 {
     using System;
     using System.Text;
 
-
     public class CommandDatagram : OutboundDatagramBase
     {
-
         public CommandDatagram(byte sequenceNumber, string commandText)
         {
             this.SequenceNumber = sequenceNumber;
@@ -19,10 +17,12 @@ namespace BESharp.Datagrams
 
         public string CommandText { get; private set; }
 
+
         public override DatagramType Type
         {
             get { return DatagramType.Command; }
         }
+
 
         public override bool ExpectsResponse
         {

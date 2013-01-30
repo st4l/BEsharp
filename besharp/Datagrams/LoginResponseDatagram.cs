@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------------------------
-// <copyright file="LoginResponseDatagram.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
+// <copyright file="LoginResponseDatagram.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
 namespace BESharp.Datagrams
 {
@@ -14,6 +14,7 @@ namespace BESharp.Datagrams
             {
                 throw new ArgumentNullException("buffer");
             }
+
             this.Success = buffer[Constants.LoginReturnCodeIndex] == 1;
         }
 

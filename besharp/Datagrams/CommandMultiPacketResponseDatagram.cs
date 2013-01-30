@@ -1,49 +1,63 @@
-using System;
-using System.Text;
-
+// ----------------------------------------------------------------------------------------------------
+// <copyright file="CommandMultiPacketResponseDatagram.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
+// ----------------------------------------------------------------------------------------------------
 namespace BESharp.Datagrams
 {
+    using System;
+    using System.Text;
+
     public class CommandMultiPacketResponseDatagram : CommandResponseDatagram
     {
-        public CommandMultiPacketResponseDatagram(CommandResponsePartDatagram partDgram) 
+        private byte[][] parts;
+
+        public CommandMultiPacketResponseDatagram(CommandResponsePartDatagram partDatagram)
         {
             this.Complete = false;
             this.IsMultipart = true;
-            this.AddFirstPart(partDgram);
+            this.AddFirstPart(partDatagram);
         }
+
 
         public bool IsMultipart { get; private set; }
+
         public bool Complete { get; set; }
+
         public int TotalParts { get; private set; }
-        protected byte[][] Parts { get; set; }
 
-        private void AddFirstPart(CommandResponsePartDatagram partDgram)
+
+        public void AddPart(CommandResponsePartDatagram partDatagram)
         {
-            this.TotalParts = partDgram.TotalParts;
-            this.Parts = new byte[this.TotalParts][];
-            this.Parts[partDgram.PartNumber] = partDgram.BodyBytes;
-            this.CheckForCompletion();
-        }
+            if (partDatagram == null)
+            {
+                throw new ArgumentNullException("partDatagram");
+            }
+            
 
-
-        public void AddPart(CommandResponsePartDatagram partDgram)
-        {
-            if (partDgram.TotalParts != this.TotalParts)
+            if (partDatagram.TotalParts != this.TotalParts)
             {
                 throw new InvalidOperationException("Total parts varies in multi-part command response packet.");
             }
 
-            this.Parts[partDgram.PartNumber] = partDgram.BodyBytes;
+            this.parts[partDatagram.PartNumber] = partDatagram.GetBytes();
+            this.CheckForCompletion();
+        }
+
+
+        private void AddFirstPart(CommandResponsePartDatagram partDgram)
+        {
+            this.TotalParts = partDgram.TotalParts;
+            this.parts = new byte[this.TotalParts][];
+            this.parts[partDgram.PartNumber] = partDgram.GetBytes();
             this.CheckForCompletion();
         }
 
 
         private void CheckForCompletion()
         {
-            var somePartMissing = false;
+            bool somePartMissing = false;
             for (int i = 0; i < this.TotalParts; i++)
             {
-                if (this.Parts[i] == null)
+                if (this.parts[i] == null)
                 {
                     somePartMissing = true;
                 }
@@ -62,10 +76,11 @@ namespace BESharp.Datagrams
             var sb = new StringBuilder();
             for (int i = 0; i < this.TotalParts; i++)
             {
-                sb.Append(Encoding.UTF8.GetString(this.Parts[i]));
+                sb.Append(Encoding.UTF8.GetString(this.parts[i]));
             }
+
             this.Body = sb.ToString();
-            this.Parts = null;
+            this.parts = null;
         }
     }
 }

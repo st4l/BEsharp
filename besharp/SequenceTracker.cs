@@ -1,26 +1,33 @@
-using System;
-
+// ----------------------------------------------------------------------------------------------------
+// <copyright file="SequenceTracker.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
+// ----------------------------------------------------------------------------------------------------
 namespace BESharp
 {
+    using System;
+
+    
     /// <summary>
-    ///     Uses a byte buffer to store the last n sequence numbers
-    ///     passed to it with <see cref="StartTracking" />, and 
-    ///     provides a facility to check whether a sequenceNumber 
-    ///     was recorded, where n is the <see cref="Capacity" /> 
-    ///     of this tracker.
+    ///   Uses a byte buffer to store the last n sequence numbers
+    ///   passed to it with <see cref="StartTracking" />, and 
+    ///   provides a facility to check whether a sequenceNumber 
+    ///   was recorded, where n is the <see cref="Capacity" /> 
+    ///   of this tracker.
     /// </summary>
     internal class SequenceTracker
     {
         private readonly byte[] buffer;
-        public int Capacity { get; private set; }
+
         private int current = -1;
+
         private int max = -1;
+
 
         public SequenceTracker()
         {
             this.Capacity = 100;
             this.buffer = new byte[100];
         }
+
 
         public SequenceTracker(int capacity)
         {
@@ -29,11 +36,14 @@ namespace BESharp
         }
 
 
+        public int Capacity { get; private set; }
+
+
         /// <summary>
-        ///     Stores a sequence number for tracking. Discards old
-        ///     sequence numbers that no longer fit in the buffer.
+        ///   Stores a sequence number for tracking. Discards old
+        ///   sequence numbers that no longer fit in the buffer.
         /// </summary>
-        /// <param name="sequenceNumber">The sequence number to track.</param>
+        /// <param name="sequenceNumber"> The sequence number to track. </param>
         public void StartTracking(byte sequenceNumber)
         {
             lock (this)
@@ -57,11 +67,11 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Checks whether the specified sequence number has been
-        ///     stored in this <see cref="SequenceTracker"/>.
+        ///   Checks whether the specified sequence number has been
+        ///   stored in this <see cref="SequenceTracker" />.
         /// </summary>
-        /// <param name="sequenceNumber">The sequence number to search for.</param>
-        /// <returns>True if the sequence number was found; false otherwise.</returns>
+        /// <param name="sequenceNumber"> The sequence number to search for. </param>
+        /// <returns> True if the sequence number was found; false otherwise. </returns>
         public bool Contains(byte sequenceNumber)
         {
             // search from current index to 0
@@ -74,7 +84,7 @@ namespace BESharp
             }
 
             // search from the maximum index used to the current index, exclusive
-            for (int i = this.max; i > current; i--)
+            for (int i = this.max; i > this.current; i--)
             {
                 if (Buffer.GetByte(this.buffer, i) == sequenceNumber)
                 {

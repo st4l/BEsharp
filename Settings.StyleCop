@@ -4,6 +4,9 @@
     <CollectionProperty Name="RecognizedWords">
       <Value>Battl</Value>
       <Value>BattlEye</Value>
+      <Value>besharp</Value>
+      <Value>finalizer</Value>
+      <Value>Udp</Value>
       <Value>xaml</Value>
     </CollectionProperty>
   </GlobalSettings>
@@ -168,6 +171,7 @@
         <CollectionProperty Name="Hungarian">
           <Value>be</Value>
           <Value>db</Value>
+          <Value>in</Value>
           <Value>is</Value>
         </CollectionProperty>
       </AnalyzerSettings>

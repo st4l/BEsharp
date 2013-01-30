@@ -1,15 +1,11 @@
 ﻿// ----------------------------------------------------------------------------------------------------
-// <copyright file="MessageDispatcher.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
+// <copyright file="MessageDispatcher.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
-
-
 namespace BESharp
 {
-
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
-    using System.Globalization;
     using System.Linq;
     using System.Net.Sockets;
     using System.Runtime.ExceptionServices;
@@ -18,50 +14,62 @@ namespace BESharp
     using System.Threading.Tasks;
     using Datagrams;
     using log4net;
-    using log4net.Core;
 
-    
     /// <summary>
-    ///     Receives messages from a remote Battleye RCon server
-    ///     using the supplied <see cref="UdpClient" /> and
-    ///     dispatches them accordingly.
+    ///   Receives messages from a remote Battleye RCon server
+    ///   using the supplied <see cref="UdpClient" /> and
+    ///   dispatches them accordingly.
     /// </summary>
     internal sealed partial class MessageDispatcher : IDisposable
     {
         private readonly SequenceTracker cmdsTracker = new SequenceTracker();
+
         private readonly SequenceTracker conMsgsTracker = new SequenceTracker();
+
         private readonly ResponseMessageDispatcher responseDispatcher;
 
         private AsyncOperation asyncOperation;
+
         private int dispatchedConsoleMessages;
+
         private bool disposed;
 
         private bool forceShutdown;
+
         private bool hasStarted;
+
         private int inCount;
+
         private int keepAlivePacketsAcks;
+
         private KeepAliveTracker keepAliveTracker;
 
         private bool mainLoopDead;
+
         private int outCount;
+
         private int parsedDatagramsCount;
+
         private ManualResetEventSlim shutdownLock;
+
         private IUdpClient udpClient;
+
         private int keepAlivePacketsSent;
 
         private int lastCommandSequenceNumber = -1;
+
         private DateTime lastCommandSentTime;
+
         private DateTime lastAcknowledgedCmdSentTime;
+
+        private Task mainLoopTask;
 
 
         /// <summary>
-        ///     Initializes a new instance of <see cref="MessageDispatcher" />
-        ///     and establishes the <see cref="UdpClient" /> to be used.
+        ///   Initializes a new instance of <see cref="MessageDispatcher" />
+        ///   and establishes the <see cref="UdpClient" /> to be used.
         /// </summary>
-        /// <param name="udpClient">
-        ///     The <see cref="UdpClient" /> to be used to connect to the
-        ///     RCon server.
-        /// </param>
+        /// <param name="udpClient"> The <see cref="UdpClient" /> to be used to connect to the RCon server. </param>
         internal MessageDispatcher(IUdpClient udpClient)
         {
             // throw new ArgumentException("Test shall not pass.");
@@ -70,42 +78,14 @@ namespace BESharp
             this.Log = LogManager.GetLogger(this.GetType());
         }
 
-        public ShutdownReason ShutdownReason { get; private set; }
-
-
-        private ILog Log { get; set; }
 
         /// <summary>
-        ///     Gets or sets a <see cref="Boolean" /> value that specifies
-        ///     whether this <see cref="MessageDispatcher" /> discards all
-        ///     console message datagrams received (the <see cref="MessageReceived" />
-        ///     event is never raised).
-        /// </summary>
-        internal bool DiscardConsoleMessages { get; set; }
-
-
-        #region IDisposable Members
-
-        /// <summary>
-        ///     Implement IDisposable.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
-
-
-        /// <summary>
-        ///     Use C# destructor syntax for finalization code. 
+        ///   Use C# destructor syntax for finalization code.
         /// </summary>
         /// <remarks>
-        ///     This destructor will run only if the Dispose method 
-        ///     does not get called. 
-        ///     It gives your base class the opportunity to finalize. 
-        ///     Do not provide destructors in types derived from this class.
+        ///   This destructor will run only if the Dispose method 
+        ///   does not get called. 
+        ///   Do not provide destructors in types derived from this class.
         /// </remarks>
         ~MessageDispatcher()
         {
@@ -114,28 +94,55 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Occurs when a console message is received from the RCon server.
+        ///   Occurs when a console message is received from the RCon server.
         /// </summary>
         internal event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
 
         /// <summary>
-        ///     Occurs when a disconnection is detected.
+        ///   Occurs when a problem is detected in the incoming packets,
+        ///   such as corrupted data.
+        /// </summary>
+        internal event EventHandler<PacketProblemEventArgs> PacketProblem;
+
+
+        /// <summary>
+        ///   Occurs when a disconnection is detected.
         /// </summary>
         internal event EventHandler<DisconnectedEventArgs> Disconnected;
 
 
-        /// <summary>
-        ///     Occurs when a problem is detected in the incoming packets,
-        ///     such as corrupted data.
-        /// </summary>
-        public event EventHandler<PacketProblemEventArgs> PacketProblem;
+        public ShutdownReason ShutdownReason { get; private set; }
 
 
         /// <summary>
-        ///     Starts acquiring and dispatching inbound messages in a new thread.
+        ///   Gets or sets a <see cref="Boolean" /> value that specifies
+        ///   whether this <see cref="MessageDispatcher" /> discards all
+        ///   console message datagrams received (the <see cref="MessageReceived" />
+        ///   event is never raised).
         /// </summary>
-        /// <remarks>Starts the main message pump in a new thread.</remarks>
+        internal bool DiscardConsoleMessages { get; set; }
+
+
+        private ILog Log { get; set; }
+
+
+        /// <summary>
+        ///   Implement IDisposable.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+
+        /// <summary>
+        ///   Starts acquiring and dispatching inbound messages in a new thread.
+        /// </summary>
+        /// <remarks>
+        ///   Starts the main message pump in a new thread.
+        /// </remarks>
         internal void Start()
         {
             if (this.hasStarted)
@@ -147,25 +154,20 @@ namespace BESharp
 
             this.asyncOperation = AsyncOperationManager.CreateOperation(null);
 
-            var task = new Task(this.MainLoop);
-            task.ContinueWith(this.ExceptionHandler, TaskContinuationOptions.OnlyOnFaulted);
-            task.ContinueWith(this.AfterMainLoop, TaskContinuationOptions.OnlyOnRanToCompletion);
-            task.ConfigureAwait(true);
-            task.Start();
-        }
-
-
-        private void AfterMainLoop(Task task)
-        {
-            this.Log.Trace("AFTER MAIN LOOP");
-            this.InternalClose();
+            this.mainLoopTask = new Task(this.MainLoop);
+            this.mainLoopTask.ContinueWith(this.ExceptionHandler, TaskContinuationOptions.OnlyOnFaulted);
+            this.mainLoopTask.ContinueWith(this.AfterMainLoop, TaskContinuationOptions.OnlyOnRanToCompletion);
+            this.mainLoopTask.ConfigureAwait(true);
+            this.mainLoopTask.Start();
         }
 
 
         /// <summary>
-        ///     Stops all processing gracefully and disposes this instance.
+        ///   Stops all processing gracefully and disposes this instance.
         /// </summary>
-        /// <remarks>Exits the main pump thread politely.</remarks>
+        /// <remarks>
+        ///   Exits the main pump thread politely.
+        /// </remarks>
         internal void Close()
         {
             if (this.disposed)
@@ -177,21 +179,16 @@ namespace BESharp
             {
                 this.ShutdownReason = ShutdownReason.UserRequested;
             }
+
             this.InternalClose();
         }
 
 
-        private void RaiseDisconnected(object args)
-        {
-            this.OnDisconnected((DisconnectedEventArgs)args);
-        }
-
-
         /// <summary>
-        ///     Registers a handler to be notified when a response
-        ///     message arrives, and which accepts the response message itself.
+        ///   Registers a handler to be notified when a response
+        ///   message arrives, and which accepts the response message itself.
         /// </summary>
-        /// <param name="dgram"></param>
+        /// <param name="dgram"> </param>
         internal ResponseHandler GetResponseHandler(IOutboundDatagram dgram)
         {
             return this.responseDispatcher.CreateOrGetHandler(dgram);
@@ -199,12 +196,9 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Raises the <see cref="MessageReceived" /> event.
+        ///   Raises the <see cref="MessageReceived" /> event.
         /// </summary>
-        /// <param name="e">
-        ///     An <see cref="MessageReceivedEventArgs" /> that
-        ///     contains the event data.
-        /// </param>
+        /// <param name="e"> An <see cref="MessageReceivedEventArgs" /> that contains the event data. </param>
         internal void OnMessageReceived(MessageReceivedEventArgs e)
         {
             if (this.MessageReceived != null)
@@ -215,12 +209,9 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Raises the <see cref="Disconnected" /> event.
+        ///   Raises the <see cref="Disconnected" /> event.
         /// </summary>
-        /// <param name="e">
-        ///     An <see cref="DisconnectedEventArgs" /> that
-        ///     contains the event data.
-        /// </param>
+        /// <param name="e"> An <see cref="DisconnectedEventArgs" /> that contains the event data. </param>
         internal void OnDisconnected(DisconnectedEventArgs e)
         {
             if (this.Disconnected != null)
@@ -246,9 +237,9 @@ namespace BESharp
             // i.e. it is ok to send & receive at the same time from different threads
             this.Log.Trace("BEFORE await SendDatagramAsync");
             int transferredBytes =
-                await
-                this.udpClient.SendAsync(bytes, bytes.Length)
-                    .ConfigureAwait(continueOnCapturedContext: false);
+                    await
+                    this.udpClient.SendAsync(bytes, bytes.Length)
+                            .ConfigureAwait(continueOnCapturedContext: false);
             dgram.SentTime = DateTime.Now;
             this.outCount++;
             if (dgram.Type == DatagramType.Command)
@@ -259,8 +250,8 @@ namespace BESharp
             this.Log.Trace("AFTER  await SendDatagramAsync");
 
             Debug.Assert(
-                transferredBytes == bytes.Length,
-                "Sent bytes count equal count of bytes meant to be sent.");
+                         transferredBytes == bytes.Length,
+                         "Sent bytes count equal count of bytes meant to be sent.");
 
             if (dgram.Type == DatagramType.Command)
             {
@@ -272,17 +263,17 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Meant to be called after Close(), i.e. once after each session.
+        ///   Meant to be called after Close(), i.e. once after each session.
         /// </summary>
-        /// <param name="rConMetrics">The <see cref="RConMetrics"/> to update.</param>
-        internal void UpdateMetrics(RConMetrics rConMetrics)
+        /// <param name="rconMetrics"> The <see cref="RConMetrics" /> to update. </param>
+        internal void UpdateMetrics(RConMetrics rconMetrics)
         {
-            rConMetrics.InboundPacketCount += this.inCount;
-            rConMetrics.OutboundPacketCount += this.outCount;
-            rConMetrics.ParsedDatagramsCount += this.parsedDatagramsCount;
-            rConMetrics.DispatchedConsoleMessages += this.dispatchedConsoleMessages;
-            rConMetrics.KeepAlivePacketsSent += this.keepAlivePacketsSent;
-            rConMetrics.KeepAlivePacketsAcknowledgedByServer += this.keepAlivePacketsAcks;
+            rconMetrics.InboundPacketCount += this.inCount;
+            rconMetrics.OutboundPacketCount += this.outCount;
+            rconMetrics.ParsedDatagramsCount += this.parsedDatagramsCount;
+            rconMetrics.DispatchedConsoleMessages += this.dispatchedConsoleMessages;
+            rconMetrics.KeepAlivePacketsSent += this.keepAlivePacketsSent;
+            rconMetrics.KeepAlivePacketsAcknowledgedByServer += this.keepAlivePacketsAcks;
         }
 
 
@@ -293,17 +284,58 @@ namespace BESharp
             {
                 next = 0;
             }
+
             return (byte)next;
         }
 
 
+        private static bool PreValidateReceivedDatagram(byte[] buffer)
+        {
+            if (buffer == null || buffer.Length < 7)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+
+        private static bool VerifyCrc(byte[] buffer)
+        {
+            int payloadLength = Buffer.ByteLength(buffer) - 6;
+            var payload = new byte[payloadLength];
+            Buffer.BlockCopy(buffer, 6, payload, 0, payloadLength);
+            byte[] computedChecksum;
+            using (var crc = new Crc32(Crc32.DefaultPolynomialReversed, Crc32.DefaultSeed))
+            {
+                computedChecksum = crc.ComputeHash(payload);
+                Array.Reverse(computedChecksum);
+            }
+
+            var originalChecksum = new byte[4];
+            Buffer.BlockCopy(buffer, 2, originalChecksum, 0, 4);
+
+            return computedChecksum.SequenceEqual(originalChecksum);
+        }
+
+
+        private void AfterMainLoop(Task task)
+        {
+            this.Log.Trace("AFTER MAIN LOOP");
+            this.InternalClose();
+        }
+
+
+        private void RaiseDisconnected(object args)
+        {
+            this.OnDisconnected((DisconnectedEventArgs)args);
+        }
+
+
         /// <summary>
-        ///     Dispose managed and unmanaged resources.
+        ///   Dispose managed and unmanaged resources.
         /// </summary>
-        /// <param name="disposing">
-        ///     True unless we're called from the finalizer,
-        ///     in which case only unmanaged resources can be disposed.
-        /// </param>
+        /// <param name="disposing"> True unless we're called from the finalizer, in which case only unmanaged resources can be disposed. </param>
         private void Dispose(bool disposing)
         {
             // Check to see if Dispose has already been called. 
@@ -320,6 +352,16 @@ namespace BESharp
                     {
                         this.shutdownLock.Dispose();
                     }
+
+                    if (this.responseDispatcher != null)
+                    {
+                        this.responseDispatcher.Dispose();
+                    }
+
+                    if (this.mainLoopTask != null)
+                    {
+                        this.mainLoopTask.Dispose();
+                    }
                 }
 
                 // Note disposing has been done.
@@ -329,7 +371,7 @@ namespace BESharp
 
 
         /// <summary>
-        ///     The main message pump.
+        ///   The main message pump.
         /// </summary>
         [HostProtection(Synchronization = true, ExternalThreading = true)]
         private void MainLoop()
@@ -391,7 +433,7 @@ namespace BESharp
                     task.Wait(500);
                     this.Log.TraceFormat("====== DONE WAITING =======, Status={0}", task.Status);
                 }
-                while (!task.IsCompleted && this.ShutdownReason == ShutdownReason.None );
+                while (!task.IsCompleted && this.ShutdownReason == ShutdownReason.None);
             }
 
             this.mainLoopDead = true;
@@ -450,8 +492,8 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Handles a message asynchronously that was received from
-        ///     the RCon server.
+        ///   Handles a message asynchronously that was received from
+        ///   the RCon server.
         /// </summary>
         [HostProtection(Synchronization = true, ExternalThreading = true)]
         private async Task ReceiveDatagramAsync()
@@ -463,12 +505,12 @@ namespace BESharp
 
             this.Log.Trace("BEFORE await ReceiveAsync");
             UdpReceiveResult result = await task
-                                                // do not incurr in ANOTHER context switch cost
-                                                .ConfigureAwait(false);
+                                                    //// do not incurr in ANOTHER context switch cost
+                                                    .ConfigureAwait(false);
 
             this.Log.Trace("AFTER  await ReceiveAsync");
             byte[] buffer = result.Buffer;
-            if (!this.PreValidateReceivedDatagram(buffer))
+            if (!PreValidateReceivedDatagram(buffer))
             {
                 this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.InvalidLength));
                 this.Log.Trace("INVALID datagram received");
@@ -499,7 +541,7 @@ namespace BESharp
             this.Log.TraceFormat("{0:0}    Type dgram received.", dgramType);
 
 #if DEBUG
-            // shutdown msg from server (not in protocol, used only for testing)
+            // shutdown message from server (not in protocol, used only for testing)
             if (dgramType == (byte)DatagramType.TestServerShutdown
                 && this.ShutdownReason == ShutdownReason.None)
             {
@@ -519,16 +561,6 @@ namespace BESharp
                 return this.PreProcessCommandResponse(buffer);
             }
 
-            return true;
-        }
-
-
-        private bool PreValidateReceivedDatagram(byte[] buffer)
-        {
-            if (buffer == null || buffer.Length < 7)
-            {
-                return false;
-            }
             return true;
         }
 
@@ -554,7 +586,7 @@ namespace BESharp
                 return false;
             }
 
-            // register the sequence number and continue processing the msg
+            // register the sequence number and continue processing the message
             this.conMsgsTracker.StartTracking(conMsgSeq);
             return true;
         }
@@ -567,7 +599,7 @@ namespace BESharp
             if (repeated)
             {
                 // doesn't repeat because multipart?
-                if (Buffer.GetByte(buffer, Constants.CommandResponseMultipartFlag) != 0x00)
+                if (Buffer.GetByte(buffer, Constants.CommandResponseMultipartMarkerIndex) != 0x00)
                 {
                     return false;
                 } // else go ahead and dispatch the part
@@ -576,16 +608,15 @@ namespace BESharp
             {
                 this.cmdsTracker.StartTracking(cmdSeq);
             }
+
             return true;
         }
 
 
         /// <summary>
-        ///     Dispatches the received datagram to the appropriate target.
+        ///   Dispatches the received datagram to the appropriate target.
         /// </summary>
-        /// <param name="buffer">
-        ///     The received bytes.
-        /// </param>
+        /// <param name="buffer"> The received bytes. </param>
         private async Task DispatchReceivedDatagram(byte[] buffer)
         {
             IInboundDatagram dgram = InboundDatagramBase.ParseReceivedBytes(buffer);
@@ -606,12 +637,10 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Sends a datagram back to the server acknowledging receipt of
-        ///     a console message datagram.
+        ///   Sends a datagram back to the server acknowledging receipt of
+        ///   a console message datagram.
         /// </summary>
-        /// <param name="seqNumber">
-        ///     The sequence number of the received <see cref="ConsoleMessageDatagram" />.
-        /// </param>
+        /// <param name="seqNumber"> The sequence number of the received <see cref="ConsoleMessageDatagram" /> . </param>
         private async Task AcknowledgeMessage(byte seqNumber)
         {
             await this.SendDatagramAsync(new AcknowledgeMessageDatagram(seqNumber));
@@ -620,17 +649,14 @@ namespace BESharp
 
 
         /// <summary>
-        ///     Dispatches received console messages to the appropriate
-        ///     threading context (e.g. the UI thread or the ASP.NET context),
-        ///     by using AsyncOperation.
+        ///   Dispatches received console messages to the appropriate
+        ///   threading context (e.g. the UI thread or the ASP.NET context),
+        ///   by using AsyncOperation.
         /// </summary>
-        /// <param name="dgram">
-        ///     The <see cref="ConsoleMessageDatagram" />
-        ///     representing the received console message.
-        /// </param>
+        /// <param name="dgram"> The <see cref="ConsoleMessageDatagram" /> representing the received console message. </param>
         /// <remarks>
-        ///     The context switch is costly, but usually what the
-        ///     library user will expect.
+        ///   The context switch is costly, but usually what the
+        ///   library user will expect.
         /// </remarks>
         private void DispatchConsoleMessage(ConsoleMessageDatagram dgram)
         {
@@ -647,18 +673,19 @@ namespace BESharp
                     this.OnMessageReceived(args);
                 }
             }
+
             this.dispatchedConsoleMessages++;
         }
 
 
         /// <summary>
-        ///     Dispatches packet problem events to the appropriate
-        ///     threading context (e.g. the UI thread or the ASP.NET context),
-        ///     by using AsyncOperation.
+        ///   Dispatches packet problem events to the appropriate
+        ///   threading context (e.g. the UI thread or the ASP.NET context),
+        ///   by using AsyncOperation.
         /// </summary>
         /// <remarks>
-        ///     The context switch is costly, but usually what the
-        ///     library user will expect.
+        ///   The context switch is costly, but usually what the
+        ///   library user will expect.
         /// </remarks>
         private void DispatchPacketProblem(PacketProblemEventArgs args)
         {
@@ -687,29 +714,10 @@ namespace BESharp
 
         private void ExceptionHandler(Task task)
         {
-            var exInfo = ExceptionDispatchInfo.Capture(task.Exception);
+            var excInfo = ExceptionDispatchInfo.Capture(task.Exception);
             this.forceShutdown = true;
             this.ShutdownReason = ShutdownReason.FatalException;
-            exInfo.Throw();
-        }
-
-
-        private static bool VerifyCrc(byte[] buffer)
-        {
-            int payloadLength = Buffer.ByteLength(buffer) - 6;
-            var payload = new byte[payloadLength];
-            Buffer.BlockCopy(buffer, 6, payload, 0, payloadLength);
-            byte[] computedChecksum;
-            using (var crc = new Crc32(Crc32.DefaultPolynomialReversed, Crc32.DefaultSeed))
-            {
-                computedChecksum = crc.ComputeHash(payload);
-                Array.Reverse(computedChecksum);
-            }
-
-            var originalChecksum = new byte[4];
-            Buffer.BlockCopy(buffer, 2, originalChecksum, 0, 4);
-
-            return computedChecksum.SequenceEqual(originalChecksum);
+            excInfo.Throw();
         }
 
 
