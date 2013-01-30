@@ -2,7 +2,7 @@
 // <copyright file="ResponseHandler.cs" company="Me">Copyright (c) 2012 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
 
-using BESharp.Datagrams;
+using log4net;
 
 namespace BESharp
 {
@@ -10,14 +10,14 @@ namespace BESharp
     using System.Security.Permissions;
     using System.Threading;
     using System.Threading.Tasks;
-    using BESharp.Datagrams;
+    using Datagrams;
 
 
     public class ResponseHandler : IDisposable
     {
         private ManualResetEventSlim waitHandle;
 
-        private bool disposed = false;
+        private bool disposed;
 
 
         /// <summary>
@@ -28,10 +28,13 @@ namespace BESharp
         public ResponseHandler(IOutboundDatagram sentDatagram)
         {
             this.SentDatagram = sentDatagram;
+            this.Log = LogManager.GetLogger(this.GetType());
         }
 
 
-        
+        protected ILog Log { get; set; }
+
+
         /// <summary>
         ///     Use C# destructor syntax for finalization code. 
         /// </summary>
@@ -60,6 +63,9 @@ namespace BESharp
         public IInboundDatagram ResponseDatagram { get; internal set; }
 
 
+        public bool Completed { get; set; }
+
+
         /// <summary>
         ///     Blocks the current thread until a response is received
         ///     or the timeout elapses. If a response is received, 
@@ -73,16 +79,27 @@ namespace BESharp
         [HostProtection(Synchronization = true, ExternalThreading = true)]
         public Task<bool> WaitForResponse(int timeout)
         {
-            if (this.ResponseDatagram != null)
+            if (this.Completed)
             {
+                this.Log.TraceFormat("Handler for type {0} didn't need to wait.", this.SentDatagram.Type);
                 return Task.FromResult(true);
             }
 
             this.waitHandle = new ManualResetEventSlim(false);
-            var task = Task.Factory.StartNew(() => this.waitHandle.Wait(timeout));
+            var task = Task.Factory.StartNew(() => this.DoWait(timeout));
             task.ConfigureAwait(false);
             return task;
         }
+
+
+        private bool DoWait(int timeout)
+        {
+            this.Log.TraceFormat("Handler for type {0} starting wait.", this.SentDatagram.Type);
+            bool result = this.waitHandle.Wait(timeout);
+            this.Log.TraceFormat("Handler for type {0} done waiting, result={1}.", this.SentDatagram.Type, result);
+            return result;
+        }
+
 
 
         /// <summary>
@@ -106,9 +123,10 @@ namespace BESharp
         /// </summary>
         /// <param name="result"></param>
         [HostProtection(Synchronization = true, ExternalThreading = true)]
-        internal void Return(IInboundDatagram result)
+        internal void Complete(IInboundDatagram result)
         {
             this.ResponseDatagram = result;
+            this.Completed = true;
             if (this.waitHandle != null)
             {
                 this.waitHandle.Set();
