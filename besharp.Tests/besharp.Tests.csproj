@@ -65,13 +65,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Mocks\MockServer.cs" />
+    <Compile Include="Mocks\MockServerSetup.cs" />
+    <Compile Include="Mocks\MockUdpClient.cs" />
+    <Compile Include="Mocks\RConServerMetrics.cs" />
     <Compile Include="MyDebugAppender.cs" />
-    <Compile Include="MockServer.cs" />
-    <Compile Include="MockServerSetup.cs" />
-    <Compile Include="MockUdpClient.cs" />
     <Compile Include="RConClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RConServerMetrics.cs" />
     <Compile Include="TestDatagram.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +86,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
