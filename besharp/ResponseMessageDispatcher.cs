@@ -8,73 +8,101 @@ using BESharp.Datagrams;
 
 namespace BESharp
 {
-    internal class ResponseMessageDispatcher
+    partial class MessageDispatcher
     {
-        private ResponseHandler loginHandler;
-        private readonly Dictionary<byte, ResponseHandler> cmdResponseHandlers =
-            new Dictionary<byte, ResponseHandler>();
-
-        public void Register(ResponseHandler handler)
+        private class ResponseMessageDispatcher
         {
-            if (handler.SentDatagram.Type == DatagramType.Login)
+            public ResponseMessageDispatcher(MessageDispatcher dispatcher)
             {
-                this.loginHandler = handler;
-                return;
+                this.dispatcher = dispatcher;
             }
 
-            // it's a command.
-            var cmdDgram = (CommandDatagram)handler.SentDatagram;
-            lock (this.cmdResponseHandlers)
-            {
-                this.cmdResponseHandlers.Add(cmdDgram.SequenceNumber, handler);
-            }
-        }
+
+            private readonly MessageDispatcher dispatcher;
+            private ResponseHandler loginHandler;
+
+            private readonly Dictionary<byte, ResponseHandler> cmdResponseHandlers =
+                new Dictionary<byte, ResponseHandler>();
 
 
-        public void Dispatch(IInboundDatagram dgram)
-        {
-            if (dgram.Type == DatagramType.Login
-                && this.loginHandler != null)
+            public ResponseHandler CreateOrGetHandler(IOutboundDatagram dgram)
             {
-                this.loginHandler.Return(dgram);
-                return;
-            }
+                ResponseHandler result = null;
+                if (dgram.Type == DatagramType.Login)
+                {
+                    if (this.loginHandler != null)
+                    {
+                        return this.loginHandler;
+                    }
+                    this.loginHandler = new ResponseHandler(dgram);
+                    return this.loginHandler;
+                }
 
-            // it's a command response.
-            if (dgram is CommandSinglePacketResponseDatagram)
-            {
-                var cmdDgram = (CommandSinglePacketResponseDatagram)dgram;
+                // it's a command.
+                var cmdDgram = (CommandDatagram)dgram;
                 lock (this.cmdResponseHandlers)
                 {
-                    var handler = this.cmdResponseHandlers[cmdDgram.OriginalSequenceNumber];
-                    this.cmdResponseHandlers.Remove(cmdDgram.OriginalSequenceNumber);
-                    handler.Return(cmdDgram);
-                    Debug.WriteLine("handler for command packet {0} invoked", cmdDgram.OriginalSequenceNumber);
+                    if (this.cmdResponseHandlers.ContainsKey(cmdDgram.SequenceNumber))
+                    {
+                        return this.cmdResponseHandlers[cmdDgram.SequenceNumber];
+                    }
+                    var newHandler = new ResponseHandler(dgram);
+                    this.cmdResponseHandlers.Add(cmdDgram.SequenceNumber, newHandler);
+                    return newHandler;
                 }
             }
-            else if (dgram is CommandResponsePartDatagram)
+
+
+            public void Dispatch(IInboundDatagram dgram)
             {
-                var partDgram = (CommandResponsePartDatagram)dgram;
-                CommandMultiPacketResponseDatagram masterCmd = null;
-                var handler = this.cmdResponseHandlers[partDgram.OriginalSequenceNumber];
-                if (handler.ResponseDatagram == null)
+                
+                if (dgram.Type == DatagramType.Login
+                    && this.loginHandler != null)
                 {
-                    masterCmd = new CommandMultiPacketResponseDatagram(partDgram);
-                    handler.ResponseDatagram = masterCmd;
+                    this.dispatcher.UpdateLastAckSentTime(this.loginHandler.SentDatagram.SentTime);
+                    this.loginHandler.Complete(dgram);
+                    return;
                 }
-                else
+
+                // it's a command response.
+                if (dgram is CommandSinglePacketResponseDatagram)
                 {
-                    masterCmd = (CommandMultiPacketResponseDatagram)handler.ResponseDatagram;
-                    masterCmd.AddPart(partDgram);
-                }
-                if (masterCmd.Complete)
-                {
+                    var cmdDgram = (CommandSinglePacketResponseDatagram)dgram;
                     lock (this.cmdResponseHandlers)
                     {
-                        this.cmdResponseHandlers.Remove(masterCmd.OriginalSequenceNumber);
-                        handler.Return(masterCmd);
-                        Debug.WriteLine("handler for multi-part command packet {0} invoked",
-                                        masterCmd.OriginalSequenceNumber);
+                        var handler = this.cmdResponseHandlers[cmdDgram.OriginalSequenceNumber];
+                        this.dispatcher.UpdateLastAckSentTime(handler.SentDatagram.SentTime);
+                        this.cmdResponseHandlers.Remove(cmdDgram.OriginalSequenceNumber);
+                        handler.Complete(cmdDgram);
+                        Debug.WriteLine("handler for command packet {0} invoked", cmdDgram.OriginalSequenceNumber);
+                    }
+                }
+                else if (dgram is CommandResponsePartDatagram)
+                {
+                    var partDgram = (CommandResponsePartDatagram)dgram;
+                    CommandMultiPacketResponseDatagram masterCmd = null;
+                    var handler = this.cmdResponseHandlers[partDgram.OriginalSequenceNumber];
+                    this.dispatcher.UpdateLastAckSentTime(handler.SentDatagram.SentTime);
+                    if (handler.ResponseDatagram == null)
+                    {
+                        masterCmd = new CommandMultiPacketResponseDatagram(partDgram);
+                        handler.ResponseDatagram = masterCmd;
+                    }
+                    else
+                    {
+                        masterCmd = (CommandMultiPacketResponseDatagram)handler.ResponseDatagram;
+                        masterCmd.AddPart(partDgram);
+                    }
+
+                    if (masterCmd.Complete)
+                    {
+                        lock (this.cmdResponseHandlers)
+                        {
+                            this.cmdResponseHandlers.Remove(masterCmd.OriginalSequenceNumber);
+                            handler.Complete(masterCmd);
+                            Debug.WriteLine("handler for multi-part command packet {0} invoked",
+                                            masterCmd.OriginalSequenceNumber);
+                        }
                     }
                 }
             }
