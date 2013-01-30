@@ -327,6 +327,9 @@ namespace BESharp.Tests
             var conf = new MockServerSetup
             {
                 LoadTestConsoleMessages = 50000,
+#if TRACE
+                MaxRunSeconds = 120,
+#endif
                 LoadTestOnly = true
             };
             var client = CreateClient(conf);
@@ -344,6 +347,9 @@ namespace BESharp.Tests
             var conf = new MockServerSetup
             {
                 LoadTestConsoleMessages = 50000,
+#if TRACE
+                MaxRunSeconds = 120,
+#endif
                 LoadTestOnly = true
             };
             var client = CreateClient(conf);
