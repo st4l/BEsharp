@@ -221,8 +221,7 @@ namespace BESharp
         }
 
 
-        [HostProtection(Synchronization = true, ExternalThreading = true)]
-        internal async Task<ResponseHandler> SendDatagramAsync(IOutboundDatagram dgram)
+        internal ResponseHandler SendDatagram(IOutboundDatagram dgram)
         {
             // this.outboundQueue.Enqueue(dgram);
             byte[] bytes = dgram.Build();
@@ -233,21 +232,23 @@ namespace BESharp
                 handler = this.GetResponseHandler(dgram);
             }
 
+            this.Log.Trace("BEFORE SendDatagram");
+
+
             // socket is thread safe
             // i.e. it is ok to send & receive at the same time from different threads
-            this.Log.Trace("BEFORE await SendDatagramAsync");
-            int transferredBytes =
-                    await
-                    this.udpClient.SendAsync(bytes, bytes.Length)
-                            .ConfigureAwait(continueOnCapturedContext: false);
+            // also, there's no UDP ack, so there's no need to send asynchronously
+            int transferredBytes = this.udpClient.Send(bytes, bytes.Length);
+            
+            this.Log.Trace("AFTER  SendDatagram");
+
             dgram.SentTime = DateTime.Now;
             this.outCount++;
+
             if (dgram.Type == DatagramType.Command)
             {
                 this.lastCommandSequenceNumber++;
             }
-
-            this.Log.Trace("AFTER  await SendDatagramAsync");
 
             Debug.Assert(
                          transferredBytes == bytes.Length,
@@ -476,7 +477,6 @@ namespace BESharp
 
                 this.Log.Trace("SHUTDOWN ACHIEVED - DISPOSING");
             }
-
             this.Dispose();
 
             var args = new DisconnectedEventArgs();
@@ -498,13 +498,12 @@ namespace BESharp
         [HostProtection(Synchronization = true, ExternalThreading = true)]
         private async Task ReceiveDatagramAsync()
         {
+            this.Log.Trace("BEFORE await ReceiveAsync");
+
             // ReceiveAsync (BeginRead) will spawn a new thread
             // which blocks head-on against the IO Completion Port
             // http://msdn.microsoft.com/en-us/library/windows/desktop/aa364986(v=vs.85).aspx
-            Task<UdpReceiveResult> task = this.udpClient.ReceiveAsync();
-
-            this.Log.Trace("BEFORE await ReceiveAsync");
-            UdpReceiveResult result = await task
+            UdpReceiveResult result = await this.udpClient.ReceiveAsync()
                                                     //// do not incurr in ANOTHER context switch cost
                                                     .ConfigureAwait(false);
 
@@ -519,7 +518,7 @@ namespace BESharp
 
             this.inCount++;
 
-            bool proceed = await this.PreProcessReceivedDatagram(buffer);
+            bool proceed = this.PreProcessReceivedDatagram(buffer);
             if (!proceed)
             {
                 return;
@@ -531,11 +530,11 @@ namespace BESharp
                 return;
             }
 
-            await this.DispatchReceivedDatagram(buffer);
+            this.DispatchReceivedDatagram(buffer);
         }
 
 
-        private async Task<bool> PreProcessReceivedDatagram(byte[] buffer)
+        private bool PreProcessReceivedDatagram(byte[] buffer)
         {
             byte dgramType = Buffer.GetByte(buffer, Constants.DatagramTypeIndex);
             this.Log.TraceFormat("{0:0}    Type dgram received.", dgramType);
@@ -553,7 +552,7 @@ namespace BESharp
 
             if (dgramType == (byte)DatagramType.Message)
             {
-                return await this.PreProcessConsoleMessage(buffer);
+                return this.PreProcessConsoleMessage(buffer);
             }
 
             if (dgramType == (byte)DatagramType.Command)
@@ -565,14 +564,14 @@ namespace BESharp
         }
 
 
-        private async Task<bool> PreProcessConsoleMessage(byte[] buffer)
+        private bool PreProcessConsoleMessage(byte[] buffer)
         {
             byte conMsgSeq = Buffer.GetByte(buffer, Constants.ConsoleMessageSequenceNumberIndex);
             this.Log.TraceFormat("M#{0:000} Received", conMsgSeq);
 
             if (this.DiscardConsoleMessages)
             {
-                await this.AcknowledgeMessage(conMsgSeq);
+                this.AcknowledgeMessage(conMsgSeq);
                 return false;
             }
 
@@ -582,7 +581,7 @@ namespace BESharp
             {
                 // if we did, just acknowledge it and don't process it
                 // (the server probably didn't receive our previous ack)
-                await this.AcknowledgeMessage(conMsgSeq);
+                this.AcknowledgeMessage(conMsgSeq);
                 return false;
             }
 
@@ -617,14 +616,14 @@ namespace BESharp
         ///   Dispatches the received datagram to the appropriate target.
         /// </summary>
         /// <param name="buffer"> The received bytes. </param>
-        private async Task DispatchReceivedDatagram(byte[] buffer)
+        private void DispatchReceivedDatagram(byte[] buffer)
         {
             IInboundDatagram dgram = InboundDatagramBase.ParseReceivedBytes(buffer);
             this.parsedDatagramsCount++;
             if (dgram.Type == DatagramType.Message)
             {
                 var conMsg = (ConsoleMessageDatagram)dgram;
-                await this.AcknowledgeMessage(conMsg.SequenceNumber);
+                this.AcknowledgeMessage(conMsg.SequenceNumber);
                 this.DispatchConsoleMessage(conMsg);
                 return;
             }
@@ -641,9 +640,9 @@ namespace BESharp
         ///   a console message datagram.
         /// </summary>
         /// <param name="seqNumber"> The sequence number of the received <see cref="ConsoleMessageDatagram" /> . </param>
-        private async Task AcknowledgeMessage(byte seqNumber)
+        private void AcknowledgeMessage(byte seqNumber)
         {
-            await this.SendDatagramAsync(new AcknowledgeMessageDatagram(seqNumber));
+            this.SendDatagram(new AcknowledgeMessageDatagram(seqNumber));
             this.Log.TraceFormat("M#{0:000} Acknowledged", seqNumber);
         }
 

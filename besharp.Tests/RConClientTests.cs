@@ -234,7 +234,7 @@ namespace BESharp.Tests
             var connected = rcc.ConnectAsync().Result;
             Assert.IsTrue(connected, "not connected");
 
-            var handler = await rcc.SendCommandAsync("getplayers");
+            var handler = rcc.SendCommand("getplayers");
             Assert.IsNotNull(handler);
 
             CommandSinglePacketResponseDatagram singlePacketResponse = null;
@@ -259,7 +259,7 @@ namespace BESharp.Tests
             var connected = rcc.ConnectAsync().Result;
             Assert.IsTrue(connected, "not connected");
 
-            var handler = await rcc.SendCommandAsync("getplayersmulti");
+            var handler = rcc.SendCommand("getplayersmulti");
             Assert.IsNotNull(handler);
 
             CommandMultiPacketResponseDatagram multiPacketResponseDatagram = null;
@@ -293,7 +293,7 @@ namespace BESharp.Tests
             var connected = rcc.ConnectAsync().Result;
             Assert.IsTrue(connected, "not connected");
 
-            var handler = await rcc.SendCommandAsync("getplayersmulti");
+            var handler = rcc.SendCommand("getplayersmulti");
             Assert.IsNotNull(handler);
 
             CommandMultiPacketResponseDatagram multiPacketResponseDatagram = null;
@@ -321,7 +321,7 @@ namespace BESharp.Tests
 
         [TestMethod]
         [TestCategory("Performance")]
-        [TestCategory("Long Running")]
+        [TestProperty("Time", "Long Running")]
         public void ShouldAcceptTonsOfPackets()
         {
             var conf = new MockServerSetup
@@ -341,7 +341,7 @@ namespace BESharp.Tests
 
         [TestMethod]
         [TestCategory("Performance")]
-        [TestCategory("Long Running")]
+        [TestProperty("Time", "Long Running")]
         public void ShouldParseTonsOfPackets()
         {
             var conf = new MockServerSetup
@@ -364,7 +364,7 @@ namespace BESharp.Tests
 
         [TestMethod]
         [TestCategory("Correctness")]
-        [TestCategory("Long Running")]
+        [TestProperty("Time", "Long Running")]
         public void ShouldSendKeepAliveUnderHeavyLoad()
         {
             var conf = new MockServerSetup
@@ -393,7 +393,7 @@ namespace BESharp.Tests
 
         [TestMethod]
         [TestCategory("Correctness")]
-        [TestCategory("Long Running")]
+        [TestProperty("Time", "Long Running")]
         public void ShouldDetectDisconnectUnderHeavyLoad()
         {
             var conf = new MockServerSetup
@@ -424,7 +424,7 @@ namespace BESharp.Tests
 
         [TestMethod]
         [Ignore]
-        [TestCategory("Not Yet Implemented")]
+        [TestProperty("Skip", "Not Yet Implemented")]
         [TestCategory("Correctness")]
         public void ShouldLoginOnThirdTry()
         {
@@ -433,8 +433,8 @@ namespace BESharp.Tests
 
 
         [TestMethod]
-        [TestCategory("Not Yet Implemented")]
         [Ignore]
+        [TestProperty("Skip", "Not Yet Implemented")]
         [TestCategory("Correctness")]
         public void ShoulNotifyPacketLoss()
         {
@@ -443,40 +443,40 @@ namespace BESharp.Tests
 
 
         [TestMethod]
-        [TestCategory("Not Yet Implemented")]
         [Ignore]
+        [TestProperty("Skip", "Not Yet Implemented")]
         [TestCategory("Protocol Compliance")]
         public void ShouldDiscardRepeatedCommandResponses()
         {
-            // TODO: should be working, but I need to write this test
+            // TODO: should be working, just need to write this test
             throw new NotImplementedException();
         }
 
 
         [TestMethod]
-        [TestCategory("Not Yet Implemented")]
         [Ignore]
+        [TestProperty("Skip", "Not Yet Implemented")]
         [TestCategory("Protocol Compliance")]
         public void ShouldDiscardRepeatedCommandResponseParts()
         {
-            // TODO: should be working, but I need to write this test
+            // TODO: should be working, just need to write this test
             throw new NotImplementedException();
         }
 
 
 
         [TestMethod]
-        [TestCategory("Not Yet Implemented")]
         [Ignore]
+        [TestProperty("Skip", "Will Not Implement")]
         [TestCategory("Correctness")]
         public async Task ShouldRetrySendingCommand()
         {
             var rcc = new RConClient("ip", 3333, "pass");
             var connected = await rcc.ConnectAsync();
             Assert.IsTrue(connected, "not connected");
-            var handler1 = await rcc.SendCommandAsync(0, "missions");
-            var handler2 = await rcc.SendCommandAsync(0, "missions");
-            var handler3 = await rcc.SendCommandAsync(0, "#shutdown");
+            var handler1 = rcc.SendCommand(0, "missions");
+            var handler2 = rcc.SendCommand(0, "missions");
+            var handler3 = rcc.SendCommand(0, "#shutdown");
             Task.WaitAll(handler1.WaitForResponse(), handler2.WaitForResponse(), handler3.WaitForResponse());
             rcc.Close();
 
@@ -496,8 +496,9 @@ namespace BESharp.Tests
             Assert.IsTrue(body2.Length > 0);
             Assert.IsTrue(body3.Length > 0);
             
-            // WOW. We can't retry sending commands, it executes the three of 
-            // them including #shutdown. Maybe contact BattlEye with a bug report.
+            // WOW. We can't retry sending commands with the same seq num, it executes 
+            // the three of them including #shutdown. 
+            // Maybe contact BattlEye with a bug report.
         }
 
 

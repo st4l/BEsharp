@@ -90,7 +90,7 @@ namespace BESharp
 
                 Debug.WriteLine("keep alive packet {0} sent", this.sentCount + 1);
                 var keepAliveDgram = new CommandDatagram((byte)this.sequenceNumber, string.Empty);
-                this.sentHandlers.Add(this.msgDispatcher.SendDatagramAsync(keepAliveDgram).Result);
+                this.sentHandlers.Add(this.msgDispatcher.SendDatagram(keepAliveDgram));
                 this.lastSendTime = DateTime.Now;
                 this.sentCount++;
                 this.msgDispatcher.keepAlivePacketsSent++;

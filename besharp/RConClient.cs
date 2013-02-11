@@ -283,17 +283,17 @@ namespace BESharp
         }
 
 
-        public async Task<ResponseHandler> SendCommandAsync(string commandText)
+        public ResponseHandler SendCommand(string commandText)
         {
             var dgram = new CommandDatagram(this.msgDispatcher.GetNextCommandSequenceNumber(), commandText);
-            return await this.msgDispatcher.SendDatagramAsync(dgram);
+            return this.msgDispatcher.SendDatagram(dgram);
         }
 
 
-        internal async Task<ResponseHandler> SendCommandAsync(byte sequenceNumber, string commandText)
+        internal ResponseHandler SendCommand(byte sequenceNumber, string commandText)
         {
             var dgram = new CommandDatagram(sequenceNumber, commandText);
-            return await this.msgDispatcher.SendDatagramAsync(dgram);
+            return this.msgDispatcher.SendDatagram(dgram);
         }
 
 
@@ -383,10 +383,10 @@ namespace BESharp
 
         private async Task<bool> Login()
         {
-            this.Log.Trace("BEFORE LOGIN await SendDatagramAsync");
+            this.Log.Trace("BEFORE LOGIN await SendDatagram");
             ResponseHandler responseHandler =
-                    await this.msgDispatcher.SendDatagramAsync(new LoginDatagram(this.password));
-            this.Log.Trace("AFTER  LOGIN await SendDatagramAsync");
+                    this.msgDispatcher.SendDatagram(new LoginDatagram(this.password));
+            this.Log.Trace("AFTER  LOGIN await SendDatagram");
 
             this.Log.Trace("BEFORE LOGIN await WaitForResponse");
             bool received = await responseHandler.WaitForResponse();

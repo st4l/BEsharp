@@ -25,5 +25,7 @@ namespace BESharp
         internal NetUdpClient(string hostname, int port) : base(hostname, port)
         {
         }
+
+
     }
 }

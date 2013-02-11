@@ -12,6 +12,12 @@
 
         #region IUdpClient Members
 
+        public new int Send(byte[] buffer, int length)
+        {
+            return this.Server.ReceivePacket(buffer, length);
+        }
+
+
         /// <summary>
         /// Should spawn a new thread on continuation.
         /// </summary>

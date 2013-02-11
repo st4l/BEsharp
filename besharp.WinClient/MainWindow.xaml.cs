@@ -126,7 +126,7 @@ namespace BESharp.WinClient
             }
             this.WriteLine("> " + this.txtCommand.Text);
 
-            ResponseHandler handler = await this.rcc.SendCommandAsync(this.txtCommand.Text);
+            ResponseHandler handler = this.rcc.SendCommand(this.txtCommand.Text);
             await handler.WaitForResponse();
             if (handler.ResponseDatagram != null)
             {
