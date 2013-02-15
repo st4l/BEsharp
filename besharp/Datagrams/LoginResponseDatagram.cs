@@ -6,9 +6,9 @@ namespace BESharp.Datagrams
     using System;
 
 
-    public class LoginResponseDatagram : InboundDatagramBase
+    internal class LoginResponseDatagram : InboundDatagramBase
     {
-        public LoginResponseDatagram(byte[] buffer)
+        internal LoginResponseDatagram(byte[] buffer)
         {
             if (buffer == null)
             {

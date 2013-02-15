@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------------------------------
 namespace BESharp.Datagrams
 {
-    public enum DatagramType
+    internal enum DatagramType
     {
         /// <summary>
         ///   The message is either a login request from the client or a login response from the server.

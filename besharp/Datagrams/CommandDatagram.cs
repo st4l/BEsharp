@@ -6,9 +6,9 @@ namespace BESharp.Datagrams
     using System;
     using System.Text;
 
-    public class CommandDatagram : OutboundDatagramBase
+    internal class CommandDatagram : OutboundDatagramBase
     {
-        public CommandDatagram(byte sequenceNumber, string commandText)
+        internal CommandDatagram(byte sequenceNumber, string commandText)
         {
             this.SequenceNumber = sequenceNumber;
             this.CommandText = commandText;

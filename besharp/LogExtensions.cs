@@ -9,7 +9,7 @@ namespace BESharp
     using System.Globalization;
     using log4net.Core;
 
-    public static class LogExtensions
+    internal static class LogExtensions
     {
         [Conditional("TRACE")]
         public static void Trace(this ILoggerWrapper logger, string message)

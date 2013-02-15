@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------------------------------
 namespace BESharp.Datagrams
 {
-    public abstract class DatagramBase : IDatagram
+    internal abstract class DatagramBase : IDatagram
     {
         public abstract DatagramType Type { get; }
     }

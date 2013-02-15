@@ -6,7 +6,7 @@ namespace BESharp.Datagrams
     using System;
     using System.Text;
 
-    public class ConsoleMessageDatagram : InboundDatagramBase
+    internal class ConsoleMessageDatagram : InboundDatagramBase
     {
         public ConsoleMessageDatagram(byte[] buffer)
         {

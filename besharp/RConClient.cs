@@ -283,18 +283,6 @@ namespace BESharp
         }
 
 
-        public ResponseHandler SendCommand(string commandText)
-        {
-            var dgram = new CommandDatagram(this.msgDispatcher.GetNextCommandSequenceNumber(), commandText);
-            return this.msgDispatcher.SendDatagram(dgram);
-        }
-
-
-        internal ResponseHandler SendCommand(byte sequenceNumber, string commandText)
-        {
-            var dgram = new CommandDatagram(sequenceNumber, commandText);
-            return this.msgDispatcher.SendDatagram(dgram);
-        }
 
 
         /// <summary>
@@ -319,7 +307,7 @@ namespace BESharp
         }
 
 
-        public void OnDisconnected(DisconnectedEventArgs e)
+        private void OnDisconnected(DisconnectedEventArgs e)
         {
             if (this.Disconnected != null)
             {
@@ -407,6 +395,48 @@ namespace BESharp
 
             this.Log.Trace("       LOGIN SUCCESS");
             return result.Success;
+        }
+
+
+        public async Task<CommandResult> SendCommandAsync(string commandText)
+        {
+            return await this.SendCommandAsync(commandText, 1000 * 3);
+        }
+
+
+        public async Task<CommandResult> SendCommandAsync(string commandText, int timeout)
+        {
+            this.Log.Trace("       COMMAND SendDatagram");
+            ResponseHandler responseHandler = this.SendCommand(commandText);
+
+            this.Log.Trace("BEFORE COMMAND await WaitForResponse");
+            bool received = await responseHandler.WaitForResponse(timeout);
+            this.Log.Trace("AFTER  COMMAND await WaitForResponse");
+            if (!received)
+            {
+                this.Log.Trace("       COMMAND TIMEOUT");
+                return new CommandResult(false, string.Empty);
+            }
+
+            var result = (CommandResponseDatagram)responseHandler.ResponseDatagram;
+
+            this.Log.Trace("       COMMAND SUCCESS");
+            return new CommandResult(true, result.Body);
+        }
+
+
+
+        internal ResponseHandler SendCommand(string commandText)
+        {
+            var dgram = new CommandDatagram(this.msgDispatcher.GetNextCommandSequenceNumber(), commandText);
+            return this.msgDispatcher.SendDatagram(dgram);
+        }
+
+
+        internal ResponseHandler SendCommand(byte sequenceNumber, string commandText)
+        {
+            var dgram = new CommandDatagram(sequenceNumber, commandText);
+            return this.msgDispatcher.SendDatagram(dgram);
         }
 
 

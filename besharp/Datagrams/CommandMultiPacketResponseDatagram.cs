@@ -6,11 +6,11 @@ namespace BESharp.Datagrams
     using System;
     using System.Text;
 
-    public class CommandMultiPacketResponseDatagram : CommandResponseDatagram
+    internal class CommandMultiPacketResponseDatagram : CommandResponseDatagram
     {
         private byte[][] parts;
 
-        public CommandMultiPacketResponseDatagram(CommandResponsePartDatagram partDatagram)
+        internal CommandMultiPacketResponseDatagram(CommandResponsePartDatagram partDatagram)
         {
             this.Complete = false;
             this.IsMultipart = true;

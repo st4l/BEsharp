@@ -50,6 +50,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandResult.cs" />
     <Compile Include="Datagrams\CommandResponsePartDatagram.cs" />
     <Compile Include="Datagrams\CommandDatagram.cs" />
     <Compile Include="Datagrams\AcknowledgeMessageDatagram.cs" />

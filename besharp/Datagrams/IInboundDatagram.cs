@@ -6,7 +6,7 @@ namespace BESharp.Datagrams
     using System;
 
 
-    public interface IInboundDatagram : IDatagram
+    internal interface IInboundDatagram : IDatagram
     {
         DateTime Timestamp { get; }
     }

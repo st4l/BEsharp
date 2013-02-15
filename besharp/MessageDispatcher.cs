@@ -361,6 +361,7 @@ namespace BESharp
 
                     if (this.mainLoopTask != null)
                     {
+                        this.mainLoopTask.Wait();
                         this.mainLoopTask.Dispose();
                     }
                 }

@@ -5,7 +5,7 @@ namespace BESharp.Datagrams
 {
     using System;
 
-    public abstract class InboundDatagramBase : DatagramBase, IInboundDatagram
+    internal abstract class InboundDatagramBase : DatagramBase, IInboundDatagram
     {
         /// <summary>
         ///   The inbound datagram base.

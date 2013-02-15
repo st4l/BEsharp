@@ -7,7 +7,6 @@ namespace BESharp.WinClient
     using System;
     using System.Security.Authentication;
     using System.Windows;
-    using Datagrams;
 
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
@@ -126,15 +125,10 @@ namespace BESharp.WinClient
             }
             this.WriteLine("> " + this.txtCommand.Text);
 
-            ResponseHandler handler = this.rcc.SendCommand(this.txtCommand.Text);
-            await handler.WaitForResponse();
-            if (handler.ResponseDatagram != null)
+            var result = await this.rcc.SendCommandAsync(this.txtCommand.Text);
+            if (result.Succeeded)
             {
-                var response = handler.ResponseDatagram as CommandResponseDatagram;
-                if (response != null)
-                {
-                    this.WriteLine(response.Body);
-                }
+                this.WriteLine(result.Response);
             }
         }
     }

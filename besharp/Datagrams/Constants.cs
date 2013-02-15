@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------------------------------
 namespace BESharp.Datagrams
 {
-    public static class Constants
+    internal static class Constants
     {
         public const int DatagramTypeIndex = 7;
 

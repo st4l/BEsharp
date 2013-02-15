@@ -5,12 +5,13 @@ namespace BESharp.Datagrams
 {
     using System;
 
-    public class CommandResponsePartDatagram : CommandResponseDatagram
+    internal class CommandResponsePartDatagram : CommandResponseDatagram
     {
         private readonly byte[] bodyBytes;
 
 
-        public CommandResponsePartDatagram(byte[] buffer) : base(buffer)
+        internal CommandResponsePartDatagram(byte[] buffer)
+            : base(buffer)
         {
             this.PartNumber = Buffer.GetByte(buffer, Constants.CommandResponseMultipartPartNumberIndex);
             this.TotalParts = Buffer.GetByte(buffer, Constants.CommandResponseMultipartTotalPartsIndex);

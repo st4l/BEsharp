@@ -6,7 +6,7 @@ namespace BESharp.Datagrams
     using System;
 
 
-    public abstract class OutboundDatagramBase : DatagramBase, IOutboundDatagram
+    internal abstract class OutboundDatagramBase : DatagramBase, IOutboundDatagram
     {
         /// <summary>
         ///   The date and time this message was sent. Set automatically by 

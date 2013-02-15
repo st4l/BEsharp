@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------------------------------
 namespace BESharp.Datagrams
 {
-    public interface IDatagram
+    internal interface IDatagram
     {
         DatagramType Type { get; }
     }

@@ -6,14 +6,14 @@ namespace BESharp.Datagrams
     using System;
 
     
-    public class CommandResponseDatagram : InboundDatagramBase
+    internal class CommandResponseDatagram : InboundDatagramBase
     {
-        public CommandResponseDatagram()
+        internal CommandResponseDatagram()
         {
         }
 
 
-        public CommandResponseDatagram(byte[] buffer)
+        internal CommandResponseDatagram(byte[] buffer)
         {
             if (buffer == null)
             {

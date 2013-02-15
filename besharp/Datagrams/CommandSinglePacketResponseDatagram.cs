@@ -6,7 +6,7 @@ namespace BESharp.Datagrams
     using System;
     using System.Text;
 
-    public class CommandSinglePacketResponseDatagram : CommandResponseDatagram
+    internal class CommandSinglePacketResponseDatagram : CommandResponseDatagram
     {
         internal CommandSinglePacketResponseDatagram(byte[] buffer) : base(buffer)
         {

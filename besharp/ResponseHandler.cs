@@ -11,7 +11,7 @@ namespace BESharp
     using log4net;
 
 
-    public class ResponseHandler : IDisposable
+    internal class ResponseHandler : IDisposable
     {
         private ManualResetEventSlim waitHandle;
 
@@ -23,7 +23,7 @@ namespace BESharp
         ///   the specified sent datagram and timeout in milliseconds.
         /// </summary>
         /// <param name="sentDatagram"> The sent datagram of which a response is awaited. </param>
-        public ResponseHandler(IOutboundDatagram sentDatagram)
+        internal ResponseHandler(IOutboundDatagram sentDatagram)
         {
             this.SentDatagram = sentDatagram;
             this.Log = LogManager.GetLogger(this.GetType());
@@ -82,7 +82,7 @@ namespace BESharp
 
             this.waitHandle = new ManualResetEventSlim(false);
             Task<bool> task = Task.Factory.StartNew(() => this.DoWait(timeout));
-            task.ConfigureAwait(false);
+            //task.ConfigureAwait(false);
             return task;
         }
 

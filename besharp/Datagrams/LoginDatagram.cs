@@ -1,21 +1,21 @@
 ﻿// ----------------------------------------------------------------------------------------------------
 // <copyright file="LoginDatagram.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
+using System.Diagnostics;
 namespace BESharp.Datagrams
 {
     using System;
-    using System.Diagnostics.Contracts;
     using System.Text;
 
 
-    public class LoginDatagram : OutboundDatagramBase
+    internal class LoginDatagram : OutboundDatagramBase
     {
         private readonly string password;
 
 
         public LoginDatagram(string password)
         {
-            Contract.Assert(password != null, "password != null");
+            Debug.Assert(password != null, "password != null");
             this.password = password;
         }
 

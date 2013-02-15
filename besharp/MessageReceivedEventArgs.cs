@@ -9,7 +9,7 @@ namespace BESharp
 
     public class MessageReceivedEventArgs : EventArgs
     {
-        public MessageReceivedEventArgs(ConsoleMessageDatagram datagram)
+        internal MessageReceivedEventArgs(ConsoleMessageDatagram datagram)
         {
             if (datagram == null)
             {
