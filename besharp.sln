@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "besharp.Tests", "besharp.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "besharp.WinClient", "besharp.WinClient\besharp.WinClient.csproj", "{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmARestarter", "ArmARestarter\ArmARestarter.csproj", "{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,21 @@ Global
 		{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C}.Trace|Mixed Platforms.ActiveCfg = Trace|Any CPU
 		{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C}.Trace|Mixed Platforms.Build.0 = Trace|Any CPU
 		{E39F91F7-608D-48F8-B27C-3E4ACB85FA6C}.Trace|x86.ActiveCfg = Trace|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Release|x86.ActiveCfg = Release|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Trace|Any CPU.ActiveCfg = Release|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Trace|Any CPU.Build.0 = Release|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Trace|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Trace|Mixed Platforms.Build.0 = Release|Any CPU
+		{E40B0073-4BB5-4BF1-8048-5DD40AC2EE75}.Trace|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
