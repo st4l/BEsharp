@@ -70,6 +70,7 @@
     <Compile Include="Datagrams\LoginDatagram.cs" />
     <Compile Include="Datagrams\LoginResponseDatagram.cs" />
     <Compile Include="DisconnectedEventArgs.cs" />
+    <Compile Include="InboundProcessor.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="IUdpClient.cs" />
     <Compile Include="KeepAliveTracker.cs" />
@@ -83,7 +84,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RConMetrics.cs" />
     <Compile Include="ResponseHandler.cs" />
-    <Compile Include="ResponseMessageDispatcher.cs" />
+    <Compile Include="ResponseDispatcher.cs" />
     <Compile Include="SequenceTracker.cs" />
     <Compile Include="ShutdownReason.cs" />
   </ItemGroup>

@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="BESharp.RConClient">
-    <Position X="1.25" Y="1.25" Width="3.25" />
+    <Position X="1.25" Y="1.25" Width="3" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AQIAAEIASCAwAQAAEAAAAAGIAAgAJAAAGIwQEgCAAYQ=</HashCode>
       <FileName>RConClient.cs</FileName>
@@ -9,27 +12,35 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="BESharp.MessageDispatcher">
-    <Position X="5.5" Y="1.25" Width="3" />
+    <Position X="5" Y="1.25" Width="2.75" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
-      <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
-    <NestedTypes>
-      <Class Name="BESharp.MessageDispatcher.KeepAliveTracker" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>KeepAliveTracker.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-      <Class Name="BESharp.MessageDispatcher.ResponseMessageDispatcher" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>ResponseMessageDispatcher.cs</NewMemberFileName>
-        </TypeIdentifier>
-        <Lollipop Position="0.2" />
-      </Class>
-    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>pWIiIANDwDVQQAACAhEAgBCFBIkACghICAAAAgiAAkA=</HashCode>
+      <HashCode>pUIiIAMDQDVQAAAAAAEAgACABIgADggICAAAAgCAAkA=</HashCode>
+      <FileName>MessageDispatcher.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BESharp.KeepAliveTracker">
+    <Position X="11.25" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAYAgCAAAAEAAgABAAAgAAEABAAQEAgAAAAE=</HashCode>
       <FileName>KeepAliveTracker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BESharp.InboundDatagramProcessor">
+    <Position X="8.25" Y="1.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAADAAAAACAIAABAAAIAFAAkAAAAAAABAAAgAAAA=</HashCode>
+      <FileName>InboundDatagramProcessor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BESharp.ResponseDispatcher">
+    <Position X="8.25" Y="6" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAICgAAAAAAAAAAIABAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ResponseDispatcher.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

@@ -457,7 +457,10 @@ namespace BESharp
 
         private void MsgDispatcherOnDisconnected(object sender, DisconnectedEventArgs e)
         {
-            this.StopListening();
+            if (e.ShutdownReason != ShutdownReason.UserRequested)
+            {
+                this.StopListening();
+            }
 #if DEBUG
             this.runningLock.Set();
 #endif
@@ -465,12 +468,15 @@ namespace BESharp
         }
 
 
+        private bool closingSession = false;
+
         private void StopListening()
         {
-            if (this.msgDispatcher == null)
+            if (this.closingSession || this.msgDispatcher == null)
             {
                 return;
             }
+            this.closingSession = true;
 
             if (this.subscribedMsgReceivedHandler != null)
             {
@@ -487,8 +493,10 @@ namespace BESharp
             this.msgDispatcher.Disconnected -= this.MsgDispatcherOnDisconnected;
             this.msgDispatcher.UpdateMetrics(this.Metrics);
             this.msgDispatcher.Close(); // disposes
+
             this.ShutdownReason = this.msgDispatcher.ShutdownReason;
             this.msgDispatcher = null;
+            this.closingSession = false;
         }
     }
 }

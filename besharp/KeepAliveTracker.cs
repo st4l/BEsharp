@@ -1,6 +1,7 @@
 // ----------------------------------------------------------------------------------------------------
 // <copyright file="KeepAliveTracker.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
+using log4net;
 namespace BESharp
 {
     using System;
@@ -11,91 +12,108 @@ namespace BESharp
     using Datagrams;
 
 
-    internal sealed partial class MessageDispatcher
+    internal class KeepAliveTracker
     {
-        private class KeepAliveTracker
+        private readonly MessageDispatcher msgDispatcher;
+
+        private readonly RConMetrics metrics;
+
+        private readonly TimeSpan period = TimeSpan.FromSeconds(1);
+
+        private readonly List<ResponseHandler> sentHandlers = new List<ResponseHandler>();
+
+        private DateTime lastSendTime = DateTime.MinValue;
+
+        private int sentCount;
+
+        private SpinWait spinWait = new SpinWait();
+
+        private int sequenceNumber = -1;
+
+
+        public KeepAliveTracker(MessageDispatcher msgDispatcher, RConMetrics metrics, ILog log)
         {
-            private readonly MessageDispatcher msgDispatcher;
-
-            private readonly TimeSpan period = TimeSpan.FromSeconds(1);
-
-            private readonly List<ResponseHandler> sentHandlers = new List<ResponseHandler>();
-
-            private DateTime lastSendTime = DateTime.MinValue;
-
-            private int sentCount;
-
-            private SpinWait spinWait = new SpinWait();
-
-            private int sequenceNumber = -1;
-
-
-            public KeepAliveTracker(MessageDispatcher msgDispatcher)
+            if (msgDispatcher == null)
             {
-                this.MaxTries = 5;
-                this.msgDispatcher = msgDispatcher;
+                throw new ArgumentNullException("msgDispatcher");
+            }
+            if (metrics == null)
+            {
+                throw new ArgumentNullException("metrics");
+            }
+            if (log == null)
+            {
+                throw new ArgumentNullException("log");
             }
 
 
-            public bool Expired { get; private set; }
+            this.Log = log;
+            this.MaxTries = 5;
+            this.msgDispatcher = msgDispatcher;
+            this.metrics = metrics;
+        }
 
-            private bool Acknowledged { get; set; }
 
-            private int MaxTries { get; set; }
+        public bool Expired { get; private set; }
+
+        private ILog Log { get; set; }
+
+        private bool Acknowledged { get; set; }
+
+        private int MaxTries { get; set; }
 
 
-            public bool Ping()
+        public bool Ping()
+        {
+            if (this.Acknowledged)
             {
-                if (this.Acknowledged)
-                {
-                    return true;
-                }
-
-                this.spinWait.SpinOnce();
-
-                // check if we received an ack for any of the sent ones
-                int acks = this.sentHandlers.Count(handler => handler.ResponseDatagram != null);
-                //// Debug.WriteLine("{1:mm:ss:fffff} acks = {0}", acks, DateTime.Now);
-                if (acks > 0)
-                {
-                    this.msgDispatcher.keepAlivePacketsAcks += acks;
-                    this.Acknowledged = true;
-                    return true;
-                }
-
-                // if we haven't sent one
-                // or last one sent more than (period) ago
-                if (DateTime.Now - this.lastSendTime > this.period)
-                {
-                    if (this.sentCount == this.MaxTries)
-                    {
-                        // we already sent (maxTries) and we're past waiting for the last sent one
-                        this.Expired = true;
-                        return false;
-                    }
-
-                    this.SendKeepAlivePacket();
-                }
-
-                return false;
+                return true;
             }
 
+            this.spinWait.SpinOnce();
 
-            private void SendKeepAlivePacket()
+            // check if we received an ack for any of the sent ones
+            int acks = this.sentHandlers.Count(handler => handler.ResponseDatagram != null);
+            //// Debug.WriteLine("{1:mm:ss:fffff} acks = {0}", acks, DateTime.Now);
+            if (acks > 0)
             {
-                if (this.sequenceNumber == -1)
+                this.metrics.KeepAlivePacketsAcknowledgedByServer += acks;
+                this.Acknowledged = true;
+                return true;
+            }
+
+            // if we haven't sent one
+            // or last one sent more than (period) ago
+            if (DateTime.Now - this.lastSendTime > this.period)
+            {
+                if (this.sentCount == this.MaxTries)
                 {
-                    this.sequenceNumber = this.msgDispatcher.GetNextCommandSequenceNumber();
+                    // we already sent (maxTries) and we're past waiting for the last sent one
+                    this.Expired = true;
+                    return false;
                 }
 
-                Debug.WriteLine("keep alive packet {0} sent", this.sentCount + 1);
-                var keepAliveDgram = new CommandDatagram((byte)this.sequenceNumber, string.Empty);
-                this.sentHandlers.Add(this.msgDispatcher.SendDatagram(keepAliveDgram));
-                this.lastSendTime = DateTime.Now;
-                this.sentCount++;
-                this.msgDispatcher.keepAlivePacketsSent++;
-                this.msgDispatcher.Log.TraceFormat("C#{0:000} Sent keep alive command.", keepAliveDgram.SequenceNumber);
+                this.SendKeepAlivePacket();
             }
+
+            return false;
+        }
+
+
+        private void SendKeepAlivePacket()
+        {
+            if (this.sequenceNumber == -1)
+            {
+                this.sequenceNumber = this.msgDispatcher.GetNextCommandSequenceNumber();
+            }
+
+            Debug.WriteLine("keep alive packet {0} sent", this.sentCount + 1);
+            var keepAliveDgram = new CommandDatagram((byte)this.sequenceNumber, string.Empty);
+            this.sentHandlers.Add(this.msgDispatcher.SendDatagram(keepAliveDgram));
+            this.lastSendTime = DateTime.Now;
+            this.sentCount++;
+            this.metrics.KeepAlivePacketsSent++;
+            this.Log.TraceFormat("C#{0:000} Sent keep alive command.", keepAliveDgram.SequenceNumber);
         }
     }
 }

@@ -6,7 +6,6 @@ namespace BESharp
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
-    using System.Linq;
     using System.Net.Sockets;
     using System.Runtime.ExceptionServices;
     using System.Security.Permissions;
@@ -20,41 +19,27 @@ namespace BESharp
     ///   using the supplied <see cref="UdpClient" /> and
     ///   dispatches them accordingly.
     /// </summary>
-    internal sealed partial class MessageDispatcher : IDisposable
+    internal sealed class MessageDispatcher : IDisposable
     {
-        private readonly SequenceTracker cmdsTracker = new SequenceTracker();
-
-        private readonly SequenceTracker conMsgsTracker = new SequenceTracker();
-
-        private readonly ResponseMessageDispatcher responseDispatcher;
-
-        private AsyncOperation asyncOperation;
-
-        private int dispatchedConsoleMessages;
-
-        private bool disposed;
-
-        private bool forceShutdown;
-
-        private bool hasStarted;
-
-        private int inCount;
-
-        private int keepAlivePacketsAcks;
-
-        private KeepAliveTracker keepAliveTracker;
-
-        private bool mainLoopDead;
-
-        private int outCount;
-
-        private int parsedDatagramsCount;
-
-        private ManualResetEventSlim shutdownLock;
+        private readonly ResponseDispatcher responseDispatcher;
 
         private IUdpClient udpClient;
 
-        private int keepAlivePacketsSent;
+        private KeepAliveTracker keepAliveTracker;
+
+        private AsyncOperation asyncOperation;
+
+        private Task mainLoopTask;
+
+        private bool hasStarted;
+
+        private bool forceShutdown;
+
+        private ManualResetEventSlim shutdownLock;
+
+        private bool mainLoopDead;
+
+        private bool disposed;
 
         private int lastCommandSequenceNumber = -1;
 
@@ -62,7 +47,8 @@ namespace BESharp
 
         private DateTime lastAcknowledgedPacketSentTime;
 
-        private Task mainLoopTask;
+        private RConMetrics Metrics { get; set; }
+
 
 
         /// <summary>
@@ -74,8 +60,10 @@ namespace BESharp
         {
             // throw new ArgumentException("Test shall not pass.");
             this.udpClient = udpClient;
-            this.responseDispatcher = new ResponseMessageDispatcher(this);
+            this.responseDispatcher = new ResponseDispatcher(this);
             this.Log = LogManager.GetLogger(this.GetType());
+            this.Metrics = new RConMetrics();
+            InboundProcessor.StartNewSession();
         }
 
 
@@ -243,7 +231,7 @@ namespace BESharp
             this.Log.Trace("AFTER  SendDatagram");
 
             dgram.SentTime = DateTime.Now;
-            this.outCount++;
+            this.Metrics.OutboundPacketCount++;
 
             if (dgram.Type == DatagramType.Command)
             {
@@ -269,12 +257,12 @@ namespace BESharp
         /// <param name="rconMetrics"> The <see cref="RConMetrics" /> to update. </param>
         internal void UpdateMetrics(RConMetrics rconMetrics)
         {
-            rconMetrics.InboundPacketCount += this.inCount;
-            rconMetrics.OutboundPacketCount += this.outCount;
-            rconMetrics.ParsedDatagramsCount += this.parsedDatagramsCount;
-            rconMetrics.DispatchedConsoleMessages += this.dispatchedConsoleMessages;
-            rconMetrics.KeepAlivePacketsSent += this.keepAlivePacketsSent;
-            rconMetrics.KeepAlivePacketsAcknowledgedByServer += this.keepAlivePacketsAcks;
+            rconMetrics.InboundPacketCount += this.Metrics.InboundPacketCount;
+            rconMetrics.OutboundPacketCount += this.Metrics.OutboundPacketCount;
+            rconMetrics.ParsedDatagramsCount += this.Metrics.ParsedDatagramsCount;
+            rconMetrics.DispatchedConsoleMessages += this.Metrics.DispatchedConsoleMessages;
+            rconMetrics.KeepAlivePacketsSent += this.Metrics.KeepAlivePacketsSent;
+            rconMetrics.KeepAlivePacketsAcknowledgedByServer += this.Metrics.KeepAlivePacketsAcknowledgedByServer;
         }
 
 
@@ -289,36 +277,7 @@ namespace BESharp
             return (byte)next;
         }
 
-
-        private static bool PreValidateReceivedDatagram(byte[] buffer)
-        {
-            if (buffer == null || buffer.Length < 7)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-
-        private static bool VerifyCrc(byte[] buffer)
-        {
-            int payloadLength = Buffer.ByteLength(buffer) - 6;
-            var payload = new byte[payloadLength];
-            Buffer.BlockCopy(buffer, 6, payload, 0, payloadLength);
-            byte[] computedChecksum;
-            using (var crc = new Crc32(Crc32.DefaultPolynomialReversed, Crc32.DefaultSeed))
-            {
-                computedChecksum = crc.ComputeHash(payload);
-                Array.Reverse(computedChecksum);
-            }
-
-            var originalChecksum = new byte[4];
-            Buffer.BlockCopy(buffer, 2, originalChecksum, 0, 4);
-
-            return computedChecksum.SequenceEqual(originalChecksum);
-        }
-
+        
 
         private void AfterMainLoop(Task task)
         {
@@ -412,7 +371,7 @@ namespace BESharp
                         // spawn a keep alive tracker until server acknowledges
                         if (this.keepAliveTracker == null)
                         {
-                            this.keepAliveTracker = new KeepAliveTracker(this);
+                            this.keepAliveTracker = new KeepAliveTracker(this, this.Metrics, this.Log);
                         }
                     }
 
@@ -480,7 +439,7 @@ namespace BESharp
             }
             this.Dispose();
 
-            var args = new DisconnectedEventArgs();
+            var args = new DisconnectedEventArgs(this.ShutdownReason);
             if (this.asyncOperation != null)
             {
                 this.asyncOperation.Post(this.RaiseDisconnected, args);
@@ -509,122 +468,53 @@ namespace BESharp
                                                     .ConfigureAwait(false);
 
             this.Log.Trace("AFTER  await ReceiveAsync");
-            byte[] buffer = result.Buffer;
-            if (!PreValidateReceivedDatagram(buffer))
+            var processor = new InboundProcessor(this, result.Buffer, this.Log);
+            if (!processor.PreValidate())
             {
                 this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.InvalidLength));
                 this.Log.Trace("INVALID datagram received");
                 return;
             }
+            this.Metrics.InboundPacketCount++;
 
-            this.inCount++;
+#if DEBUG
+            if (processor.CheckIsShutDownPacket() && this.ShutdownReason == ShutdownReason.None)
+            {
+                this.Log.Trace("SHUTDOWN DATAGRAM RECEIVED - SHUTTING DOWN.");
+                this.ShutdownReason = ShutdownReason.ServerRequested;
+                return;
+            }
+#endif
 
-            bool proceed = this.PreProcessReceivedDatagram(buffer);
-            if (!proceed)
+            bool preProcessed = processor.PreProcess();
+            if (preProcessed)
             {
                 return;
             }
 
-            if (!VerifyCrc(buffer))
+            if (!processor.VerifyCrc())
             {
                 this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.Corrupted));
                 return;
             }
 
-            this.DispatchReceivedDatagram(buffer);
+            var concreteDgram = processor.Parse();
+            this.Metrics.ParsedDatagramsCount++;
+
+            this.DispatchReceivedDatagram(concreteDgram);
         }
 
-
-        private bool PreProcessReceivedDatagram(byte[] buffer)
-        {
-            byte dgramType = Buffer.GetByte(buffer, Constants.DatagramTypeIndex);
-            this.Log.TraceFormat("{0:0}    Type dgram received.", dgramType);
-
-#if DEBUG
-            // shutdown message from server (not in protocol, used only for testing)
-            if (dgramType == (byte)DatagramType.TestServerShutdown
-                && this.ShutdownReason == ShutdownReason.None)
-            {
-                this.Log.Trace("SHUTDOWN DATAGRAM RECEIVED - SHUTTING DOWN.");
-                this.ShutdownReason = ShutdownReason.ServerRequested;
-                return false;
-            }
-#endif
-
-            if (dgramType == (byte)DatagramType.Message)
-            {
-                return this.PreProcessConsoleMessage(buffer);
-            }
-
-            if (dgramType == (byte)DatagramType.Command)
-            {
-                return this.PreProcessCommandResponse(buffer);
-            }
-
-            return true;
-        }
-
-
-        private bool PreProcessConsoleMessage(byte[] buffer)
-        {
-            byte conMsgSeq = Buffer.GetByte(buffer, Constants.ConsoleMessageSequenceNumberIndex);
-            this.Log.TraceFormat("M#{0:000} Received", conMsgSeq);
-
-            if (this.DiscardConsoleMessages)
-            {
-                this.AcknowledgeMessage(conMsgSeq);
-                return false;
-            }
-
-            // if we already received a console message with this seq number
-            bool repeated = this.conMsgsTracker.Contains(conMsgSeq);
-            if (repeated)
-            {
-                // if we did, just acknowledge it and don't process it
-                // (the server probably didn't receive our previous ack)
-                this.AcknowledgeMessage(conMsgSeq);
-                return false;
-            }
-
-            // register the sequence number and continue processing the message
-            this.conMsgsTracker.StartTracking(conMsgSeq);
-            return true;
-        }
-
-
-        private bool PreProcessCommandResponse(byte[] buffer)
-        {
-            byte cmdSeq = Buffer.GetByte(buffer, Constants.CommandResponseSequenceNumberIndex);
-            bool repeated = this.cmdsTracker.Contains(cmdSeq);
-            if (repeated)
-            {
-                // doesn't repeat because multipart?
-                if (Buffer.GetByte(buffer, Constants.CommandResponseMultipartMarkerIndex) != 0x00)
-                {
-                    return false;
-                } // else go ahead and dispatch the part
-            }
-            else
-            {
-                this.cmdsTracker.StartTracking(cmdSeq);
-            }
-
-            return true;
-        }
-
+        
 
         /// <summary>
         ///   Dispatches the received datagram to the appropriate target.
         /// </summary>
-        /// <param name="buffer"> The received bytes. </param>
-        private void DispatchReceivedDatagram(byte[] buffer)
+        /// <param name="dgram"> The received datagram. </param>
+        private void DispatchReceivedDatagram(IInboundDatagram dgram)
         {
-            IInboundDatagram dgram = InboundDatagramBase.ParseReceivedBytes(buffer);
-            this.parsedDatagramsCount++;
             if (dgram.Type == DatagramType.Message)
             {
                 var conMsg = (ConsoleMessageDatagram)dgram;
-                this.AcknowledgeMessage(conMsg.SequenceNumber);
                 this.DispatchConsoleMessage(conMsg);
                 return;
             }
@@ -635,17 +525,6 @@ namespace BESharp
             this.Log.Trace("AFTER  response.DispatchResponse");
         }
 
-
-        /// <summary>
-        ///   Sends a datagram back to the server acknowledging receipt of
-        ///   a console message datagram.
-        /// </summary>
-        /// <param name="seqNumber"> The sequence number of the received <see cref="ConsoleMessageDatagram" /> . </param>
-        private void AcknowledgeMessage(byte seqNumber)
-        {
-            this.SendDatagram(new AcknowledgeMessageDatagram(seqNumber));
-            this.Log.TraceFormat("M#{0:000} Acknowledged", seqNumber);
-        }
 
 
         /// <summary>
@@ -674,7 +553,7 @@ namespace BESharp
                 }
             }
 
-            this.dispatchedConsoleMessages++;
+            this.Metrics.DispatchedConsoleMessages++;
         }
 
 
@@ -721,7 +600,7 @@ namespace BESharp
         }
 
 
-        private void RegisterAcknowledgedPacket(IOutboundDatagram acknowledgedPacket)
+        internal void RegisterAcknowledgedPacket(IOutboundDatagram acknowledgedPacket)
         {
             var sentTime = acknowledgedPacket.SentTime;
             if (sentTime > this.lastAcknowledgedPacketSentTime)

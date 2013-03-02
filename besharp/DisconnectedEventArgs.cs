@@ -7,5 +7,12 @@ namespace BESharp
 
     public class DisconnectedEventArgs : EventArgs
     {
+        public DisconnectedEventArgs(ShutdownReason shutdownReason)
+        {
+            ShutdownReason = shutdownReason;
+        }
+
+
+        public ShutdownReason ShutdownReason { get; private set; }
     }
 }
