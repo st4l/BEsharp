@@ -60,7 +60,7 @@ namespace BESharp
 
         private DateTime lastCommandSentTime;
 
-        private DateTime lastAcknowledgedCmdSentTime;
+        private DateTime lastAcknowledgedPacketSentTime;
 
         private Task mainLoopTask;
 
@@ -388,7 +388,7 @@ namespace BESharp
             }
 
             TimeSpan keepAlivePeriod = TimeSpan.FromSeconds(25);
-            this.lastCommandSentTime = this.lastAcknowledgedCmdSentTime = DateTime.Now.AddSeconds(-10);
+            this.lastCommandSentTime = this.lastAcknowledgedPacketSentTime = DateTime.Now.AddSeconds(-10);
 
             while (this.ShutdownReason == ShutdownReason.None)
             {
@@ -407,7 +407,7 @@ namespace BESharp
                     //        and not acknowledged, but we have "10 secs ago" in lastCommandSentTime)
                     var keepAliveAgo = DateTime.Now.Subtract(keepAlivePeriod);
                     if (this.lastCommandSentTime < keepAliveAgo ||
-                        this.lastAcknowledgedCmdSentTime < keepAliveAgo)
+                        this.lastAcknowledgedPacketSentTime < keepAliveAgo)
                     {
                         // spawn a keep alive tracker until server acknowledges
                         if (this.keepAliveTracker == null)
@@ -630,9 +630,9 @@ namespace BESharp
             }
 
             // else, dgram is a response (to either a login or a command)
-            this.Log.Trace("BEFORE response.Dispatch");
-            this.responseDispatcher.Dispatch(dgram);
-            this.Log.Trace("AFTER  response.Dispatch");
+            this.Log.Trace("BEFORE response.DispatchResponse");
+            this.responseDispatcher.DispatchResponse(dgram);
+            this.Log.Trace("AFTER  response.DispatchResponse");
         }
 
 
@@ -721,11 +721,12 @@ namespace BESharp
         }
 
 
-        private void UpdateLastAckSentTime(DateTime sentTime)
+        private void RegisterAcknowledgedPacket(IOutboundDatagram acknowledgedPacket)
         {
-            if (sentTime > this.lastAcknowledgedCmdSentTime)
+            var sentTime = acknowledgedPacket.SentTime;
+            if (sentTime > this.lastAcknowledgedPacketSentTime)
             {
-                this.lastAcknowledgedCmdSentTime = sentTime;
+                this.lastAcknowledgedPacketSentTime = sentTime;
             }
         }
     }

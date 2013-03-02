@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BESharp.RConClient">
+    <Position X="1.25" Y="1.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AQIAAEIASCAwAQAAEAAAAAGIAAgAJAAAGIwQEgCAAYQ=</HashCode>
+      <FileName>RConClient.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BESharp.MessageDispatcher">
+    <Position X="5.5" Y="1.25" Width="3" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="BESharp.MessageDispatcher.KeepAliveTracker" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>KeepAliveTracker.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="BESharp.MessageDispatcher.ResponseMessageDispatcher" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ResponseMessageDispatcher.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>pWIiIANDwDVQQAACAhEAgBCFBIkACghICAAAAgiAAkA=</HashCode>
+      <FileName>KeepAliveTracker.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

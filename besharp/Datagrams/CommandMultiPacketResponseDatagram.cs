@@ -12,7 +12,7 @@ namespace BESharp.Datagrams
 
         internal CommandMultiPacketResponseDatagram(CommandResponsePartDatagram partDatagram)
         {
-            this.Complete = false;
+            this.IsComplete = false;
             this.IsMultipart = true;
             this.AddFirstPart(partDatagram);
         }
@@ -20,7 +20,7 @@ namespace BESharp.Datagrams
 
         public bool IsMultipart { get; private set; }
 
-        public bool Complete { get; set; }
+        public bool IsComplete { get; set; }
 
         public int TotalParts { get; private set; }
 
@@ -63,8 +63,8 @@ namespace BESharp.Datagrams
                 }
             }
 
-            this.Complete = !somePartMissing;
-            if (this.Complete)
+            this.IsComplete = !somePartMissing;
+            if (this.IsComplete)
             {
                 this.ComposeFinal();
             }

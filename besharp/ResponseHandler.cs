@@ -111,12 +111,11 @@ namespace BESharp
 
 
         /// <summary>
-        ///   Accepts the response datagram and signals the waiting
-        ///   thread to continue.
+        ///   Accepts the response datagram and finishes any wait for it.
         /// </summary>
         /// <param name="result"> </param>
         [HostProtection(Synchronization = true, ExternalThreading = true)]
-        internal void Complete(IInboundDatagram result)
+        internal void AcceptResponse(IInboundDatagram result)
         {
             this.ResponseDatagram = result;
             this.Completed = true;

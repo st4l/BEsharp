@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArmARestarter
 {
@@ -18,7 +16,16 @@ namespace ArmARestarter
         }
 
 
-        public void Prune(FileInfo originalFile, int remainingMb)
+        public void PruneFiles(IEnumerable<FileInfo> logFiles)
+        {
+            foreach (FileInfo fileInfo in logFiles)
+            {
+                this.PruneFile(fileInfo, 3);
+            }
+        }
+
+
+        public void PruneFile(FileInfo originalFile, int remainingMb)
         {
             if (!originalFile.Exists)
             {
@@ -27,7 +34,6 @@ namespace ArmARestarter
 
             var size = originalFile.Length;
             var remainingSize = remainingMb * 1024 * 1024;
-            var removeSize = size - remainingSize;
 
             if (remainingSize >= size)
             {
@@ -74,36 +80,53 @@ namespace ArmARestarter
         private void Tail(FileInfo sourceFile, FileInfo targetFile, int remainingMb)
         {
             // tail --bytes="%2m" tmp > file
-
-            throw new NotImplementedException();
+            const string exeFile = "tail.exe";
+            string args = string.Format("--bytes=\"{0}m\" \"{1}\" > \"{2}\"", remainingMb, sourceFile, targetFile);
+            this.ExecuteExternalCommand(exeFile, args);
         }
 
 
         private void Head(FileInfo sourceFile, FileInfo targetFile, int remainingMb)
         {
             // head --bytes="-%2m" tmp >> dailyFile
-
-            throw new NotImplementedException();
+            const string exeFile = "head.exe";
+            string args = string.Format("--bytes=\"{0}m\" \"{1}\" > \"{2}\"", remainingMb, sourceFile, targetFile);
+            this.ExecuteExternalCommand(exeFile, args);
         }
 
 
-        public void PruneAll()
+        private void ExecuteExternalCommand(string fileName, string arguments)
         {
-            var mainDir = new DirectoryInfo(this.armaConfigPath);
-            this.PruneDirectory(mainDir);
+            // Use ProcessStartInfo class
+            var startInfo = new ProcessStartInfo
+                                {
+                                        CreateNoWindow = false,
+                                        UseShellExecute = false,
+                                        FileName = fileName,
+                                        WindowStyle = ProcessWindowStyle.Hidden,
+                                        Arguments = arguments
+                                };
 
-            var beDir = new DirectoryInfo(this.armaConfigPath + "\\" + "BattlEye");
-            this.PruneDirectory(beDir);
-        }
-
-
-        private void PruneDirectory(DirectoryInfo directory)
-        {
-            var logFiles = directory.EnumerateFiles("*.log");
-            foreach (FileInfo fileInfo in logFiles)
+            Process exeProcess = null;
+            try
             {
-                this.Prune(fileInfo, 3);
+                // Start the process with the info we specified.
+                // Call WaitForExit and then the using statement will close.
+                exeProcess = Process.Start(startInfo);
+                exeProcess.WaitForExit();
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+            finally
+            {
+                if (exeProcess != null)
+                {
+                    exeProcess.Dispose();
+                }
+            }
+
         }
     }
 }

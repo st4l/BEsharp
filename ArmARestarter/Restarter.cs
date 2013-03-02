@@ -89,28 +89,15 @@ namespace ArmARestarter
         }
 
 
-        private void StopService()
-        {
-            // net stop dayz1 >> "c:\server\dayz\,logs\restarts.log"
-            var service = new ServiceController(this.serviceName);
-            try
-            {
-                TimeSpan timeout = TimeSpan.FromMilliseconds(1000 * 60);
-
-                service.Stop();
-                service.WaitForStatus(ServiceControllerStatus.Stopped, timeout);
-            }
-            catch
-            {
-                throw new ApplicationException("Timeout trying to stop service " + this.serviceName + ".");
-            }
-        }
-
-
         private void PruneLogs()
         {
             var pruner = new LogPruner(armaConfigPath);
-            pruner.PruneAll();
+
+            var mainDir = new DirectoryInfo(this.armaConfigPath);
+            pruner.PruneFiles(mainDir.EnumerateFiles("*.log"));
+
+            var beDir = new DirectoryInfo(this.armaConfigPath + "\\" + "BattlEye");
+            pruner.PruneFiles(beDir.EnumerateFiles("*.log"));
         }
 
 
@@ -142,13 +129,31 @@ namespace ArmARestarter
         }
 
 
+        private void StopService()
+        {
+            // net stop dayz1 >> "c:\server\dayz\,logs\restarts.log"
+            var service = new ServiceController(this.serviceName);
+            try
+            {
+                TimeSpan timeout = TimeSpan.FromMilliseconds(1000 * 60);
+
+                service.Stop();
+                service.WaitForStatus(ServiceControllerStatus.Stopped, timeout);
+            }
+            catch
+            {
+                throw new ApplicationException("Timeout trying to stop service " + this.serviceName + ".");
+            }
+        }
+
+
         /// <summary>
         /// Replaces text in a file.
         /// </summary>
         /// <param name="filePath">Path of the text file.</param>
         /// <param name="searchText">Text to search for.</param>
         /// <param name="replaceText">Text to replace the search text.</param>
-        static public void ReplaceInFile(string filePath, string searchText, string replaceText)
+        private static void ReplaceInFile(string filePath, string searchText, string replaceText)
         {
             var reader = new StreamReader(filePath);
             string content = reader.ReadToEnd();

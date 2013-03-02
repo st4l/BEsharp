@@ -8,9 +8,9 @@ namespace BESharp
     
     /// <summary>
     ///   Uses a byte buffer to store the last n sequence numbers
-    ///   passed to it with <see cref="StartTracking" />, and 
+    ///   passed in with <see cref="StartTracking" />, and 
     ///   provides a facility to check whether a sequenceNumber 
-    ///   was recorded, where n is the <see cref="Capacity" /> 
+    ///   is being tracker, where n is the <see cref="Capacity" /> 
     ///   of this tracker.
     /// </summary>
     internal class SequenceTracker

@@ -91,6 +91,9 @@
     <Content Include="reqs.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Model\ClassDiagram1.cd" />
+    <None Include="Model\Datagrams.cd" />
+    <None Include="Model\Graph1.dgml" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
