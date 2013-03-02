@@ -46,6 +46,8 @@ namespace BESharp
 
         private EventHandler<PacketProblemEventArgs> subscribedPktProblemHandler;
 
+        private bool closingSession;
+
 
         public RConClient(string host, int port, string password)
         {
@@ -283,8 +285,6 @@ namespace BESharp
         }
 
 
-
-
         /// <summary>
         ///   Stops all processing gracefully and disposes this instance.
         /// </summary>
@@ -425,7 +425,6 @@ namespace BESharp
         }
 
 
-
         internal ResponseHandler SendCommand(string commandText)
         {
             var dgram = new CommandDatagram(this.msgDispatcher.GetNextCommandSequenceNumber(), commandText);
@@ -467,8 +466,6 @@ namespace BESharp
             this.OnDisconnected(e);
         }
 
-
-        private bool closingSession = false;
 
         private void StopListening()
         {
