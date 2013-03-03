@@ -33,12 +33,6 @@ namespace BESharp
 
         private bool hasStarted;
 
-        private bool forceShutdown;
-
-        private ManualResetEventSlim shutdownLock;
-
-        private bool mainLoopDead;
-
         private bool disposed;
 
         private int lastCommandSequenceNumber = -1;
@@ -46,9 +40,6 @@ namespace BESharp
         private DateTime lastCommandSentTime;
 
         private DateTime lastAcknowledgedPacketSentTime;
-
-        private RConMetrics Metrics { get; set; }
-
 
 
         /// <summary>
@@ -58,12 +49,13 @@ namespace BESharp
         /// <param name="udpClient"> The <see cref="UdpClient" /> to be used to connect to the RCon server. </param>
         internal MessageDispatcher(IUdpClient udpClient)
         {
+            this.ConMsgsTracker = new SequenceTracker();
+            this.CmdsTracker = new SequenceTracker();
             // throw new ArgumentException("Test shall not pass.");
             this.udpClient = udpClient;
             this.responseDispatcher = new ResponseDispatcher(this);
             this.Log = LogManager.GetLogger(this.GetType());
             this.Metrics = new RConMetrics();
-            InboundProcessor.StartNewSession();
         }
 
 
@@ -95,7 +87,8 @@ namespace BESharp
 
 
         /// <summary>
-        ///   Occurs when a disconnection is detected.
+        ///   Occurs when a disconnection is detected, and this instance 
+        ///   was disposed because of that.
         /// </summary>
         internal event EventHandler<DisconnectedEventArgs> Disconnected;
 
@@ -109,8 +102,14 @@ namespace BESharp
         ///   console message datagrams received (the <see cref="MessageReceived" />
         ///   event is never raised).
         /// </summary>
-        internal bool DiscardConsoleMessages { get; set; }
+        public bool DiscardConsoleMessages { get; set; }
 
+
+        internal SequenceTracker CmdsTracker { get; private set; }
+
+        internal SequenceTracker ConMsgsTracker { get; private set; }
+
+        private RConMetrics Metrics { get; set; }
 
         private ILog Log { get; set; }
 
@@ -131,8 +130,12 @@ namespace BESharp
         /// <remarks>
         ///   Starts the main message pump in a new thread.
         /// </remarks>
-        internal void Start()
+        public void Start()
         {
+            if (this.disposed)
+            {
+                throw new InvalidOperationException("Called Start() on a disposed instance.");
+            }
             if (this.hasStarted)
             {
                 throw new InvalidOperationException("Already running.");
@@ -143,9 +146,9 @@ namespace BESharp
             this.asyncOperation = AsyncOperationManager.CreateOperation(null);
 
             this.mainLoopTask = new Task(this.MainLoop);
-            this.mainLoopTask.ContinueWith(this.ExceptionHandler, TaskContinuationOptions.OnlyOnFaulted);
+            this.mainLoopTask.ContinueWith(this.HandleMainLoopException, TaskContinuationOptions.OnlyOnFaulted);
             this.mainLoopTask.ContinueWith(this.AfterMainLoop, TaskContinuationOptions.OnlyOnRanToCompletion);
-            this.mainLoopTask.ConfigureAwait(true);
+            this.mainLoopTask.ConfigureAwait(continueOnCapturedContext: true);
             this.mainLoopTask.Start();
         }
 
@@ -156,60 +159,21 @@ namespace BESharp
         /// <remarks>
         ///   Exits the main pump thread politely.
         /// </remarks>
-        internal void Close()
+        public void Close()
         {
             if (this.disposed)
             {
-                return;
+                throw new InvalidOperationException("Called Close() on disposed instance.");
             }
 
             if (this.ShutdownReason == ShutdownReason.None)
             {
                 this.ShutdownReason = ShutdownReason.UserRequested;
             }
-
-            this.InternalClose();
         }
 
 
-        /// <summary>
-        ///   Registers a handler to be notified when a response
-        ///   message arrives, and which accepts the response message itself.
-        /// </summary>
-        /// <param name="dgram"> </param>
-        internal ResponseHandler GetResponseHandler(IOutboundDatagram dgram)
-        {
-            return this.responseDispatcher.CreateOrGetHandler(dgram);
-        }
-
-
-        /// <summary>
-        ///   Raises the <see cref="MessageReceived" /> event.
-        /// </summary>
-        /// <param name="e"> An <see cref="MessageReceivedEventArgs" /> that contains the event data. </param>
-        internal void OnMessageReceived(MessageReceivedEventArgs e)
-        {
-            if (this.MessageReceived != null)
-            {
-                this.MessageReceived(this, e);
-            }
-        }
-
-
-        /// <summary>
-        ///   Raises the <see cref="Disconnected" /> event.
-        /// </summary>
-        /// <param name="e"> An <see cref="DisconnectedEventArgs" /> that contains the event data. </param>
-        internal void OnDisconnected(DisconnectedEventArgs e)
-        {
-            if (this.Disconnected != null)
-            {
-                this.Disconnected(this, e);
-            }
-        }
-
-
-        internal ResponseHandler SendDatagram(IOutboundDatagram dgram)
+        public ResponseHandler SendDatagram(IOutboundDatagram dgram)
         {
             // this.outboundQueue.Enqueue(dgram);
             byte[] bytes = dgram.Build();
@@ -227,7 +191,7 @@ namespace BESharp
             // i.e. it is ok to send & receive at the same time from different threads
             // also, there's no UDP ack, so there's no need to send asynchronously
             int transferredBytes = this.udpClient.Send(bytes, bytes.Length);
-            
+
             this.Log.Trace("AFTER  SendDatagram");
 
             dgram.SentTime = DateTime.Now;
@@ -255,7 +219,7 @@ namespace BESharp
         ///   Meant to be called after Close(), i.e. once after each session.
         /// </summary>
         /// <param name="rconMetrics"> The <see cref="RConMetrics" /> to update. </param>
-        internal void UpdateMetrics(RConMetrics rconMetrics)
+        public void UpdateMetrics(RConMetrics rconMetrics)
         {
             rconMetrics.InboundPacketCount += this.Metrics.InboundPacketCount;
             rconMetrics.OutboundPacketCount += this.Metrics.OutboundPacketCount;
@@ -277,57 +241,25 @@ namespace BESharp
             return (byte)next;
         }
 
-        
 
-        private void AfterMainLoop(Task task)
+        internal void RegisterAcknowledgedPacket(IOutboundDatagram acknowledgedPacket)
         {
-            this.Log.Trace("AFTER MAIN LOOP");
-            this.InternalClose();
-        }
-
-
-        private void RaiseDisconnected(object args)
-        {
-            this.OnDisconnected((DisconnectedEventArgs)args);
+            var sentTime = acknowledgedPacket.SentTime;
+            if (sentTime > this.lastAcknowledgedPacketSentTime)
+            {
+                this.lastAcknowledgedPacketSentTime = sentTime;
+            }
         }
 
 
         /// <summary>
-        ///   Dispose managed and unmanaged resources.
+        ///   Registers a handler to be notified when a response
+        ///   message arrives, and which accepts the response message itself.
         /// </summary>
-        /// <param name="disposing"> True unless we're called from the finalizer, in which case only unmanaged resources can be disposed. </param>
-        private void Dispose(bool disposing)
+        /// <param name="dgram"> </param>
+        private ResponseHandler GetResponseHandler(IOutboundDatagram dgram)
         {
-            // Check to see if Dispose has already been called. 
-            if (!this.disposed)
-            {
-                // If disposing equals true, dispose all managed 
-                // and unmanaged resources. 
-                if (disposing)
-                {
-                    // Release managed resources.
-                    this.udpClient = null;
-
-                    if (this.shutdownLock != null)
-                    {
-                        this.shutdownLock.Dispose();
-                    }
-
-                    if (this.responseDispatcher != null)
-                    {
-                        this.responseDispatcher.Dispose();
-                    }
-
-                    if (this.mainLoopTask != null)
-                    {
-                        this.mainLoopTask.Wait();
-                        this.mainLoopTask.Dispose();
-                    }
-                }
-
-                // Note disposing has been done.
-                this.disposed = true;
-            }
+            return this.responseDispatcher.CreateOrGetHandler(dgram);
         }
 
 
@@ -359,36 +291,7 @@ namespace BESharp
                 // has completed (or we're shutting down for some reason)
                 do
                 {
-                    // test whether we sent a command too long ago, or
-                    // whether we received the last acknowledgment from the server too long ago
-                    // (prevents case: 
-                    //      * we sent a command 10 secs ago but wasn't received by the server
-                    //        and not acknowledged, but we have "10 secs ago" in lastCommandSentTime)
-                    var keepAliveAgo = DateTime.Now.Subtract(keepAlivePeriod);
-                    if (this.lastCommandSentTime < keepAliveAgo ||
-                        this.lastAcknowledgedPacketSentTime < keepAliveAgo)
-                    {
-                        // spawn a keep alive tracker until server acknowledges
-                        if (this.keepAliveTracker == null)
-                        {
-                            this.keepAliveTracker = new KeepAliveTracker(this, this.Metrics, this.Log);
-                        }
-                    }
-
-                    // if keepAliveTracker is alive, ping and check for ack
-                    if (this.keepAliveTracker != null)
-                    {
-                        if (this.keepAliveTracker.Ping())
-                        {
-                            // success, no need to keep pinging
-                            this.keepAliveTracker = null;
-                        }
-                        else if (this.keepAliveTracker.Expired)
-                        {
-                            // no ack after several tries, shutdown
-                            this.ShutdownReason = ShutdownReason.NoResponseFromServer;
-                        }
-                    }
+                    this.CheckKeepAlive(keepAlivePeriod);
 
                     this.Log.TraceFormat("===== WAITING RECEIVE =====, Status={0}", task.Status);
                     task.Wait(500);
@@ -397,56 +300,102 @@ namespace BESharp
                 while (!task.IsCompleted && this.ShutdownReason == ShutdownReason.None);
             }
 
-            this.mainLoopDead = true;
             this.Log.Trace("Main loop exited.");
 
-            // signal we're exiting the thread
-            this.ExitMainLoop();
+            // wait a bit for the last datagrams to be parsed, processed.
+            Thread.SpinWait(200);
         }
 
 
-        private void ExitMainLoop()
+        /// <summary>
+        ///   Checks whether we need to send a keep alive datagram,
+        ///   and if needed sends it and checks for its acknowledgment.
+        /// </summary>
+        /// <param name="keepAlivePeriod"> How often to send keep alive datagrams. </param>
+        private void CheckKeepAlive(TimeSpan keepAlivePeriod)
         {
-            this.Log.Trace("EXIT MAIN LOOP");
-
-            if (this.shutdownLock != null)
+            // test whether we sent a command too long ago, or
+            // whether we received the last acknowledgment from the server too long ago
+            // (prevents case: 
+            //      * we sent a command 10 secs ago but wasn't received by the server
+            //        and not acknowledged, but we have "10 secs ago" in lastCommandSentTime)
+            var keepAliveAgo = DateTime.Now.Subtract(keepAlivePeriod);
+            if (this.lastCommandSentTime < keepAliveAgo ||
+                this.lastAcknowledgedPacketSentTime < keepAliveAgo)
             {
-                // signal we're exiting the thread
-                this.Log.Trace("shutdownLock set.");
-                this.shutdownLock.Set();
-            }
-        }
-
-
-        private void InternalClose()
-        {
-            this.Log.Trace("CLOSE");
-
-            if (!this.forceShutdown)
-            {
-                this.Log.Trace("SHUTDOWN COMMENCING");
-
-                if (!this.mainLoopDead)
+                // spawn a keep alive tracker until server acknowledges
+                if (this.keepAliveTracker == null)
                 {
-                    this.shutdownLock = new ManualResetEventSlim(false);
-
-                    // wait until the main thread is exited
-                    this.Log.Trace("WAITING FOR THREADS TO EXIT");
-                    this.shutdownLock.Wait();
+                    this.keepAliveTracker = new KeepAliveTracker(this, this.Metrics, this.Log);
                 }
-
-                this.Log.Trace("SHUTDOWN ACHIEVED - DISPOSING");
             }
+
+            // if keepAliveTracker is alive, ping and check for ack
+            if (this.keepAliveTracker != null)
+            {
+                if (this.keepAliveTracker.Ping())
+                {
+                    // success, no need to keep pinging
+                    this.keepAliveTracker = null;
+                }
+                else if (this.keepAliveTracker.Expired)
+                {
+                    // no ack after several tries, shutdown
+                    this.ShutdownReason = ShutdownReason.NoResponseFromServer;
+                }
+            }
+        }
+
+
+        private void HandleMainLoopException(Task task)
+        {
+            var excInfo = ExceptionDispatchInfo.Capture(task.Exception);
+            this.ShutdownReason = ShutdownReason.FatalException;
+            excInfo.Throw();
+        }
+
+
+        private void AfterMainLoop(Task task)
+        {
+            this.Log.Trace("AFTER MAIN LOOP");
+
             this.Dispose();
 
             var args = new DisconnectedEventArgs(this.ShutdownReason);
-            if (this.asyncOperation != null)
+            this.RaiseEventAsync(o => this.OnDisconnected((DisconnectedEventArgs)o), args);
+        }
+
+
+        /// <summary>
+        ///   Dispose managed and unmanaged resources.
+        /// </summary>
+        /// <param name="notFromFinalizer"> True unless we're called from the finalizer, 
+        /// in which case only unmanaged resources can be disposed. </param>
+        private void Dispose(bool notFromFinalizer)
+        {
+            // Check to see if Dispose has already been called. 
+            if (!this.disposed)
             {
-                this.asyncOperation.Post(this.RaiseDisconnected, args);
-            }
-            else
-            {
-                this.RaiseDisconnected(args);
+                // If notFromFinalizer, dispose all managed resources. 
+                if (notFromFinalizer)
+                {
+                    // Release managed resources.
+                    this.udpClient = null;
+
+                    if (this.responseDispatcher != null)
+                    {
+                        this.responseDispatcher.Dispose();
+                    }
+
+                    if (this.mainLoopTask != null)
+                    {
+                        this.mainLoopTask.Wait();
+                        this.mainLoopTask.Dispose();
+                    }
+                }
+
+                this.disposed = true;
+                this.Log.Trace("DISPOSED");
             }
         }
 
@@ -469,32 +418,8 @@ namespace BESharp
 
             this.Log.Trace("AFTER  await ReceiveAsync");
             var processor = new InboundProcessor(this, result.Buffer, this.Log);
-            if (!processor.PreValidate())
+            if (this.TryPreProcessInboundPacket(processor))
             {
-                this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.InvalidLength));
-                this.Log.Trace("INVALID datagram received");
-                return;
-            }
-            this.Metrics.InboundPacketCount++;
-
-#if DEBUG
-            if (processor.CheckIsShutDownPacket() && this.ShutdownReason == ShutdownReason.None)
-            {
-                this.Log.Trace("SHUTDOWN DATAGRAM RECEIVED - SHUTTING DOWN.");
-                this.ShutdownReason = ShutdownReason.ServerRequested;
-                return;
-            }
-#endif
-
-            bool preProcessed = processor.PreProcess();
-            if (preProcessed)
-            {
-                return;
-            }
-
-            if (!processor.VerifyCrc())
-            {
-                this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.Corrupted));
                 return;
             }
 
@@ -504,7 +429,39 @@ namespace BESharp
             this.DispatchReceivedDatagram(concreteDgram);
         }
 
-        
+
+        private bool TryPreProcessInboundPacket(InboundProcessor processor)
+        {
+            if (!processor.IsValidLength)
+            {
+                this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.InvalidLength));
+                this.Log.Trace("INVALID datagram received");
+                return true;
+            }
+            this.Metrics.InboundPacketCount++;
+
+#if DEBUG
+            if (processor.IsShutDownPacket && this.ShutdownReason == ShutdownReason.None)
+            {
+                this.Log.Trace("SHUTDOWN DATAGRAM RECEIVED - SHUTTING DOWN.");
+                this.ShutdownReason = ShutdownReason.ServerRequested;
+                return true;
+            }
+#endif
+
+            if (processor.TryPreProcess())
+            {
+                return true;
+            }
+
+            if (!processor.VerifyCrc())
+            {
+                this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.Corrupted));
+                return true;
+            }
+            return false;
+        }
+
 
         /// <summary>
         ///   Dispatches the received datagram to the appropriate target.
@@ -526,7 +483,6 @@ namespace BESharp
         }
 
 
-
         /// <summary>
         ///   Dispatches received console messages to the appropriate
         ///   threading context (e.g. the UI thread or the ASP.NET context),
@@ -542,15 +498,7 @@ namespace BESharp
             if (this.MessageReceived != null)
             {
                 var args = new MessageReceivedEventArgs(dgram);
-
-                if (this.asyncOperation != null)
-                {
-                    this.asyncOperation.Post(o => this.OnMessageReceived((MessageReceivedEventArgs)o), args);
-                }
-                else
-                {
-                    this.OnMessageReceived(args);
-                }
+                this.RaiseEventAsync(o => this.OnMessageReceived((MessageReceivedEventArgs)o), args);
             }
 
             this.Metrics.DispatchedConsoleMessages++;
@@ -570,18 +518,28 @@ namespace BESharp
         {
             if (this.PacketProblem != null)
             {
-                if (this.asyncOperation != null)
-                {
-                    this.asyncOperation.Post(o => this.OnPacketProblem((PacketProblemEventArgs)o), args);
-                }
-                else
-                {
-                    this.OnPacketProblem(args);
-                }
+                this.RaiseEventAsync(o => this.OnPacketProblem((PacketProblemEventArgs)o), args);
             }
         }
 
 
+        private void RaiseEventAsync(SendOrPostCallback call, object args)
+        {
+            if (this.asyncOperation != null)
+            {
+                this.asyncOperation.Post(call, args);
+            }
+            else
+            {
+                call(args);
+            }
+        }
+
+
+        /// <summary>
+        ///   Raises the <see cref="PacketProblem" /> event.
+        /// </summary>
+        /// <param name="e"> A <see cref="PacketProblemEventArgs" /> that contains the event data. </param>
         private void OnPacketProblem(PacketProblemEventArgs e)
         {
             if (this.PacketProblem != null)
@@ -591,21 +549,28 @@ namespace BESharp
         }
 
 
-        private void ExceptionHandler(Task task)
+        /// <summary>
+        ///   Raises the <see cref="MessageReceived" /> event.
+        /// </summary>
+        /// <param name="e"> A <see cref="MessageReceivedEventArgs" /> that contains the event data. </param>
+        private void OnMessageReceived(MessageReceivedEventArgs e)
         {
-            var excInfo = ExceptionDispatchInfo.Capture(task.Exception);
-            this.forceShutdown = true;
-            this.ShutdownReason = ShutdownReason.FatalException;
-            excInfo.Throw();
+            if (this.MessageReceived != null)
+            {
+                this.MessageReceived(this, e);
+            }
         }
 
 
-        internal void RegisterAcknowledgedPacket(IOutboundDatagram acknowledgedPacket)
+        /// <summary>
+        ///   Raises the <see cref="Disconnected" /> event.
+        /// </summary>
+        /// <param name="e"> A <see cref="DisconnectedEventArgs" /> that contains the event data. </param>
+        private void OnDisconnected(DisconnectedEventArgs e)
         {
-            var sentTime = acknowledgedPacket.SentTime;
-            if (sentTime > this.lastAcknowledgedPacketSentTime)
+            if (this.Disconnected != null)
             {
-                this.lastAcknowledgedPacketSentTime = sentTime;
+                this.Disconnected(this, e);
             }
         }
     }

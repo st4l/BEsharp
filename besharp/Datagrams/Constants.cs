@@ -20,5 +20,8 @@ namespace BESharp.Datagrams
         public const int CommandResponseMultipartTotalPartsIndex = 10;
 
         public const int CommandResponseMultipartPartNumberIndex = 11;
+
+        public const int DatagramMinLength = 9;
+
     }
 }

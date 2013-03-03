@@ -1,48 +1,88 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
   <Class Name="BESharp.RConClient">
-    <Position X="1.25" Y="1.25" Width="3" />
+    <Position X="1.75" Y="1.25" Width="2.75" />
     <Compartments>
+      <Compartment Name="Internal" Collapsed="true" />
+      <Compartment Name="Private" Collapsed="true" />
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AQIAAEIASCAwAQAAEAAAAAGIAAgAJAAAGIwQEgCAAYQ=</HashCode>
+      <HashCode>AQIAAEIASCAwAQAAEAAAAAGIAAgAJAAAGJwQEgCAAYQ=</HashCode>
       <FileName>RConClient.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="msgDispatcher" />
+    </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="BESharp.MessageDispatcher">
-    <Position X="5" Y="1.25" Width="2.75" />
+    <Position X="6" Y="1.25" Width="2.75" />
     <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
       <Compartment Name="Fields" Collapsed="true" />
+      <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>pUIiIAMDQDVQAAAAAAEAgACABIgADggICAAAAgCAAkA=</HashCode>
+      <HashCode>JUICQAMBQDVQQAAAAAUAgACAAIgAHggJAAAAAgCAAkA=</HashCode>
       <FileName>MessageDispatcher.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="keepAliveTracker" />
+      <Field Name="responseDispatcher" />
+      <Field Name="udpClient" />
+      <Property Name="CmdsTracker" />
+      <Property Name="ConMsgsTracker" />
+    </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="BESharp.KeepAliveTracker">
-    <Position X="11.25" Y="1.25" Width="1.75" />
+    <Position X="10.5" Y="6.75" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAYAgCAAAAEAAgABAAAgAAEABAAQEAgAAAAE=</HashCode>
       <FileName>KeepAliveTracker.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="BESharp.InboundDatagramProcessor">
-    <Position X="8.25" Y="1.25" Width="2.5" />
+  <Class Name="BESharp.InboundProcessor">
+    <Position X="3.5" Y="5.75" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAgAADAAAAACAIAABAAAIAFAAkAAAAAAABAAAgAAAA=</HashCode>
-      <FileName>InboundDatagramProcessor.cs</FileName>
+      <HashCode>EAAgAAAAAAAAAAAAIBAAAIAFAAgBAAAAAABAAAgQAAA=</HashCode>
+      <FileName>InboundProcessor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BESharp.ResponseDispatcher">
-    <Position X="8.25" Y="6" Width="2.5" />
+    <Position X="10.5" Y="2.25" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAIAAAAAICgAAAAAAAAAAIABAAQAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ResponseDispatcher.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="BESharp.SequenceTracker">
+    <Position X="10.5" Y="4.5" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAIAAAAAACgAAAAAAAAABAAAAQAAA=</HashCode>
+      <FileName>SequenceTracker.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="BESharp.IUdpClient" Collapsed="true">
+    <Position X="10.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAEAAAAAAAAAAAAAAABAAAACAAAA=</HashCode>
+      <FileName>IUdpClient.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

@@ -358,7 +358,7 @@ namespace BESharp.Tests
             rcc.MessageReceived += (sender, args) => { parsedCount++; };
 
             RunUntilShutdown(rcc);
-            Assert.IsTrue(parsedCount >= 50000);
+            Assert.IsTrue(parsedCount >= 50000, "parsedCount < 50000: it's {0}", parsedCount);
         }
 
 
@@ -417,7 +417,8 @@ namespace BESharp.Tests
             Assert.IsTrue(rcc.Metrics.KeepAlivePacketsSent > 0);
             Assert.IsTrue(serverMetrics.KeepAlivePacketsReceived > 0);
             Assert.IsTrue(rcc.Metrics.KeepAlivePacketsAcknowledgedByServer == 0);
-            Assert.IsTrue(rcc.ShutdownReason == ShutdownReason.NoResponseFromServer);
+            Assert.IsTrue(rcc.ShutdownReason == ShutdownReason.NoResponseFromServer,
+                "Shutdown reason should be NoResponseFromServer, it's {0}", rcc.ShutdownReason);
         }
 
 

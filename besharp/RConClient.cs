@@ -334,15 +334,14 @@ namespace BESharp
         /// <summary>
         ///   Dispose managed and unmanaged resources.
         /// </summary>
-        /// <param name="disposing"> True unless we're called from the finalizer, in which case only unmanaged resources can be disposed. </param>
-        private void Dispose(bool disposing)
+        /// <param name="notFromFinalizer"> True unless we're called from the finalizer, in which case only unmanaged resources can be disposed. </param>
+        private void Dispose(bool notFromFinalizer)
         {
             // Check to see if Dispose has already been called. 
             if (!this.disposed)
             {
-                // If disposing equals true, dispose all managed 
-                // and unmanaged resources. 
-                if (disposing)
+                // If notFromFinalizer, dispose all managed resources. 
+                if (notFromFinalizer)
                 {
                     // Dispose managed resources.
                     if (this.msgDispatcher != null)
@@ -449,31 +448,29 @@ namespace BESharp
             this.msgDispatcher.MessageReceived += this.subscribedMsgReceivedHandler;
             this.subscribedPktProblemHandler = this.PktProblem;
             this.msgDispatcher.PacketProblem += this.subscribedPktProblemHandler;
-            this.msgDispatcher.Disconnected += this.MsgDispatcherOnDisconnected;
+            this.msgDispatcher.Disconnected += this.HandleDispatcherDisconnected;
             this.msgDispatcher.Start();
         }
 
 
-        private void MsgDispatcherOnDisconnected(object sender, DisconnectedEventArgs e)
+        private void StopListening()
         {
-            if (e.ShutdownReason != ShutdownReason.UserRequested)
+            if (this.msgDispatcher != null)
             {
-                this.StopListening();
+                this.msgDispatcher.Close(); // disposes
             }
-#if DEBUG
-            this.runningLock.Set();
-#endif
-            this.OnDisconnected(e);
         }
 
 
-        private void StopListening()
+        private void HandleDispatcherDisconnected(object sender, DisconnectedEventArgs e)
         {
             if (this.closingSession || this.msgDispatcher == null)
             {
                 return;
             }
             this.closingSession = true;
+
+            this.ShutdownReason = e.ShutdownReason;
 
             if (this.subscribedMsgReceivedHandler != null)
             {
@@ -487,13 +484,16 @@ namespace BESharp
             }
 
             this.subscribedMsgReceivedHandler = null;
-            this.msgDispatcher.Disconnected -= this.MsgDispatcherOnDisconnected;
+            this.msgDispatcher.Disconnected -= this.HandleDispatcherDisconnected;
             this.msgDispatcher.UpdateMetrics(this.Metrics);
-            this.msgDispatcher.Close(); // disposes
 
-            this.ShutdownReason = this.msgDispatcher.ShutdownReason;
             this.msgDispatcher = null;
             this.closingSession = false;
+
+#if DEBUG
+            this.runningLock.Set();
+#endif
+            this.OnDisconnected(e);
         }
     }
 }

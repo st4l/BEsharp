@@ -10,16 +10,11 @@ namespace BESharp
 {
     internal sealed class InboundProcessor
     {
-
         private readonly MessageDispatcher dispatcher;
 
         private readonly byte[] buffer;
 
-        private static SequenceTracker cmdsTracker;
-
-        private static SequenceTracker conMsgsTracker;
-
-        private DatagramType type;
+        private readonly DatagramType type;
 
 
         public InboundProcessor(MessageDispatcher dispatcher, byte[] buffer, ILog log)
@@ -45,34 +40,25 @@ namespace BESharp
         }
 
 
-        public static void StartNewSession()
-        {
-            cmdsTracker = new SequenceTracker();
-            conMsgsTracker = new SequenceTracker();
-        }
-
         private ILog Log { get; set; }
 
-
-        public bool PreValidate()
+        public bool IsShutDownPacket
         {
-            if (this.buffer == null || this.buffer.Length < 7)
+            get
             {
-                return false;
+                // shutdown message from server (not in protocol, used only for testing)
+                return this.type == DatagramType.TestServerShutdown;
             }
-
-            return true;
         }
 
 
-        public bool CheckIsShutDownPacket()
+        public bool IsValidLength
         {
-            // shutdown message from server (not in protocol, used only for testing)
-            if (this.type == DatagramType.TestServerShutdown)
+            get
             {
-                return true;
+                return IsShutDownPacket 
+                    || this.buffer.Length >= Constants.DatagramMinLength;
             }
-            return false;
         }
 
 
@@ -80,7 +66,7 @@ namespace BESharp
         ///   Tries to pre-process the packet.
         /// </summary>
         /// <returns> True if the packet was processed and does not need further processing; otherwise false. </returns>
-        public bool PreProcess()
+        public bool TryPreProcess()
         {
             this.Log.TraceFormat("{0:0}    Type dgram received.", this.type);
 
@@ -186,7 +172,7 @@ namespace BESharp
             }
 
             // if we already received a console message with this seq number
-            bool repeated = conMsgsTracker.Contains(conMsgSeq);
+            bool repeated = this.dispatcher.ConMsgsTracker.Contains(conMsgSeq);
             if (repeated)
             {
                 // if we did, just acknowledge it and don't process it
@@ -195,7 +181,7 @@ namespace BESharp
             }
 
             // register the sequence number and continue processing the message
-            conMsgsTracker.StartTracking(conMsgSeq);
+            this.dispatcher.ConMsgsTracker.StartTracking(conMsgSeq);
             return false;
         }
 
@@ -203,7 +189,7 @@ namespace BESharp
         private bool PreProcessCommandResponse()
         {
             byte cmdSeq = Buffer.GetByte(this.buffer, Constants.CommandResponseSequenceNumberIndex);
-            bool repeated = cmdsTracker.Contains(cmdSeq);
+            bool repeated = this.dispatcher.CmdsTracker.Contains(cmdSeq);
             if (repeated)
             {
                 // doesn't repeat because multipart?
@@ -214,7 +200,7 @@ namespace BESharp
             }
             else
             {
-                cmdsTracker.StartTracking(cmdSeq);
+                this.dispatcher.CmdsTracker.StartTracking(cmdSeq);
             }
 
             return false;

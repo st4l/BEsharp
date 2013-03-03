@@ -153,15 +153,14 @@ namespace BESharp
         /// <summary>
         ///   Dispose managed and unmanaged resources.
         /// </summary>
-        /// <param name="disposing"> True unless we're called from the finalizer, in which case only unmanaged resources can be disposed. </param>
-        private void Dispose(bool disposing)
+        /// <param name="notFromFinalizer"> True unless we're called from the finalizer, in which case only unmanaged resources can be disposed. </param>
+        private void Dispose(bool notFromFinalizer)
         {
             // Check to see if Dispose has already been called. 
             if (!this.disposed)
             {
-                // If disposing equals true, dispose all managed 
-                // and unmanaged resources. 
-                if (disposing)
+                // If notFromFinalizer, dispose all managed resources. 
+                if (notFromFinalizer)
                 {
                     // Release managed resources.
                     this.dispatcher = null;
