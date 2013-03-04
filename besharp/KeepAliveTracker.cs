@@ -14,7 +14,7 @@ namespace BESharp
 
     internal class KeepAliveTracker
     {
-        private readonly MessageDispatcher msgDispatcher;
+        private readonly DatagramDispatcher msgDispatcher;
 
         private readonly RConMetrics metrics;
 
@@ -31,7 +31,7 @@ namespace BESharp
         private int sequenceNumber = -1;
 
 
-        public KeepAliveTracker(MessageDispatcher msgDispatcher, RConMetrics metrics, ILog log)
+        public KeepAliveTracker(DatagramDispatcher msgDispatcher, RConMetrics metrics, ILog log)
         {
             if (msgDispatcher == null)
             {
@@ -77,7 +77,7 @@ namespace BESharp
             //// Debug.WriteLine("{1:mm:ss:fffff} acks = {0}", acks, DateTime.Now);
             if (acks > 0)
             {
-                this.metrics.KeepAlivePacketsAcknowledgedByServer += acks;
+                this.metrics.KeepAliveDatagramsAcknowledgedByServer += acks;
                 this.Acknowledged = true;
                 return true;
             }
@@ -93,26 +93,26 @@ namespace BESharp
                     return false;
                 }
 
-                this.SendKeepAlivePacket();
+                this.SendKeepAliveDatagram();
             }
 
             return false;
         }
 
 
-        private void SendKeepAlivePacket()
+        private void SendKeepAliveDatagram()
         {
             if (this.sequenceNumber == -1)
             {
                 this.sequenceNumber = this.msgDispatcher.GetNextCommandSequenceNumber();
             }
 
-            Debug.WriteLine("keep alive packet {0} sent", this.sentCount + 1);
+            Debug.WriteLine("keep alive datagram {0} sent", this.sentCount + 1);
             var keepAliveDgram = new CommandDatagram((byte)this.sequenceNumber, string.Empty);
             this.sentHandlers.Add(this.msgDispatcher.SendDatagram(keepAliveDgram));
             this.lastSendTime = DateTime.Now;
             this.sentCount++;
-            this.metrics.KeepAlivePacketsSent++;
+            this.metrics.KeepAliveDatagramsSent++;
             this.Log.TraceFormat("C#{0:000} Sent keep alive command.", keepAliveDgram.SequenceNumber);
         }
     }

@@ -10,14 +10,14 @@ namespace BESharp
 {
     internal sealed class InboundProcessor
     {
-        private readonly MessageDispatcher dispatcher;
+        private readonly DatagramDispatcher dispatcher;
 
         private readonly byte[] buffer;
 
         private readonly DatagramType type;
 
 
-        public InboundProcessor(MessageDispatcher dispatcher, byte[] buffer, ILog log)
+        public InboundProcessor(DatagramDispatcher dispatcher, byte[] buffer, ILog log)
         {
             if (dispatcher == null)
             {
@@ -42,7 +42,7 @@ namespace BESharp
 
         private ILog Log { get; set; }
 
-        public bool IsShutDownPacket
+        public bool IsShutDownDatagram
         {
             get
             {
@@ -56,21 +56,21 @@ namespace BESharp
         {
             get
             {
-                return IsShutDownPacket 
+                return this.IsShutDownDatagram 
                     || this.buffer.Length >= Constants.DatagramMinLength;
             }
         }
 
 
         /// <summary>
-        ///   Tries to pre-process the packet.
+        ///   Tries to pre-process the datagram.
         /// </summary>
-        /// <returns> True if the packet was processed and does not need further processing; otherwise false. </returns>
+        /// <returns> True if the datagram was processed and does not need further processing; otherwise false. </returns>
         public bool TryPreProcess()
         {
             this.Log.TraceFormat("{0:0}    Type dgram received.", this.type);
 
-            if (this.type == DatagramType.Message)
+            if (this.type == DatagramType.ConsoleMessage)
             {
                 return this.PreProcessConsoleMessage();
             }
@@ -108,9 +108,9 @@ namespace BESharp
         /// </summary>
         /// <returns> An <see cref="IInboundDatagram" /> containing the received information. </returns>
         /// <remarks>
-        ///   The RCon protocol specification for incoming packets:
+        ///   The RCon protocol specification for incoming datagrams:
         /// 
-        ///   #### MAIN HEADER PRESENT IN ALL PACKETS
+        ///   #### MAIN HEADER PRESENT IN ALL DATAGRAMS
         /// 
         ///   |Index       |      0    |      1    |     2     ,     3     ,     4     ,     5     |  6   |
         ///   |:---------- | :-------: | :-------: | :-------------------------------------------: | :--: |
@@ -128,9 +128,9 @@ namespace BESharp
         /// 
         /// 
         ///   #### COMMAND RESPONSE MULTI-PART HEADER
-        ///   |Index       |    9   |               10                    |                11                   |              12 . . .                        |
-        ///   |:---------- | :----: | :---------------------------------: | :---------------------------------: | :--------------------------------: | 
-        ///   |Description |  0x00  | number of packets for this response | 0-based index of the current packet | response (ASCII string without null-terminator) |
+        ///   |Index       |    9   |               10                   |                11                  |              12 . . .                        |
+        ///   |:---------- | :----: | :--------------------------------: | :--------------------------------: | :--------------------------------: | 
+        ///   |Description |  0x00  | number of dgrams for this response | 0-based index of the current dgram | response (ASCII string without null-terminator) |
         /// 
         /// 
         ///   #### CONSOLE MESSAGE
@@ -151,11 +151,11 @@ namespace BESharp
                         return new CommandResponsePartDatagram(this.buffer);
                     }
 
-                    return new CommandSinglePacketResponseDatagram(this.buffer);
-                case DatagramType.Message:
+                    return new CommandSinglePartResponseDatagram(this.buffer);
+                case DatagramType.ConsoleMessage:
                     return new ConsoleMessageDatagram(this.buffer);
                 default:
-                    throw new InvalidOperationException("Invalid packet type");
+                    throw new InvalidOperationException("Invalid datagram type");
             }
         }
 

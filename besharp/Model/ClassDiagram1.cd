@@ -4,19 +4,18 @@
     <Position X="1.75" Y="1.25" Width="2.75" />
     <Compartments>
       <Compartment Name="Internal" Collapsed="true" />
-      <Compartment Name="Private" Collapsed="true" />
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AQIAAEIASCAwAQAAEAAAAAGIAAgAJAAAGJwQEgCAAYQ=</HashCode>
+      <HashCode>AAIAAAIASCACASAEAAAAAAGIAAgAJAAAGJwQEgCgAYQ=</HashCode>
       <FileName>RConClient.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="msgDispatcher" />
+      <Field Name="dgramDispatcher" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="BESharp.MessageDispatcher">
+  <Class Name="BESharp.DatagramDispatcher">
     <Position X="6" Y="1.25" Width="2.75" />
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
@@ -24,13 +23,13 @@
       <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>JUICQAMBQDVQQAAAAAUAgACAAIgAHggJAAAAAgCAAkA=</HashCode>
-      <FileName>MessageDispatcher.cs</FileName>
+      <HashCode>IUICQAoBUDUIQCAAAAWAgACAAIgADggBAAgAAgCAAkA=</HashCode>
+      <FileName>DatagramDispatcher.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="keepAliveTracker" />
       <Field Name="responseDispatcher" />
       <Field Name="udpClient" />
+      <Field Name="keepAliveTracker" />
       <Property Name="CmdsTracker" />
       <Property Name="ConMsgsTracker" />
     </ShowAsAssociation>
@@ -42,17 +41,17 @@
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAYAgCAAAAEAAgABAAAgAAEABAAQEAgAAAAE=</HashCode>
+      <HashCode>QAAAAAAAAYAgCAAAAEAAgABAAAgAAAABAAQEAgAAAAE=</HashCode>
       <FileName>KeepAliveTracker.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BESharp.InboundProcessor">
-    <Position X="3.5" Y="5.75" Width="1.75" />
+    <Position X="5" Y="5.75" Width="1.75" />
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>EAAgAAAAAAAAAAAAIBAAAIAFAAgBAAAAAABAAAgQAAA=</HashCode>
+      <HashCode>EAAgAAAAAAAAAAAAIBAAAIAFAAgBAAAAAABAAAgAAQA=</HashCode>
       <FileName>InboundProcessor.cs</FileName>
     </TypeIdentifier>
   </Class>

@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------------------------------
-// <copyright file="MessageDispatcher.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
+// <copyright file="DatagramDispatcher.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
 namespace BESharp
 {
@@ -15,11 +15,11 @@ namespace BESharp
     using log4net;
 
     /// <summary>
-    ///   Receives messages from a remote Battleye RCon server
+    ///   Receives datagrams from a remote Battleye RCon server
     ///   using the supplied <see cref="UdpClient" /> and
     ///   dispatches them accordingly.
     /// </summary>
-    internal sealed class MessageDispatcher : IDisposable
+    internal sealed class DatagramDispatcher : IDisposable
     {
         private readonly ResponseDispatcher responseDispatcher;
 
@@ -39,15 +39,15 @@ namespace BESharp
 
         private DateTime lastCommandSentTime;
 
-        private DateTime lastAcknowledgedPacketSentTime;
+        private DateTime lastAcknowledgedDatagramSentTime;
 
 
         /// <summary>
-        ///   Initializes a new instance of <see cref="MessageDispatcher" />
+        ///   Initializes a new instance of <see cref="DatagramDispatcher" />
         ///   and establishes the <see cref="UdpClient" /> to be used.
         /// </summary>
         /// <param name="udpClient"> The <see cref="UdpClient" /> to be used to connect to the RCon server. </param>
-        internal MessageDispatcher(IUdpClient udpClient)
+        internal DatagramDispatcher(IUdpClient udpClient)
         {
             this.ConMsgsTracker = new SequenceTracker();
             this.CmdsTracker = new SequenceTracker();
@@ -67,7 +67,7 @@ namespace BESharp
         ///   does not get called. 
         ///   Do not provide destructors in types derived from this class.
         /// </remarks>
-        ~MessageDispatcher()
+        ~DatagramDispatcher()
         {
             this.Dispose(false);
         }
@@ -80,10 +80,10 @@ namespace BESharp
 
 
         /// <summary>
-        ///   Occurs when a problem is detected in the incoming packets,
+        ///   Occurs when a problem is detected in the incoming datagrams,
         ///   such as corrupted data.
         /// </summary>
-        internal event EventHandler<PacketProblemEventArgs> PacketProblem;
+        internal event EventHandler<ConnectionProblemEventArgs> ConnectionProblem;
 
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace BESharp
 
         /// <summary>
         ///   Gets or sets a <see cref="Boolean" /> value that specifies
-        ///   whether this <see cref="MessageDispatcher" /> discards all
+        ///   whether this <see cref="DatagramDispatcher" /> discards all
         ///   console message datagrams received (the <see cref="MessageReceived" />
         ///   event is never raised).
         /// </summary>
@@ -125,10 +125,10 @@ namespace BESharp
 
 
         /// <summary>
-        ///   Starts acquiring and dispatching inbound messages in a new thread.
+        ///   Starts acquiring and dispatching inbound datagrams in a new thread.
         /// </summary>
         /// <remarks>
-        ///   Starts the main message pump in a new thread.
+        ///   Starts the main datagram pump in a new thread.
         /// </remarks>
         public void Start()
         {
@@ -195,7 +195,7 @@ namespace BESharp
             this.Log.Trace("AFTER  SendDatagram");
 
             dgram.SentTime = DateTime.Now;
-            this.Metrics.OutboundPacketCount++;
+            this.Metrics.OutboundDatagramCount++;
 
             if (dgram.Type == DatagramType.Command)
             {
@@ -221,12 +221,12 @@ namespace BESharp
         /// <param name="rconMetrics"> The <see cref="RConMetrics" /> to update. </param>
         public void UpdateMetrics(RConMetrics rconMetrics)
         {
-            rconMetrics.InboundPacketCount += this.Metrics.InboundPacketCount;
-            rconMetrics.OutboundPacketCount += this.Metrics.OutboundPacketCount;
+            rconMetrics.InboundDatagramCount += this.Metrics.InboundDatagramCount;
+            rconMetrics.OutboundDatagramCount += this.Metrics.OutboundDatagramCount;
             rconMetrics.ParsedDatagramsCount += this.Metrics.ParsedDatagramsCount;
             rconMetrics.DispatchedConsoleMessages += this.Metrics.DispatchedConsoleMessages;
-            rconMetrics.KeepAlivePacketsSent += this.Metrics.KeepAlivePacketsSent;
-            rconMetrics.KeepAlivePacketsAcknowledgedByServer += this.Metrics.KeepAlivePacketsAcknowledgedByServer;
+            rconMetrics.KeepAliveDatagramsSent += this.Metrics.KeepAliveDatagramsSent;
+            rconMetrics.KeepAliveDatagramsAcknowledgedByServer += this.Metrics.KeepAliveDatagramsAcknowledgedByServer;
         }
 
 
@@ -242,19 +242,19 @@ namespace BESharp
         }
 
 
-        internal void RegisterAcknowledgedPacket(IOutboundDatagram acknowledgedPacket)
+        internal void RegisterAcknowledgedDatagram(IOutboundDatagram acknowledgedDatagram)
         {
-            var sentTime = acknowledgedPacket.SentTime;
-            if (sentTime > this.lastAcknowledgedPacketSentTime)
+            var sentTime = acknowledgedDatagram.SentTime;
+            if (sentTime > this.lastAcknowledgedDatagramSentTime)
             {
-                this.lastAcknowledgedPacketSentTime = sentTime;
+                this.lastAcknowledgedDatagramSentTime = sentTime;
             }
         }
 
 
         /// <summary>
         ///   Registers a handler to be notified when a response
-        ///   message arrives, and which accepts the response message itself.
+        ///   datagram arrives, and which accepts the response datagram itself.
         /// </summary>
         /// <param name="dgram"> </param>
         private ResponseHandler GetResponseHandler(IOutboundDatagram dgram)
@@ -264,7 +264,7 @@ namespace BESharp
 
 
         /// <summary>
-        ///   The main message pump.
+        ///   The main datagram pump.
         /// </summary>
         [HostProtection(Synchronization = true, ExternalThreading = true)]
         private void MainLoop()
@@ -279,7 +279,7 @@ namespace BESharp
             }
 
             TimeSpan keepAlivePeriod = TimeSpan.FromSeconds(25);
-            this.lastCommandSentTime = this.lastAcknowledgedPacketSentTime = DateTime.Now.AddSeconds(-10);
+            this.lastCommandSentTime = this.lastAcknowledgedDatagramSentTime = DateTime.Now.AddSeconds(-10);
 
             while (this.ShutdownReason == ShutdownReason.None)
             {
@@ -321,7 +321,7 @@ namespace BESharp
             //        and not acknowledged, but we have "10 secs ago" in lastCommandSentTime)
             var keepAliveAgo = DateTime.Now.Subtract(keepAlivePeriod);
             if (this.lastCommandSentTime < keepAliveAgo ||
-                this.lastAcknowledgedPacketSentTime < keepAliveAgo)
+                this.lastAcknowledgedDatagramSentTime < keepAliveAgo)
             {
                 // spawn a keep alive tracker until server acknowledges
                 if (this.keepAliveTracker == null)
@@ -401,7 +401,7 @@ namespace BESharp
 
 
         /// <summary>
-        ///   Handles a message asynchronously that was received from
+        ///   Handles a datagram asynchronously that was received from
         ///   the RCon server.
         /// </summary>
         [HostProtection(Synchronization = true, ExternalThreading = true)]
@@ -418,7 +418,7 @@ namespace BESharp
 
             this.Log.Trace("AFTER  await ReceiveAsync");
             var processor = new InboundProcessor(this, result.Buffer, this.Log);
-            if (this.TryPreProcessInboundPacket(processor))
+            if (this.TryPreProcessInboundDatagram(processor))
             {
                 return;
             }
@@ -430,18 +430,18 @@ namespace BESharp
         }
 
 
-        private bool TryPreProcessInboundPacket(InboundProcessor processor)
+        private bool TryPreProcessInboundDatagram(InboundProcessor processor)
         {
             if (!processor.IsValidLength)
             {
-                this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.InvalidLength));
+                this.DispatchConnectionProblem(new ConnectionProblemEventArgs(ConnectionProblemType.InvalidLength));
                 this.Log.Trace("INVALID datagram received");
                 return true;
             }
-            this.Metrics.InboundPacketCount++;
+            this.Metrics.InboundDatagramCount++;
 
 #if DEBUG
-            if (processor.IsShutDownPacket && this.ShutdownReason == ShutdownReason.None)
+            if (processor.IsShutDownDatagram && this.ShutdownReason == ShutdownReason.None)
             {
                 this.Log.Trace("SHUTDOWN DATAGRAM RECEIVED - SHUTTING DOWN.");
                 this.ShutdownReason = ShutdownReason.ServerRequested;
@@ -456,7 +456,7 @@ namespace BESharp
 
             if (!processor.VerifyCrc())
             {
-                this.DispatchPacketProblem(new PacketProblemEventArgs(PacketProblemType.Corrupted));
+                this.DispatchConnectionProblem(new ConnectionProblemEventArgs(ConnectionProblemType.Corrupted));
                 return true;
             }
             return false;
@@ -469,7 +469,7 @@ namespace BESharp
         /// <param name="dgram"> The received datagram. </param>
         private void DispatchReceivedDatagram(IInboundDatagram dgram)
         {
-            if (dgram.Type == DatagramType.Message)
+            if (dgram.Type == DatagramType.ConsoleMessage)
             {
                 var conMsg = (ConsoleMessageDatagram)dgram;
                 this.DispatchConsoleMessage(conMsg);
@@ -506,7 +506,7 @@ namespace BESharp
 
 
         /// <summary>
-        ///   Dispatches packet problem events to the appropriate
+        ///   Dispatches connection problem events to the appropriate
         ///   threading context (e.g. the UI thread or the ASP.NET context),
         ///   by using AsyncOperation.
         /// </summary>
@@ -514,11 +514,11 @@ namespace BESharp
         ///   The context switch is costly, but usually what the
         ///   library user will expect.
         /// </remarks>
-        private void DispatchPacketProblem(PacketProblemEventArgs args)
+        private void DispatchConnectionProblem(ConnectionProblemEventArgs args)
         {
-            if (this.PacketProblem != null)
+            if (this.ConnectionProblem != null)
             {
-                this.RaiseEventAsync(o => this.OnPacketProblem((PacketProblemEventArgs)o), args);
+                this.RaiseEventAsync(o => this.OnConnectionProblem((ConnectionProblemEventArgs)o), args);
             }
         }
 
@@ -537,14 +537,14 @@ namespace BESharp
 
 
         /// <summary>
-        ///   Raises the <see cref="PacketProblem" /> event.
+        ///   Raises the <see cref="ConnectionProblem" /> event.
         /// </summary>
-        /// <param name="e"> A <see cref="PacketProblemEventArgs" /> that contains the event data. </param>
-        private void OnPacketProblem(PacketProblemEventArgs e)
+        /// <param name="e"> A <see cref="ConnectionProblemEventArgs" /> that contains the event data. </param>
+        private void OnConnectionProblem(ConnectionProblemEventArgs e)
         {
-            if (this.PacketProblem != null)
+            if (this.ConnectionProblem != null)
             {
-                this.PacketProblem(this, e);
+                this.ConnectionProblem(this, e);
             }
         }
 

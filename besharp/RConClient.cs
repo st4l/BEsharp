@@ -27,7 +27,7 @@ namespace BESharp
 
         private readonly object msgReceivedEventAccesorsLockObject = new object();
 
-        private readonly object packetProblemEventAccesorsLockObject = new object();
+        private readonly object connectionProblemEventAccesorsLockObject = new object();
 
 
 #if DEBUG
@@ -36,7 +36,7 @@ namespace BESharp
 #endif
 
 
-        private MessageDispatcher msgDispatcher;
+        private DatagramDispatcher dgramDispatcher;
 
         private bool closed;
 
@@ -44,7 +44,7 @@ namespace BESharp
 
         private EventHandler<MessageReceivedEventArgs> subscribedMsgReceivedHandler;
 
-        private EventHandler<PacketProblemEventArgs> subscribedPktProblemHandler;
+        private EventHandler<ConnectionProblemEventArgs> subscribedConnProblemHandler;
 
         private bool closingSession;
 
@@ -67,6 +67,7 @@ namespace BESharp
             }
             catch (Exception ex)
             {
+                // dispose and throw 
                 if (client != null)
                 {
                     client.Close();
@@ -109,7 +110,7 @@ namespace BESharp
         /// <remarks>
         ///   In <see cref="StartListening" /> we are passing along the
         ///   multicast delegate directly to
-        ///   <see cref="MessageDispatcher.MessageReceived" />, so we
+        ///   <see cref="DatagramDispatcher.MessageReceived" />, so we
         ///   need to update it if we already passed it (subscribed).
         /// </remarks>
         public event EventHandler<MessageReceivedEventArgs> MessageReceived
@@ -119,18 +120,18 @@ namespace BESharp
                 lock (this.msgReceivedEventAccesorsLockObject)
                 {
                     this.MsgReceived += value;
-                    if (this.msgDispatcher == null)
+                    if (this.dgramDispatcher == null)
                     {
                         return;
                     }
 
                     if (this.subscribedMsgReceivedHandler != null)
                     {
-                        this.msgDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
+                        this.dgramDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
                     }
 
                     this.subscribedMsgReceivedHandler = this.MsgReceived;
-                    this.msgDispatcher.MessageReceived += this.MsgReceived;
+                    this.dgramDispatcher.MessageReceived += this.MsgReceived;
                 }
             }
 
@@ -139,18 +140,18 @@ namespace BESharp
                 lock (this.msgReceivedEventAccesorsLockObject)
                 {
                     this.MsgReceived -= value;
-                    if (this.msgDispatcher == null)
+                    if (this.dgramDispatcher == null)
                     {
                         return;
                     }
 
                     if (this.subscribedMsgReceivedHandler != null)
                     {
-                        this.msgDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
+                        this.dgramDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
                     }
 
                     this.subscribedMsgReceivedHandler = this.MsgReceived;
-                    this.msgDispatcher.MessageReceived += this.MsgReceived;
+                    this.dgramDispatcher.MessageReceived += this.MsgReceived;
                 }
             }
         }
@@ -158,54 +159,54 @@ namespace BESharp
 
         /// <summary>
         ///   Occurs when some problem is detected in the incoming 
-        ///   packets from the server, such as corrupted packets or
-        ///   lost packets.
+        ///   datagrams from the server, such as corrupted datagrams or
+        ///   lost datagrams.
         /// </summary>
         /// <remarks>
         ///   In <see cref="StartListening" /> we are passing along the
         ///   multicast delegate directly to
-        ///   <see cref="MessageDispatcher.PacketProblem" />, so we
+        ///   <see cref="DatagramDispatcher.ConnectionProblem" />, so we
         ///   need to update it if we already passed it (subscribed).
         /// </remarks>
-        public event EventHandler<PacketProblemEventArgs> PacketProblem
+        public event EventHandler<ConnectionProblemEventArgs> ConnectionProblem
         {
             add
             {
-                lock (this.packetProblemEventAccesorsLockObject)
+                lock (this.connectionProblemEventAccesorsLockObject)
                 {
-                    this.PktProblem += value;
-                    if (this.msgDispatcher == null)
+                    this.ConnProblem += value;
+                    if (this.dgramDispatcher == null)
                     {
                         return;
                     }
 
-                    if (this.subscribedPktProblemHandler != null)
+                    if (this.subscribedConnProblemHandler != null)
                     {
-                        this.msgDispatcher.PacketProblem -= this.subscribedPktProblemHandler;
+                        this.dgramDispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
                     }
 
-                    this.subscribedPktProblemHandler = this.PktProblem;
-                    this.msgDispatcher.PacketProblem += this.PktProblem;
+                    this.subscribedConnProblemHandler = this.ConnProblem;
+                    this.dgramDispatcher.ConnectionProblem += this.ConnProblem;
                 }
             }
 
             remove
             {
-                lock (this.packetProblemEventAccesorsLockObject)
+                lock (this.connectionProblemEventAccesorsLockObject)
                 {
-                    this.PktProblem -= value;
-                    if (this.msgDispatcher == null)
+                    this.ConnProblem -= value;
+                    if (this.dgramDispatcher == null)
                     {
                         return;
                     }
 
-                    if (this.subscribedPktProblemHandler != null)
+                    if (this.subscribedConnProblemHandler != null)
                     {
-                        this.msgDispatcher.PacketProblem -= this.subscribedPktProblemHandler;
+                        this.dgramDispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
                     }
 
-                    this.subscribedPktProblemHandler = this.PktProblem;
-                    this.msgDispatcher.PacketProblem += this.PktProblem;
+                    this.subscribedConnProblemHandler = this.ConnProblem;
+                    this.dgramDispatcher.ConnectionProblem += this.ConnProblem;
                 }
             }
         }
@@ -213,7 +214,7 @@ namespace BESharp
         public event EventHandler<DisconnectedEventArgs> Disconnected;
 
 
-        private event EventHandler<PacketProblemEventArgs> PktProblem;
+        private event EventHandler<ConnectionProblemEventArgs> ConnProblem;
 
         private event EventHandler<MessageReceivedEventArgs> MsgReceived;
 
@@ -344,9 +345,9 @@ namespace BESharp
                 if (notFromFinalizer)
                 {
                     // Dispose managed resources.
-                    if (this.msgDispatcher != null)
+                    if (this.dgramDispatcher != null)
                     {
-                        this.msgDispatcher.Close();
+                        this.dgramDispatcher.Close();
                     }
 
                     if (this.Client != null)
@@ -372,7 +373,7 @@ namespace BESharp
         {
             this.Log.Trace("BEFORE LOGIN await SendDatagram");
             ResponseHandler responseHandler =
-                    this.msgDispatcher.SendDatagram(new LoginDatagram(this.password));
+                    this.dgramDispatcher.SendDatagram(new LoginDatagram(this.password));
             this.Log.Trace("AFTER  LOGIN await SendDatagram");
 
             this.Log.Trace("BEFORE LOGIN await WaitForResponse");
@@ -426,45 +427,45 @@ namespace BESharp
 
         internal ResponseHandler SendCommand(string commandText)
         {
-            var dgram = new CommandDatagram(this.msgDispatcher.GetNextCommandSequenceNumber(), commandText);
-            return this.msgDispatcher.SendDatagram(dgram);
+            var dgram = new CommandDatagram(this.dgramDispatcher.GetNextCommandSequenceNumber(), commandText);
+            return this.dgramDispatcher.SendDatagram(dgram);
         }
 
 
         internal ResponseHandler SendCommand(byte sequenceNumber, string commandText)
         {
             var dgram = new CommandDatagram(sequenceNumber, commandText);
-            return this.msgDispatcher.SendDatagram(dgram);
+            return this.dgramDispatcher.SendDatagram(dgram);
         }
 
 
         private void StartListening()
         {
-            this.msgDispatcher = new MessageDispatcher(this.Client)
+            this.dgramDispatcher = new DatagramDispatcher(this.Client)
                                      {
                                              DiscardConsoleMessages = this.DiscardConsoleMessages
                                      };
             this.subscribedMsgReceivedHandler = this.MsgReceived;
-            this.msgDispatcher.MessageReceived += this.subscribedMsgReceivedHandler;
-            this.subscribedPktProblemHandler = this.PktProblem;
-            this.msgDispatcher.PacketProblem += this.subscribedPktProblemHandler;
-            this.msgDispatcher.Disconnected += this.HandleDispatcherDisconnected;
-            this.msgDispatcher.Start();
+            this.dgramDispatcher.MessageReceived += this.subscribedMsgReceivedHandler;
+            this.subscribedConnProblemHandler = this.ConnProblem;
+            this.dgramDispatcher.ConnectionProblem += this.subscribedConnProblemHandler;
+            this.dgramDispatcher.Disconnected += this.HandleDispatcherDisconnected;
+            this.dgramDispatcher.Start();
         }
 
 
         private void StopListening()
         {
-            if (this.msgDispatcher != null)
+            if (this.dgramDispatcher != null)
             {
-                this.msgDispatcher.Close(); // disposes
+                this.dgramDispatcher.Close(); // disposes
             }
         }
 
 
         private void HandleDispatcherDisconnected(object sender, DisconnectedEventArgs e)
         {
-            if (this.closingSession || this.msgDispatcher == null)
+            if (this.closingSession || this.dgramDispatcher == null)
             {
                 return;
             }
@@ -474,20 +475,20 @@ namespace BESharp
 
             if (this.subscribedMsgReceivedHandler != null)
             {
-                this.msgDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
+                this.dgramDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
             }
 
             this.subscribedMsgReceivedHandler = null;
-            if (this.subscribedPktProblemHandler != null)
+            if (this.subscribedConnProblemHandler != null)
             {
-                this.msgDispatcher.PacketProblem -= this.subscribedPktProblemHandler;
+                this.dgramDispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
             }
 
             this.subscribedMsgReceivedHandler = null;
-            this.msgDispatcher.Disconnected -= this.HandleDispatcherDisconnected;
-            this.msgDispatcher.UpdateMetrics(this.Metrics);
+            this.dgramDispatcher.Disconnected -= this.HandleDispatcherDisconnected;
+            this.dgramDispatcher.UpdateMetrics(this.Metrics);
 
-            this.msgDispatcher = null;
+            this.dgramDispatcher = null;
             this.closingSession = false;
 
 #if DEBUG

@@ -8,7 +8,7 @@ namespace BESharp.Datagrams
 
     internal class ConsoleMessageDatagram : InboundDatagramBase
     {
-        public ConsoleMessageDatagram(byte[] buffer)
+        internal ConsoleMessageDatagram(byte[] buffer)
         {
             this.Parse(buffer);
         }
@@ -16,7 +16,7 @@ namespace BESharp.Datagrams
 
         public override DatagramType Type
         {
-            get { return DatagramType.Message; }
+            get { return DatagramType.ConsoleMessage; }
         }
 
 

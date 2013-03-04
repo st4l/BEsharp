@@ -19,7 +19,7 @@ namespace BESharp.Datagrams
         ///   The message is either a received remote console message or the receipt acknowledgment the client 
         ///   sends to the server.
         /// </summary>
-        Message = 2,
+        ConsoleMessage = 2,
 
         /// <summary>
         ///   The message is a shutdown request from the testing server (see Tests.MockServer).

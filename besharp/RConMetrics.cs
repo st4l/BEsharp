@@ -19,17 +19,17 @@ namespace BESharp
 
         public TimeSpan TotalRuntime { get; set; }
 
-        public int InboundPacketCount { get; set; }
+        public int InboundDatagramCount { get; set; }
 
-        public int OutboundPacketCount { get; set; }
+        public int OutboundDatagramCount { get; set; }
 
         public int ParsedDatagramsCount { get; set; }
 
         public int DispatchedConsoleMessages { get; set; }
 
-        public int KeepAlivePacketsSent { get; set; }
+        public int KeepAliveDatagramsSent { get; set; }
 
-        public int KeepAlivePacketsAcknowledgedByServer { get; set; }
+        public int KeepAliveDatagramsAcknowledgedByServer { get; set; }
 
 
         public void StopCollecting()

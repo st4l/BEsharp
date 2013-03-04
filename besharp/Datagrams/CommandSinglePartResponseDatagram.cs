@@ -1,14 +1,14 @@
 ﻿// ----------------------------------------------------------------------------------------------------
-// <copyright file="CommandSinglePacketResponseDatagram.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
+// <copyright file="CommandSinglePartResponseDatagram.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
 namespace BESharp.Datagrams
 {
     using System;
     using System.Text;
 
-    internal class CommandSinglePacketResponseDatagram : CommandResponseDatagram
+    internal class CommandSinglePartResponseDatagram : CommandResponseDatagram
     {
-        internal CommandSinglePacketResponseDatagram(byte[] buffer) : base(buffer)
+        internal CommandSinglePartResponseDatagram(byte[] buffer) : base(buffer)
         {
             var len = Buffer.ByteLength(buffer);
             var body = new byte[len - 9];

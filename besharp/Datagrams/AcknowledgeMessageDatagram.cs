@@ -8,7 +8,7 @@ namespace BESharp.Datagrams
         private readonly byte sequenceNumber;
 
 
-        public AcknowledgeMessageDatagram(byte sequenceNumber)
+        internal AcknowledgeMessageDatagram(byte sequenceNumber)
         {
             this.sequenceNumber = sequenceNumber;
         }
@@ -16,7 +16,7 @@ namespace BESharp.Datagrams
 
         public override DatagramType Type
         {
-            get { return DatagramType.Message; }
+            get { return DatagramType.ConsoleMessage; }
         }
 
         public override bool ExpectsResponse

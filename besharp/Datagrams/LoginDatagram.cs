@@ -39,7 +39,7 @@ namespace BESharp.Datagrams
             var result = new byte[len + 2];
             Buffer.SetByte(result, 0, 0xFF);
 
-            // result[1] (packet type) is already initialized to 0x00;
+            // result[1] (datagram type) is already initialized to 0x00;
             Buffer.BlockCopy(passBytes, 0, result, 2, len);
             return result;
         }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
   <Class Name="BESharp.Datagrams.DatagramBase">
     <Position X="9" Y="1.75" Width="1.5" />
     <TypeIdentifier>
@@ -9,15 +9,21 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="BESharp.Datagrams.InboundDatagramBase">
-    <Position X="7.25" Y="3.5" Width="2" />
+    <Position X="7.25" Y="3.5" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Protected" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Datagrams\InboundDatagramBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="BESharp.Datagrams.OutboundDatagramBase">
-    <Position X="10.25" Y="3.5" Width="2" />
+    <Position X="10.25" Y="3.5" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Protected" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>EAAAAAAEAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAIA=</HashCode>
       <FileName>Datagrams\OutboundDatagramBase.cs</FileName>
@@ -25,63 +31,86 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="BESharp.Datagrams.CommandResponseDatagram">
-    <Position X="8" Y="6.25" Width="2.25" />
+    <Position X="7" Y="6.25" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Internal" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAABACAAAAAAAAAAAQAAAAAAAAA=</HashCode>
       <FileName>Datagrams\CommandResponseDatagram.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BESharp.Datagrams.ConsoleMessageDatagram">
-    <Position X="5.5" Y="6.25" Width="2" />
+    <Position X="4.75" Y="6.25" Width="2" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+      <Compartment Name="Internal" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>EAAgAAAAAAAAAAAAAAgAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
       <FileName>Datagrams\ConsoleMessageDatagram.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BESharp.Datagrams.LoginResponseDatagram">
-    <Position X="3.5" Y="6.25" Width="1.5" />
+    <Position X="2.5" Y="6.25" Width="2" />
+    <Compartments>
+      <Compartment Name="Internal" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAQAAAAAAAAA=</HashCode>
       <FileName>Datagrams\LoginResponseDatagram.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BESharp.Datagrams.AcknowledgeMessageDatagram">
-    <Position X="12.5" Y="6.25" Width="1.75" />
+    <Position X="12.25" Y="6.25" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Protected" Collapsed="true" />
+      <Compartment Name="Internal" Collapsed="true" />
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAAACAAAAAAAAAAAAAAAAAAAAQAAAAAAAIA=</HashCode>
       <FileName>Datagrams\AcknowledgeMessageDatagram.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BESharp.Datagrams.CommandDatagram">
-    <Position X="14.75" Y="6.25" Width="1.75" />
+    <Position X="15" Y="6.25" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Protected" Collapsed="true" />
+      <Compartment Name="Internal" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAAAAAQAAAgAAAAAAAAAAAAAAQAAAAAAAIA=</HashCode>
       <FileName>Datagrams\CommandDatagram.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BESharp.Datagrams.LoginDatagram">
-    <Position X="10.5" Y="6.25" Width="1.5" />
+    <Position X="10.25" Y="6.25" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Protected" Collapsed="true" />
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAQAAAgAAAIA=</HashCode>
       <FileName>Datagrams\LoginDatagram.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="BESharp.Datagrams.IDatagram" Collapsed="true">
+  <Interface Name="BESharp.Datagrams.IDatagram">
     <Position X="3.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
       <FileName>Datagrams\IDatagram.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="BESharp.Datagrams.IInboundDatagram" Collapsed="true">
-    <Position X="1.5" Y="2.75" Width="1.5" />
+  <Interface Name="BESharp.Datagrams.IInboundDatagram">
+    <Position X="2.25" Y="3.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Datagrams\IInboundDatagram.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="BESharp.Datagrams.IOutboundDatagram" Collapsed="true">
-    <Position X="4.75" Y="2.75" Width="1.75" />
+  <Interface Name="BESharp.Datagrams.IOutboundDatagram">
+    <Position X="4.5" Y="3.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>EAAAAAAEAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
       <FileName>Datagrams\IOutboundDatagram.cs</FileName>

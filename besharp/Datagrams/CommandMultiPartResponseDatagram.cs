@@ -1,16 +1,16 @@
 // ----------------------------------------------------------------------------------------------------
-// <copyright file="CommandMultiPacketResponseDatagram.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
+// <copyright file="CommandMultiPartResponseDatagram.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
 namespace BESharp.Datagrams
 {
     using System;
     using System.Text;
 
-    internal class CommandMultiPacketResponseDatagram : CommandResponseDatagram
+    internal class CommandMultiPartResponseDatagram : CommandResponseDatagram
     {
         private byte[][] parts;
 
-        internal CommandMultiPacketResponseDatagram(CommandResponsePartDatagram partDatagram)
+        internal CommandMultiPartResponseDatagram(CommandResponsePartDatagram partDatagram)
         {
             this.IsComplete = false;
             this.IsMultipart = true;
@@ -35,7 +35,7 @@ namespace BESharp.Datagrams
 
             if (partDatagram.TotalParts != this.TotalParts)
             {
-                throw new InvalidOperationException("Total parts varies in multi-part command response packet.");
+                throw new InvalidOperationException("Total parts varies in multi-part command response datagram.");
             }
 
             this.parts[partDatagram.PartNumber] = partDatagram.GetBytes();

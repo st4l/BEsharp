@@ -54,10 +54,10 @@
     <Compile Include="Datagrams\CommandResponsePartDatagram.cs" />
     <Compile Include="Datagrams\CommandDatagram.cs" />
     <Compile Include="Datagrams\AcknowledgeMessageDatagram.cs" />
-    <Compile Include="Datagrams\CommandMultiPacketResponseDatagram.cs" />
+    <Compile Include="Datagrams\CommandMultiPartResponseDatagram.cs" />
     <Compile Include="Datagrams\CommandResponseDatagram.cs" />
     <Compile Include="Datagrams\CRC32.cs" />
-    <Compile Include="Datagrams\CommandSinglePacketResponseDatagram.cs" />
+    <Compile Include="Datagrams\CommandSinglePartResponseDatagram.cs" />
     <Compile Include="Datagrams\ConsoleMessageDatagram.cs" />
     <Compile Include="Datagrams\Constants.cs" />
     <Compile Include="Datagrams\DatagramBase.cs" />
@@ -75,11 +75,11 @@
     <Compile Include="IUdpClient.cs" />
     <Compile Include="KeepAliveTracker.cs" />
     <Compile Include="LogExtensions.cs" />
-    <Compile Include="MessageDispatcher.cs" />
+    <Compile Include="DatagramDispatcher.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="NetUdpClient.cs" />
-    <Compile Include="PacketProblemEventArgs.cs" />
-    <Compile Include="PacketProblemType.cs" />
+    <Compile Include="ConnectionProblemEventArgs.cs" />
+    <Compile Include="ConnectionProblemType.cs" />
     <Compile Include="RConClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RConMetrics.cs" />
@@ -94,7 +94,6 @@
   <ItemGroup>
     <None Include="Model\ClassDiagram1.cd" />
     <None Include="Model\Datagrams.cd" />
-    <None Include="Model\Graph1.dgml" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

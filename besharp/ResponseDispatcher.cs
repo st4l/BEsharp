@@ -14,14 +14,14 @@ namespace BESharp
         private readonly Dictionary<byte, ResponseHandler> cmdResponseHandlers =
                 new Dictionary<byte, ResponseHandler>();
 
-        private MessageDispatcher dispatcher;
+        private DatagramDispatcher dispatcher;
 
         private ResponseHandler loginHandler;
 
         private bool disposed;
 
 
-        public ResponseDispatcher(MessageDispatcher dispatcher)
+        public ResponseDispatcher(DatagramDispatcher dispatcher)
         {
             this.dispatcher = dispatcher;
         }
@@ -76,51 +76,51 @@ namespace BESharp
             {
                 if (this.loginHandler != null)
                 {
-                    this.dispatcher.RegisterAcknowledgedPacket(this.loginHandler.SentDatagram);
+                    this.dispatcher.RegisterAcknowledgedDatagram(this.loginHandler.SentDatagram);
                     this.loginHandler.AcceptResponse(dgram);
                 }
                 return;
             }
 
             // it's a command response.
-            // is it a single-packet response?
-            var cmdDgram = dgram as CommandSinglePacketResponseDatagram;
+            // is it a single-part response?
+            var cmdDgram = dgram as CommandSinglePartResponseDatagram;
             if (cmdDgram != null)
             {
                 // yes
                 lock (this.cmdResponseHandlers)
                 {
                     ResponseHandler handler = this.cmdResponseHandlers[cmdDgram.OriginalSequenceNumber];
-                    this.dispatcher.RegisterAcknowledgedPacket(handler.SentDatagram);
+                    this.dispatcher.RegisterAcknowledgedDatagram(handler.SentDatagram);
                     this.cmdResponseHandlers.Remove(cmdDgram.OriginalSequenceNumber);
                     handler.AcceptResponse(cmdDgram);
-                    Debug.WriteLine("handler for command packet {0} invoked", cmdDgram.OriginalSequenceNumber);
+                    Debug.WriteLine("handler for command datagram {0} invoked", cmdDgram.OriginalSequenceNumber);
                 }
 
                 return;
             }
 
 
-            // is it a part of a multi-packet response?
+            // is it a part of a multi-part response?
             var partDgram = dgram as CommandResponsePartDatagram;
             if (partDgram != null)
             {
                 // yes
-                CommandMultiPacketResponseDatagram masterCmd;
+                CommandMultiPartResponseDatagram masterCmd;
                 ResponseHandler handler = this.cmdResponseHandlers[partDgram.OriginalSequenceNumber];
-                this.dispatcher.RegisterAcknowledgedPacket(handler.SentDatagram);
+                this.dispatcher.RegisterAcknowledgedDatagram(handler.SentDatagram);
 
                 // is this the first part we ever received?
                 if (handler.ResponseDatagram == null)
                 {
                     // create the master object that will hold and process the parts
-                    masterCmd = new CommandMultiPacketResponseDatagram(partDgram);
+                    masterCmd = new CommandMultiPartResponseDatagram(partDgram);
                     handler.ResponseDatagram = masterCmd;
                 }
                 else
                 {
                     // get the previously created master and add this part to it
-                    masterCmd = (CommandMultiPacketResponseDatagram)handler.ResponseDatagram;
+                    masterCmd = (CommandMultiPartResponseDatagram)handler.ResponseDatagram;
                     masterCmd.AddPart(partDgram);
                 }
 
@@ -132,7 +132,7 @@ namespace BESharp
                         this.cmdResponseHandlers.Remove(masterCmd.OriginalSequenceNumber);
                         handler.AcceptResponse(masterCmd);
                         Debug.WriteLine(
-                                        "handler for complete multi-part command packet {0} invoked",
+                                        "handler for complete multi-part command response {0} invoked",
                                         masterCmd.OriginalSequenceNumber);
                     }
                 }
