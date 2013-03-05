@@ -14,8 +14,6 @@ namespace BESharp
         private readonly Dictionary<byte, ResponseHandler> cmdResponseHandlers =
                 new Dictionary<byte, ResponseHandler>();
 
-        private DatagramDispatcher dispatcher;
-
         private ResponseHandler loginHandler;
 
         private bool disposed;
@@ -24,9 +22,8 @@ namespace BESharp
 
 
 
-        public ResponseDispatcher(DatagramDispatcher dispatcher)
+        public ResponseDispatcher()
         {
-            this.dispatcher = dispatcher;
         }
 
 
@@ -44,6 +41,12 @@ namespace BESharp
         }
 
 
+        /// <summary>
+        ///   Returns a handler through which to be notified and provided with the 
+        ///   response message for the specified outbound datagram when such response 
+        ///   arrives.
+        /// </summary>
+        /// <param name="dgram"> The outbound datagram for which a response is expected. </param>
         public ResponseHandler CreateOrGetHandler(IOutboundDatagram dgram)
         {
             if (dgram.Type == DatagramType.Login)
@@ -166,7 +169,6 @@ namespace BESharp
                 if (notFromFinalizer)
                 {
                     // Release managed resources.
-                    this.dispatcher = null;
 
                     if (this.loginHandler != null)
                     {

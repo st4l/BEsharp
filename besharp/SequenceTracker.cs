@@ -22,7 +22,7 @@ namespace BESharp
         private int max = -1;
 
 
-        public SequenceTracker()
+        internal SequenceTracker()
         {
             this.Capacity = 100;
             this.buffer = new byte[100];

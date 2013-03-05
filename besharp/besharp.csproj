@@ -70,7 +70,9 @@
     <Compile Include="Datagrams\LoginDatagram.cs" />
     <Compile Include="Datagrams\LoginResponseDatagram.cs" />
     <Compile Include="DisconnectedEventArgs.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="InboundProcessor.cs" />
+    <Compile Include="DatagramSender.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="IUdpClient.cs" />
     <Compile Include="KeepAliveTracker.cs" />

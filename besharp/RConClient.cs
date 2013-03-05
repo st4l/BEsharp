@@ -315,8 +315,7 @@ namespace BESharp
 
         internal ResponseHandler SendCommand(string commandText)
         {
-            var dgram = new CommandDatagram(this.dispatcher.GetNextCommandSequenceNumber(), commandText);
-            return this.dispatcher.SendDatagram(dgram);
+            return this.dispatcher.SendCommand(commandText);
         }
 
 

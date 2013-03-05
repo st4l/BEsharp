@@ -17,7 +17,7 @@ namespace BESharp
         private readonly DatagramType type;
 
 
-        public InboundProcessor(DatagramDispatcher dispatcher, byte[] buffer, ILog log)
+        internal InboundProcessor(DatagramDispatcher dispatcher, byte[] buffer, ILog log)
         {
             if (dispatcher == null)
             {

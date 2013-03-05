@@ -20,9 +20,7 @@ namespace BESharp
     /// </summary>
     internal sealed class DatagramDispatcher : IDisposable
     {
-        private readonly ResponseDispatcher responseDispatcher;
-
-        private IUdpClient udpClient;
+        internal IUdpClient UdpClient { get; private set; }
 
         private KeepAliveTracker keepAliveTracker;
 
@@ -32,11 +30,9 @@ namespace BESharp
 
         private bool disposed;
 
-        private int lastCommandSequenceNumber = -1;
-
-        private DateTime lastCommandSentTime;
-
         private readonly RConClient rconClient;
+
+        private readonly DatagramSender datagramSender;
 
 
         /// <summary>
@@ -46,14 +42,16 @@ namespace BESharp
         /// <param name="client"> The <see cref="RConClient" /> to be used to connect to the RCon server. </param>
         internal DatagramDispatcher(RConClient client)
         {
+            this.Metrics = new RConMetrics();
+            this.KeepAlivePeriod = TimeSpan.FromSeconds(25);
             // throw new ArgumentException("Test shall not pass.");
             this.ConMsgsTracker = new SequenceTracker();
             this.CmdsTracker = new SequenceTracker();
             this.rconClient = client;
-            this.udpClient = client.UdpClient;
-            this.responseDispatcher = new ResponseDispatcher(this);
+            this.UdpClient = client.UdpClient;
+            this.ResponseDispatcher = new ResponseDispatcher();
+            this.datagramSender = new DatagramSender(this);
             this.Log = LogManager.GetLogger(this.GetType());
-            this.Metrics = new RConMetrics();
         }
 
 
@@ -90,9 +88,14 @@ namespace BESharp
 
         internal SequenceTracker ConMsgsTracker { get; private set; }
 
-        private RConMetrics Metrics { get; set; }
+        internal RConMetrics Metrics { get; set; }
 
         private ILog Log { get; set; }
+
+        internal ResponseDispatcher ResponseDispatcher { get; private set; }
+
+        internal TimeSpan KeepAlivePeriod { get; private set; }
+
 
         /// <summary>
         ///   Implement IDisposable.
@@ -151,48 +154,6 @@ namespace BESharp
         }
 
 
-        public ResponseHandler SendDatagram(IOutboundDatagram dgram)
-        {
-            // this.outboundQueue.Enqueue(dgram);
-            byte[] bytes = dgram.Build();
-
-            ResponseHandler handler = null;
-            if (dgram.ExpectsResponse)
-            {
-                handler = this.GetResponseHandler(dgram);
-            }
-
-            this.Log.Trace("BEFORE SendDatagram");
-
-
-            // socket is thread safe
-            // i.e. it is ok to send & receive at the same time from different threads
-            // also, there's no UDP ack, so there's no need to send asynchronously
-            int transferredBytes = this.udpClient.Send(bytes, bytes.Length);
-
-            this.Log.Trace("AFTER  SendDatagram");
-
-            dgram.SentTime = DateTime.Now;
-            this.Metrics.OutboundDatagramCount++;
-
-            if (dgram.Type == DatagramType.Command)
-            {
-                this.lastCommandSequenceNumber++;
-            }
-
-            Debug.Assert(
-                         transferredBytes == bytes.Length,
-                         "Sent bytes count equal count of bytes meant to be sent.");
-
-            if (dgram.Type == DatagramType.Command)
-            {
-                this.lastCommandSentTime = DateTime.Now;
-            }
-
-            return handler;
-        }
-
-
         /// <summary>
         ///   Meant to be called after Close(), i.e. once after each session.
         /// </summary>
@@ -205,29 +166,6 @@ namespace BESharp
             rconMetrics.DispatchedConsoleMessages += this.Metrics.DispatchedConsoleMessages;
             rconMetrics.KeepAliveDatagramsSent += this.Metrics.KeepAliveDatagramsSent;
             rconMetrics.KeepAliveDatagramsAcknowledgedByServer += this.Metrics.KeepAliveDatagramsAcknowledgedByServer;
-        }
-
-
-        internal byte GetNextCommandSequenceNumber()
-        {
-            var next = this.lastCommandSequenceNumber + 1;
-            if (next > 255)
-            {
-                next = 0;
-            }
-
-            return (byte)next;
-        }
-
-
-        /// <summary>
-        ///   Registers a handler to be notified when a response
-        ///   datagram arrives, and which accepts the response datagram itself.
-        /// </summary>
-        /// <param name="dgram"> </param>
-        private ResponseHandler GetResponseHandler(IOutboundDatagram dgram)
-        {
-            return this.responseDispatcher.CreateOrGetHandler(dgram);
         }
 
 
@@ -246,8 +184,7 @@ namespace BESharp
                 Thread.CurrentThread.Name = "MainPUMP" + Thread.CurrentThread.ManagedThreadId;
             }
 
-            TimeSpan keepAlivePeriod = TimeSpan.FromSeconds(25);
-            this.lastCommandSentTime = this.responseDispatcher.LastAcknowledgedDatagramSentTime = DateTime.Now.AddSeconds(-20);
+            this.ResponseDispatcher.LastAcknowledgedDatagramSentTime = DateTime.Now.Subtract(this.KeepAlivePeriod).AddSeconds(5);
 
             while (this.ShutdownReason == ShutdownReason.None)
             {
@@ -259,7 +196,7 @@ namespace BESharp
                 // has completed (or we're shutting down for some reason)
                 do
                 {
-                    this.CheckKeepAlive(keepAlivePeriod);
+                    this.CheckKeepAlive(this.KeepAlivePeriod);
 
                     this.Log.TraceFormat("===== WAITING RECEIVE =====, Status={0}", task.Status);
                     task.Wait(500);
@@ -288,13 +225,13 @@ namespace BESharp
             //      * we sent a command 10 secs ago but wasn't received by the server
             //        and not acknowledged, but we have "10 secs ago" in lastCommandSentTime)
             var keepAliveAgo = DateTime.Now.Subtract(keepAlivePeriod);
-            if (this.lastCommandSentTime < keepAliveAgo ||
-                this.responseDispatcher.LastAcknowledgedDatagramSentTime < keepAliveAgo)
+            if (this.datagramSender.LastCommandSentTime < keepAliveAgo ||
+                this.ResponseDispatcher.LastAcknowledgedDatagramSentTime < keepAliveAgo)
             {
                 // spawn a keep alive tracker until server acknowledges
                 if (this.keepAliveTracker == null)
                 {
-                    this.keepAliveTracker = new KeepAliveTracker(this, this.Metrics, this.Log);
+                    this.keepAliveTracker = new KeepAliveTracker(this.datagramSender, this.Metrics, this.Log);
                 }
             }
 
@@ -347,11 +284,11 @@ namespace BESharp
                 if (notFromFinalizer)
                 {
                     // Release managed resources.
-                    this.udpClient = null;
+                    this.UdpClient = null;
 
-                    if (this.responseDispatcher != null)
+                    if (this.ResponseDispatcher != null)
                     {
-                        this.responseDispatcher.Dispose();
+                        this.ResponseDispatcher.Dispose();
                     }
 
                     if (this.mainLoopTask != null)
@@ -379,7 +316,7 @@ namespace BESharp
             // ReceiveAsync (BeginRead) will spawn a new thread
             // which blocks head-on against the IO Completion Port
             // http://msdn.microsoft.com/en-us/library/windows/desktop/aa364986(v=vs.85).aspx
-            UdpReceiveResult result = await this.udpClient.ReceiveAsync()
+            UdpReceiveResult result = await this.UdpClient.ReceiveAsync()
                                                     //// do not incurr in ANOTHER context switch cost
                                                     .ConfigureAwait(false);
 
@@ -451,7 +388,7 @@ namespace BESharp
 
             // else, dgram is a response (to either a login or a command)
             this.Log.Trace("BEFORE response.DispatchResponse");
-            this.responseDispatcher.DispatchResponse(dgram);
+            this.ResponseDispatcher.DispatchResponse(dgram);
             this.Log.Trace("AFTER  response.DispatchResponse");
         }
 
@@ -475,6 +412,18 @@ namespace BESharp
         private void DispatchConnectionProblem(ConnectionProblemEventArgs args)
         {
             this.rconClient.OnConnectionProblem(args);
+        }
+
+
+        internal ResponseHandler SendDatagram(IOutboundDatagram acknowledgeMessageDatagram)
+        {
+            return this.datagramSender.SendDatagram(acknowledgeMessageDatagram);
+        }
+
+
+        public ResponseHandler SendCommand(string commandText)
+        {
+            return this.datagramSender.SendCommand(commandText);
         }
     }
 }

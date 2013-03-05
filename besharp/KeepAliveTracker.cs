@@ -14,7 +14,7 @@ namespace BESharp
 
     internal class KeepAliveTracker
     {
-        private readonly DatagramDispatcher dispatcher;
+        private readonly DatagramSender outProcessor;
 
         private readonly RConMetrics metrics;
 
@@ -26,16 +26,14 @@ namespace BESharp
 
         private int sentCount;
 
-        private SpinWait spinWait = new SpinWait();
-
         private int sequenceNumber = -1;
 
 
-        public KeepAliveTracker(DatagramDispatcher dispatcher, RConMetrics metrics, ILog log)
+        internal KeepAliveTracker(DatagramSender outProcessor, RConMetrics metrics, ILog log)
         {
-            if (dispatcher == null)
+            if (outProcessor == null)
             {
-                throw new ArgumentNullException("dispatcher");
+                throw new ArgumentNullException("outProcessor");
             }
             if (metrics == null)
             {
@@ -49,7 +47,7 @@ namespace BESharp
 
             this.Log = log;
             this.MaxTries = 5;
-            this.dispatcher = dispatcher;
+            this.outProcessor = outProcessor;
             this.metrics = metrics;
         }
 
@@ -70,7 +68,7 @@ namespace BESharp
                 return true;
             }
 
-            this.spinWait.SpinOnce();
+            Thread.SpinWait(10);
 
             // check if we received an ack for any of the sent ones
             int acks = this.sentHandlers.Count(handler => handler.ResponseDatagram != null);
@@ -104,12 +102,13 @@ namespace BESharp
         {
             if (this.sequenceNumber == -1)
             {
-                this.sequenceNumber = this.dispatcher.GetNextCommandSequenceNumber();
+                this.sequenceNumber = this.outProcessor.GetNextCommandSequenceNumber();
             }
 
             Debug.WriteLine("keep alive datagram {0} sent", this.sentCount + 1);
             var keepAliveDgram = new CommandDatagram((byte)this.sequenceNumber, string.Empty);
-            this.sentHandlers.Add(this.dispatcher.SendDatagram(keepAliveDgram));
+            var responseHandler = this.outProcessor.SendDatagram(keepAliveDgram);
+            this.sentHandlers.Add(responseHandler);
             this.lastSendTime = DateTime.Now;
             this.sentCount++;
             this.metrics.KeepAliveDatagramsSent++;
