@@ -39,7 +39,7 @@ namespace BESharp
         }
 
 
-        internal ResponseHandler SendDatagram(IOutboundDatagram dgram)
+        public ResponseHandler SendDatagram(IOutboundDatagram dgram)
         {
             // this.outboundQueue.Enqueue(dgram);
             byte[] bytes = dgram.Build();
@@ -81,8 +81,7 @@ namespace BESharp
         }
 
 
-
-        internal byte GetNextCommandSequenceNumber()
+        public byte GetNextCommandSequenceNumber()
         {
             var next = this.lastCommandSequenceNumber + 1;
             if (next > 255)

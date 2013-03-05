@@ -31,10 +31,10 @@
       <Field Name="keepAliveTracker" />
       <Field Name="rconClient" />
       <Field Name="datagramSender" />
+      <Property Name="UdpClient" />
       <Property Name="CmdsTracker" />
       <Property Name="ConMsgsTracker" />
       <Property Name="Metrics" />
-      <Property Name="UdpClient" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" />
   </Class>
