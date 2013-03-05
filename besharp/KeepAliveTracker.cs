@@ -61,7 +61,13 @@ namespace BESharp
         private int MaxTries { get; set; }
 
 
-        public bool Ping()
+        /// <summary>
+        ///     Sends keep alive datagrams every <see cref="period" />
+        ///     and / or returns true when any of them is acknowledged
+        ///     by the server.
+        /// </summary>
+        /// <returns>True if a keep alive datagram was acknowledged by the server; otherwise, false.</returns>
+        public bool SendAndCheckForAck()
         {
             if (this.Acknowledged)
             {

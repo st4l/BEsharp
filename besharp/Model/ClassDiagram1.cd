@@ -39,7 +39,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="BESharp.KeepAliveTracker">
-    <Position X="9.5" Y="3.75" Width="2.5" />
+    <Position X="9.5" Y="4" Width="2.5" />
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>
@@ -82,7 +82,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="BESharp.SequenceTracker">
-    <Position X="9.5" Y="6.75" Width="2.5" />
+    <Position X="8.75" Y="6.75" Width="2.5" />
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>
@@ -99,7 +99,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="BESharp.DatagramSender">
-    <Position X="9.5" Y="0.5" Width="2.75" />
+    <Position X="9.5" Y="1.25" Width="2.75" />
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>

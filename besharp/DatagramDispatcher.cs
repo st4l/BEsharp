@@ -4,7 +4,6 @@
 namespace BESharp
 {
     using System;
-    using System.Diagnostics;
     using System.Net.Sockets;
     using System.Runtime.ExceptionServices;
     using System.Security.Permissions;
@@ -187,24 +186,22 @@ namespace BESharp
 
 
         /// <summary>
-        ///   Checks whether we need to send a keep alive datagram,
-        ///   and if needed sends it and checks for its acknowledgment.
+        ///   If a keep alive datagram is due, uses a <see cref="keepAliveTracker" /> 
+        ///   to keep sending one frequently until one is acknowledged.
         /// </summary>
         private void CheckKeepAlive()
         {
-            if (this.keepAliveTracker == null)
+            if (this.keepAliveTracker == null 
+                && this.IsKeepAliveNeeded())
             {
-                if (this.IsKeepAliveNeeded())
-                {
-                    // spawn a keep alive tracker until server acknowledges
-                    this.keepAliveTracker = new KeepAliveTracker(this.datagramSender, this.Metrics, this.Log);
-                }
+                // spawn a keep alive tracker until server acknowledges
+                this.keepAliveTracker = new KeepAliveTracker(this.datagramSender, this.Metrics, this.Log);
             }
 
             // if keepAliveTracker is alive, ping and check for ack
             if (this.keepAliveTracker != null)
             {
-                if (this.keepAliveTracker.Ping())
+                if (this.keepAliveTracker.SendAndCheckForAck())
                 {
                     // success, no need to keep pinging
                     this.keepAliveTracker = null;
@@ -251,40 +248,6 @@ namespace BESharp
 
 
         /// <summary>
-        ///   Dispose managed and unmanaged resources.
-        /// </summary>
-        /// <param name="notFromFinalizer"> True unless we're called from the finalizer, 
-        /// in which case only unmanaged resources can be disposed. </param>
-        private void Dispose(bool notFromFinalizer)
-        {
-            // Check to see if Dispose has already been called. 
-            if (!this.disposed)
-            {
-                // If notFromFinalizer, dispose all managed resources. 
-                if (notFromFinalizer)
-                {
-                    // Release managed resources.
-                    this.UdpClient = null;
-
-                    if (this.ResponseDispatcher != null)
-                    {
-                        this.ResponseDispatcher.Dispose();
-                    }
-
-                    if (this.mainLoopTask != null)
-                    {
-                        this.mainLoopTask.Wait();
-                        this.mainLoopTask.Dispose();
-                    }
-                }
-
-                this.disposed = true;
-                this.Log.Trace("DISPOSED");
-            }
-        }
-
-
-        /// <summary>
         ///   Handles a datagram asynchronously that was received from
         ///   the RCon server.
         /// </summary>
@@ -297,11 +260,11 @@ namespace BESharp
             // which blocks head-on against the IO Completion Port
             // http://msdn.microsoft.com/en-us/library/windows/desktop/aa364986(v=vs.85).aspx
             UdpReceiveResult result = await this.UdpClient.ReceiveAsync()
-                                                    //// do not incurr in ANOTHER context switch cost
+                                                    //// do not incurr ANOTHER context switch cost
                                                     .ConfigureAwait(false);
 
             this.Log.Trace("AFTER  await ReceiveAsync");
-            var processor = new InboundProcessor(this, result.Buffer, this.Log);
+            var processor = new InboundProcessor(result.Buffer, this, this.Log);
             if (this.TryPreProcessInboundDatagram(processor))
             {
                 return;
@@ -375,15 +338,49 @@ namespace BESharp
         }
 
 
-        internal ResponseHandler SendDatagram(IOutboundDatagram acknowledgeMessageDatagram)
+        internal ResponseHandler SendDatagram(IOutboundDatagram dgram)
         {
-            return this.datagramSender.SendDatagram(acknowledgeMessageDatagram);
+            return this.datagramSender.SendDatagram(dgram);
         }
 
 
         public ResponseHandler SendCommand(string commandText)
         {
             return this.datagramSender.SendCommand(commandText);
+        }
+
+
+        /// <summary>
+        ///   Dispose managed and unmanaged resources.
+        /// </summary>
+        /// <param name="notFromFinalizer"> True unless we're called from the finalizer, 
+        /// in which case only unmanaged resources can be disposed. </param>
+        private void Dispose(bool notFromFinalizer)
+        {
+            // Check to see if Dispose has already been called. 
+            if (!this.disposed)
+            {
+                // If notFromFinalizer, dispose all managed resources. 
+                if (notFromFinalizer)
+                {
+                    // Release managed resources.
+                    this.UdpClient = null;
+
+                    if (this.ResponseDispatcher != null)
+                    {
+                        this.ResponseDispatcher.Dispose();
+                    }
+
+                    if (this.mainLoopTask != null)
+                    {
+                        this.mainLoopTask.Wait();
+                        this.mainLoopTask.Dispose();
+                    }
+                }
+
+                this.disposed = true;
+                this.Log.Trace("DISPOSED");
+            }
         }
     }
 }
