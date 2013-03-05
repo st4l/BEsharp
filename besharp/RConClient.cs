@@ -1,6 +1,7 @@
 ﻿// ----------------------------------------------------------------------------------------------------
 // <copyright file="RConClient.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
+using System.ComponentModel;
 namespace BESharp
 {
     using System;
@@ -25,11 +26,6 @@ namespace BESharp
     {
         private readonly string password;
 
-        private readonly object msgReceivedEventAccesorsLockObject = new object();
-
-        private readonly object connectionProblemEventAccesorsLockObject = new object();
-
-
 #if DEBUG
         // will block until this client shuts down
         private readonly ManualResetEvent runningLock = new ManualResetEvent(false);
@@ -42,11 +38,7 @@ namespace BESharp
 
         private bool disposed;
 
-        private EventHandler<MessageReceivedEventArgs> subscribedMsgReceivedHandler;
-
-        private EventHandler<ConnectionProblemEventArgs> subscribedConnProblemHandler;
-
-        private bool closingSession;
+        private AsyncOperation asyncOperation;
 
 
         public RConClient(string host, int port, string password)
@@ -77,14 +69,14 @@ namespace BESharp
                 nex.Throw();
             }
 
-            this.Client = client;
+            this.UdpClient = client;
             this.Initialize();
         }
 
 
         internal RConClient(IUdpClient client, string password)
         {
-            this.Client = client;
+            this.UdpClient = client;
             this.password = password;
             this.Initialize();
         }
@@ -107,116 +99,20 @@ namespace BESharp
         /// <summary>
         ///   Occurs when a console message is received from the RCon server.
         /// </summary>
-        /// <remarks>
-        ///   In <see cref="StartListening" /> we are passing along the
-        ///   multicast delegate directly to
-        ///   <see cref="DatagramDispatcher.MessageReceived" />, so we
-        ///   need to update it if we already passed it (subscribed).
-        /// </remarks>
-        public event EventHandler<MessageReceivedEventArgs> MessageReceived
-        {
-            add
-            {
-                lock (this.msgReceivedEventAccesorsLockObject)
-                {
-                    this.MsgReceived += value;
-                    if (this.dispatcher == null)
-                    {
-                        return;
-                    }
-
-                    if (this.subscribedMsgReceivedHandler != null)
-                    {
-                        this.dispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
-                    }
-
-                    this.subscribedMsgReceivedHandler = this.MsgReceived;
-                    this.dispatcher.MessageReceived += this.MsgReceived;
-                }
-            }
-
-            remove
-            {
-                lock (this.msgReceivedEventAccesorsLockObject)
-                {
-                    this.MsgReceived -= value;
-                    if (this.dispatcher == null)
-                    {
-                        return;
-                    }
-
-                    if (this.subscribedMsgReceivedHandler != null)
-                    {
-                        this.dispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
-                    }
-
-                    this.subscribedMsgReceivedHandler = this.MsgReceived;
-                    this.dispatcher.MessageReceived += this.MsgReceived;
-                }
-            }
-        }
+        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
 
         /// <summary>
         ///   Occurs when some problem is detected in the incoming 
-        ///   datagrams from the server, such as corrupted datagrams or
-        ///   lost datagrams.
+        ///   datagrams from the server, such as corrupted or lost data.
         /// </summary>
-        /// <remarks>
-        ///   In <see cref="StartListening" /> we are passing along the
-        ///   multicast delegate directly to
-        ///   <see cref="DatagramDispatcher.ConnectionProblem" />, so we
-        ///   need to update it if we already passed it (subscribed).
-        /// </remarks>
-        public event EventHandler<ConnectionProblemEventArgs> ConnectionProblem
-        {
-            add
-            {
-                lock (this.connectionProblemEventAccesorsLockObject)
-                {
-                    this.ConnProblem += value;
-                    if (this.dispatcher == null)
-                    {
-                        return;
-                    }
+        public event EventHandler<ConnectionProblemEventArgs> ConnectionProblem;
 
-                    if (this.subscribedConnProblemHandler != null)
-                    {
-                        this.dispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
-                    }
 
-                    this.subscribedConnProblemHandler = this.ConnProblem;
-                    this.dispatcher.ConnectionProblem += this.ConnProblem;
-                }
-            }
-
-            remove
-            {
-                lock (this.connectionProblemEventAccesorsLockObject)
-                {
-                    this.ConnProblem -= value;
-                    if (this.dispatcher == null)
-                    {
-                        return;
-                    }
-
-                    if (this.subscribedConnProblemHandler != null)
-                    {
-                        this.dispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
-                    }
-
-                    this.subscribedConnProblemHandler = this.ConnProblem;
-                    this.dispatcher.ConnectionProblem += this.ConnProblem;
-                }
-            }
-        }
-
+        /// <summary>
+        ///   Occurs when a disconnection is detected.
+        /// </summary>
         public event EventHandler<DisconnectedEventArgs> Disconnected;
-
-
-        private event EventHandler<ConnectionProblemEventArgs> ConnProblem;
-
-        private event EventHandler<MessageReceivedEventArgs> MsgReceived;
 
 
         /// <summary>
@@ -245,7 +141,7 @@ namespace BESharp
 
         internal RConMetrics Metrics { get; set; }
 
-        internal IUdpClient Client { get; set; }
+        internal IUdpClient UdpClient { get; set; }
 
         private ILog Log { get; set; }
 
@@ -308,15 +204,6 @@ namespace BESharp
         }
 
 
-        private void OnDisconnected(DisconnectedEventArgs e)
-        {
-            if (this.Disconnected != null)
-            {
-                this.Disconnected(this, e);
-            }
-        }
-
-
 #if DEBUG
         internal void WaitUntilShutdown()
         {
@@ -327,6 +214,7 @@ namespace BESharp
 
         private void Initialize()
         {
+            this.asyncOperation = AsyncOperationManager.CreateOperation(null);
             this.Log = LogManager.GetLogger(this.GetType());
             this.Metrics = new RConMetrics();
         }
@@ -350,9 +238,9 @@ namespace BESharp
                         this.dispatcher.Close();
                     }
 
-                    if (this.Client != null)
+                    if (this.UdpClient != null)
                     {
-                        this.Client.Close();
+                        this.UdpClient.Close();
                     }
 
 #if DEBUG
@@ -441,15 +329,10 @@ namespace BESharp
 
         private void StartListening()
         {
-            this.dispatcher = new DatagramDispatcher(this.Client)
-                                     {
-                                             DiscardConsoleMessages = this.DiscardConsoleMessages
-                                     };
-            this.subscribedMsgReceivedHandler = this.MsgReceived;
-            this.dispatcher.MessageReceived += this.subscribedMsgReceivedHandler;
-            this.subscribedConnProblemHandler = this.ConnProblem;
-            this.dispatcher.ConnectionProblem += this.subscribedConnProblemHandler;
-            this.dispatcher.Disconnected += this.HandleDispatcherDisconnected;
+            this.dispatcher = new DatagramDispatcher(this)
+                                  {
+                                          DiscardConsoleMessages = this.DiscardConsoleMessages
+                                  };
             this.dispatcher.Start();
         }
 
@@ -463,38 +346,84 @@ namespace BESharp
         }
 
 
-        private void HandleDispatcherDisconnected(object sender, DisconnectedEventArgs e)
+        /// <summary>
+        ///     Handles the event of the dispatcher closing (and disposing)
+        ///     because of a disconnect or a user request.
+        /// </summary>
+        /// <param name="reason">The reason why the dispatcher closed.</param>
+        internal void HandleDispatcherClosed(ShutdownReason reason)
         {
-            if (this.closingSession || this.dispatcher == null)
+            if (this.dispatcher == null)
             {
+                System.Diagnostics.Debugger.Break();
                 return;
             }
-            this.closingSession = true;
 
-            this.ShutdownReason = e.ShutdownReason;
-
-            if (this.subscribedMsgReceivedHandler != null)
-            {
-                this.dispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
-            }
-
-            this.subscribedMsgReceivedHandler = null;
-            if (this.subscribedConnProblemHandler != null)
-            {
-                this.dispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
-            }
-
-            this.subscribedMsgReceivedHandler = null;
-            this.dispatcher.Disconnected -= this.HandleDispatcherDisconnected;
+            this.ShutdownReason = reason;
             this.dispatcher.UpdateMetrics(this.Metrics);
-
             this.dispatcher = null;
-            this.closingSession = false;
 
 #if DEBUG
             this.runningLock.Set();
 #endif
-            this.OnDisconnected(e);
+            var args = new DisconnectedEventArgs(reason);
+            this.OnDisconnected(args);
+        }
+
+
+        /// <summary>
+        ///   Raises the <see cref="MessageReceived" /> event.
+        /// </summary>
+        /// <param name="e"> A <see cref="MessageReceivedEventArgs" /> that contains the event data. </param>
+        internal void OnMessageReceived(MessageReceivedEventArgs e)
+        {
+            if (this.MessageReceived != null)
+            {
+                this.RaiseEventAsync(o => this.MessageReceived(this, (MessageReceivedEventArgs)o), e);
+            }
+        }
+
+
+        /// <summary>
+        ///   Raises the <see cref="ConnectionProblem" /> event.
+        /// </summary>
+        /// <param name="e"> A <see cref="ConnectionProblemEventArgs" /> that contains the event data. </param>
+        internal void OnConnectionProblem(ConnectionProblemEventArgs e)
+        {
+            if (this.ConnectionProblem != null)
+            {
+                this.RaiseEventAsync(o => this.ConnectionProblem(this, (ConnectionProblemEventArgs)o), e);
+            }
+        }
+
+
+        /// <summary>
+        ///   Raises the <see cref="Disconnected" /> event.
+        /// </summary>
+        /// <param name="e"> A <see cref="DisconnectedEventArgs" /> that contains the event data. </param>
+        private void OnDisconnected(DisconnectedEventArgs e)
+        {
+            if (this.Disconnected != null)
+            {
+                this.Disconnected(this, e);
+            }
+        }
+
+
+        /// <remarks>
+        ///   Raises an event in the appropriate threading context (e.g. the UI thread or the ASP.NET context),
+        ///   by using AsyncOperation. The context switch is costly, but usually what the library user will expect.
+        /// </remarks>
+        private void RaiseEventAsync(SendOrPostCallback call, object args)
+        {
+            if (this.asyncOperation != null)
+            {
+                this.asyncOperation.Post(call, args);
+            }
+            else
+            {
+                call(args);
+            }
         }
     }
 }

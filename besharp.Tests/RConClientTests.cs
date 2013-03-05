@@ -346,7 +346,7 @@ namespace BESharp.Tests
         {
             var conf = new MockServerSetup
             {
-                LoadTestConsoleMessages = 50000,
+                LoadTestConsoleMessages = 50010,
 #if TRACE
                 MaxRunSeconds = 120,
 #endif

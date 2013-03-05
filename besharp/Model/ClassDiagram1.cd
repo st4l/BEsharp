@@ -3,12 +3,11 @@
   <Class Name="BESharp.RConClient">
     <Position X="1" Y="2.25" Width="2.75" />
     <Compartments>
-      <Compartment Name="Internal" Collapsed="true" />
       <Compartment Name="Private" Collapsed="true" />
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAIAAAIASCACASAEAAAAAIGIAAgAJAAAGJwQEgCgAYQ=</HashCode>
+      <HashCode>AAIAAAIAQCQIAQAAAASAAIGAAAgAJgAAGJwQEiCAAoA=</HashCode>
       <FileName>RConClient.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -23,7 +22,7 @@
       <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>IUICQAoBUDUIQCAAAAWAgACAAIgADggBAAgAAgCAAkA=</HashCode>
+      <HashCode>IUICUAgBEDEIQCAAAAEAgACAAIgADggBAAAAAgCAAkA=</HashCode>
       <FileName>DatagramDispatcher.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -37,7 +36,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="BESharp.KeepAliveTracker">
-    <Position X="9.25" Y="4.5" Width="1.75" />
+    <Position X="9.25" Y="4.5" Width="2.5" />
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>
@@ -51,10 +50,15 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="BESharp.InboundProcessor">
-    <Position X="1.5" Y="6.5" Width="2.25" />
+    <Position X="1" Y="8.25" Width="2.75" />
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>
+    <AssociationLine Name="dispatcher" Type="BESharp.DatagramDispatcher">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.141" Y="0.352" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>EAAgAAAAAAAAAAAAIBAAAIAFAAgBAAAAAABAAAgAAQA=</HashCode>
       <FileName>InboundProcessor.cs</FileName>
@@ -64,7 +68,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="BESharp.ResponseDispatcher">
-    <Position X="9.25" Y="1.25" Width="1.75" />
+    <Position X="9.25" Y="1.25" Width="2.5" />
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>
@@ -88,7 +92,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="BESharp.RConMetrics" Collapsed="true">
-    <Position X="9.25" Y="3.5" Width="1.75" />
+    <Position X="9.25" Y="3.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAABIAAAAACIIgAAAgAAAAAAEQAAAEA=</HashCode>
       <FileName>RConMetrics.cs</FileName>

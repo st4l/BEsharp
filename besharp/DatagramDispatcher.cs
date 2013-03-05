@@ -4,7 +4,6 @@
 namespace BESharp
 {
     using System;
-    using System.ComponentModel;
     using System.Diagnostics;
     using System.Net.Sockets;
     using System.Runtime.ExceptionServices;
@@ -27,8 +26,6 @@ namespace BESharp
 
         private KeepAliveTracker keepAliveTracker;
 
-        private AsyncOperation asyncOperation;
-
         private Task mainLoopTask;
 
         private bool hasStarted;
@@ -39,20 +36,21 @@ namespace BESharp
 
         private DateTime lastCommandSentTime;
 
-        private DateTime lastAcknowledgedDatagramSentTime;
+        private readonly RConClient rconClient;
 
 
         /// <summary>
         ///   Initializes a new instance of <see cref="DatagramDispatcher" />
         ///   and establishes the <see cref="UdpClient" /> to be used.
         /// </summary>
-        /// <param name="udpClient"> The <see cref="UdpClient" /> to be used to connect to the RCon server. </param>
-        internal DatagramDispatcher(IUdpClient udpClient)
+        /// <param name="client"> The <see cref="RConClient" /> to be used to connect to the RCon server. </param>
+        internal DatagramDispatcher(RConClient client)
         {
+            // throw new ArgumentException("Test shall not pass.");
             this.ConMsgsTracker = new SequenceTracker();
             this.CmdsTracker = new SequenceTracker();
-            // throw new ArgumentException("Test shall not pass.");
-            this.udpClient = udpClient;
+            this.rconClient = client;
+            this.udpClient = client.UdpClient;
             this.responseDispatcher = new ResponseDispatcher(this);
             this.Log = LogManager.GetLogger(this.GetType());
             this.Metrics = new RConMetrics();
@@ -73,34 +71,17 @@ namespace BESharp
         }
 
 
-        /// <summary>
-        ///   Occurs when a console message is received from the RCon server.
-        /// </summary>
-        internal event EventHandler<MessageReceivedEventArgs> MessageReceived;
-
 
         /// <summary>
-        ///   Occurs when a problem is detected in the incoming datagrams,
-        ///   such as corrupted data.
+        ///     Signals whether a shutdown is in progress and the reason why it is.
         /// </summary>
-        internal event EventHandler<ConnectionProblemEventArgs> ConnectionProblem;
-
-
-        /// <summary>
-        ///   Occurs when a disconnection is detected, and this instance 
-        ///   was disposed because of that.
-        /// </summary>
-        internal event EventHandler<DisconnectedEventArgs> Disconnected;
-
-
-        public ShutdownReason ShutdownReason { get; private set; }
+        private ShutdownReason ShutdownReason { get; set; }
 
 
         /// <summary>
         ///   Gets or sets a <see cref="Boolean" /> value that specifies
         ///   whether this <see cref="DatagramDispatcher" /> discards all
-        ///   console message datagrams received (the <see cref="MessageReceived" />
-        ///   event is never raised).
+        ///   console message datagrams received.
         /// </summary>
         public bool DiscardConsoleMessages { get; set; }
 
@@ -112,6 +93,8 @@ namespace BESharp
         private RConMetrics Metrics { get; set; }
 
         private ILog Log { get; set; }
+
+        internal DateTime LastAcknowledgedDatagramSentTime { get; set; }
 
 
         /// <summary>
@@ -142,8 +125,6 @@ namespace BESharp
             }
 
             this.hasStarted = true;
-
-            this.asyncOperation = AsyncOperationManager.CreateOperation(null);
 
             this.mainLoopTask = new Task(this.MainLoop);
             this.mainLoopTask.ContinueWith(this.HandleMainLoopException, TaskContinuationOptions.OnlyOnFaulted);
@@ -245,9 +226,9 @@ namespace BESharp
         internal void RegisterAcknowledgedDatagram(IOutboundDatagram acknowledgedDatagram)
         {
             var sentTime = acknowledgedDatagram.SentTime;
-            if (sentTime > this.lastAcknowledgedDatagramSentTime)
+            if (sentTime > this.LastAcknowledgedDatagramSentTime)
             {
-                this.lastAcknowledgedDatagramSentTime = sentTime;
+                this.LastAcknowledgedDatagramSentTime = sentTime;
             }
         }
 
@@ -279,7 +260,7 @@ namespace BESharp
             }
 
             TimeSpan keepAlivePeriod = TimeSpan.FromSeconds(25);
-            this.lastCommandSentTime = this.lastAcknowledgedDatagramSentTime = DateTime.Now.AddSeconds(-10);
+            this.lastCommandSentTime = this.LastAcknowledgedDatagramSentTime = DateTime.Now.AddSeconds(-20);
 
             while (this.ShutdownReason == ShutdownReason.None)
             {
@@ -321,7 +302,7 @@ namespace BESharp
             //        and not acknowledged, but we have "10 secs ago" in lastCommandSentTime)
             var keepAliveAgo = DateTime.Now.Subtract(keepAlivePeriod);
             if (this.lastCommandSentTime < keepAliveAgo ||
-                this.lastAcknowledgedDatagramSentTime < keepAliveAgo)
+                this.LastAcknowledgedDatagramSentTime < keepAliveAgo)
             {
                 // spawn a keep alive tracker until server acknowledges
                 if (this.keepAliveTracker == null)
@@ -361,8 +342,7 @@ namespace BESharp
 
             this.Dispose();
 
-            var args = new DisconnectedEventArgs(this.ShutdownReason);
-            this.RaiseEventAsync(o => this.OnDisconnected((DisconnectedEventArgs)o), args);
+            this.rconClient.HandleDispatcherClosed(this.ShutdownReason);
         }
 
 
@@ -490,94 +470,24 @@ namespace BESharp
 
 
         /// <summary>
-        ///   Dispatches received console messages to the appropriate
-        ///   threading context (e.g. the UI thread or the ASP.NET context),
-        ///   by using AsyncOperation.
+        ///   Dispatches received console messages.
         /// </summary>
         /// <param name="dgram"> The <see cref="ConsoleMessageDatagram" /> representing the received console message. </param>
-        /// <remarks>
-        ///   The context switch is costly, but usually what the
-        ///   library user will expect.
-        /// </remarks>
         private void DispatchConsoleMessage(ConsoleMessageDatagram dgram)
         {
-            if (this.MessageReceived != null)
-            {
-                var args = new MessageReceivedEventArgs(dgram);
-                this.RaiseEventAsync(o => this.OnMessageReceived((MessageReceivedEventArgs)o), args);
-            }
+            var args = new MessageReceivedEventArgs(dgram);
+            this.rconClient.OnMessageReceived(args);
 
             this.Metrics.DispatchedConsoleMessages++;
         }
 
 
         /// <summary>
-        ///   Dispatches connection problem events to the appropriate
-        ///   threading context (e.g. the UI thread or the ASP.NET context),
-        ///   by using AsyncOperation.
+        ///   Dispatches connection problem events.
         /// </summary>
-        /// <remarks>
-        ///   The context switch is costly, but usually what the
-        ///   library user will expect.
-        /// </remarks>
         private void DispatchConnectionProblem(ConnectionProblemEventArgs args)
         {
-            if (this.ConnectionProblem != null)
-            {
-                this.RaiseEventAsync(o => this.OnConnectionProblem((ConnectionProblemEventArgs)o), args);
-            }
-        }
-
-
-        private void RaiseEventAsync(SendOrPostCallback call, object args)
-        {
-            if (this.asyncOperation != null)
-            {
-                this.asyncOperation.Post(call, args);
-            }
-            else
-            {
-                call(args);
-            }
-        }
-
-
-        /// <summary>
-        ///   Raises the <see cref="ConnectionProblem" /> event.
-        /// </summary>
-        /// <param name="e"> A <see cref="ConnectionProblemEventArgs" /> that contains the event data. </param>
-        private void OnConnectionProblem(ConnectionProblemEventArgs e)
-        {
-            if (this.ConnectionProblem != null)
-            {
-                this.ConnectionProblem(this, e);
-            }
-        }
-
-
-        /// <summary>
-        ///   Raises the <see cref="MessageReceived" /> event.
-        /// </summary>
-        /// <param name="e"> A <see cref="MessageReceivedEventArgs" /> that contains the event data. </param>
-        private void OnMessageReceived(MessageReceivedEventArgs e)
-        {
-            if (this.MessageReceived != null)
-            {
-                this.MessageReceived(this, e);
-            }
-        }
-
-
-        /// <summary>
-        ///   Raises the <see cref="Disconnected" /> event.
-        /// </summary>
-        /// <param name="e"> A <see cref="DisconnectedEventArgs" /> that contains the event data. </param>
-        private void OnDisconnected(DisconnectedEventArgs e)
-        {
-            if (this.Disconnected != null)
-            {
-                this.Disconnected(this, e);
-            }
+            this.rconClient.OnConnectionProblem(args);
         }
     }
 }
