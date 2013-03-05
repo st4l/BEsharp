@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Include>
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldThrowWhenServerDown" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldLogin" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldNotifyAboutCorruptedPackets" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldAcceptOutOfOrderCommandResponsesCorrectly" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldDiscardRepeatedConsoleMessages" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldReturnCommandResponsesCorrectly" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldParseMultipartCommandResponsesCorrectly" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldDiscardCorruptedPackets" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldDiscardConsolePackets" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldThrowOnLoginWithWrongPassword" />
+  </Include>
+</Playlist>

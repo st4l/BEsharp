@@ -430,6 +430,12 @@ namespace BESharp
         }
 
 
+        /// <summary>
+        ///     Tries to pre-process a datagram without further parsing
+        ///     and processing.
+        /// </summary>
+        /// <param name="processor">The inbound processor for the datagram to be pre-processed.</param>
+        /// <returns>True if it was pre-processed and no further processing is needed; false otherwise.</returns>
         private bool TryPreProcessInboundDatagram(InboundProcessor processor)
         {
             if (!processor.IsValidLength)

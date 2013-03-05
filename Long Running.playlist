@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Playlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Include>
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldSendKeepAliveUnderHeavyLoad" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldAcceptTonsOfPackets" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldParseTonsOfPackets" />
+    <FullyQualifiedName Name="BESharp.Tests.RConClientTests.ShouldDetectDisconnectUnderHeavyLoad" />
+  </Include>
+</Playlist>

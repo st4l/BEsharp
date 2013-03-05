@@ -36,7 +36,7 @@ namespace BESharp
 #endif
 
 
-        private DatagramDispatcher dgramDispatcher;
+        private DatagramDispatcher dispatcher;
 
         private bool closed;
 
@@ -120,18 +120,18 @@ namespace BESharp
                 lock (this.msgReceivedEventAccesorsLockObject)
                 {
                     this.MsgReceived += value;
-                    if (this.dgramDispatcher == null)
+                    if (this.dispatcher == null)
                     {
                         return;
                     }
 
                     if (this.subscribedMsgReceivedHandler != null)
                     {
-                        this.dgramDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
+                        this.dispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
                     }
 
                     this.subscribedMsgReceivedHandler = this.MsgReceived;
-                    this.dgramDispatcher.MessageReceived += this.MsgReceived;
+                    this.dispatcher.MessageReceived += this.MsgReceived;
                 }
             }
 
@@ -140,18 +140,18 @@ namespace BESharp
                 lock (this.msgReceivedEventAccesorsLockObject)
                 {
                     this.MsgReceived -= value;
-                    if (this.dgramDispatcher == null)
+                    if (this.dispatcher == null)
                     {
                         return;
                     }
 
                     if (this.subscribedMsgReceivedHandler != null)
                     {
-                        this.dgramDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
+                        this.dispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
                     }
 
                     this.subscribedMsgReceivedHandler = this.MsgReceived;
-                    this.dgramDispatcher.MessageReceived += this.MsgReceived;
+                    this.dispatcher.MessageReceived += this.MsgReceived;
                 }
             }
         }
@@ -175,18 +175,18 @@ namespace BESharp
                 lock (this.connectionProblemEventAccesorsLockObject)
                 {
                     this.ConnProblem += value;
-                    if (this.dgramDispatcher == null)
+                    if (this.dispatcher == null)
                     {
                         return;
                     }
 
                     if (this.subscribedConnProblemHandler != null)
                     {
-                        this.dgramDispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
+                        this.dispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
                     }
 
                     this.subscribedConnProblemHandler = this.ConnProblem;
-                    this.dgramDispatcher.ConnectionProblem += this.ConnProblem;
+                    this.dispatcher.ConnectionProblem += this.ConnProblem;
                 }
             }
 
@@ -195,18 +195,18 @@ namespace BESharp
                 lock (this.connectionProblemEventAccesorsLockObject)
                 {
                     this.ConnProblem -= value;
-                    if (this.dgramDispatcher == null)
+                    if (this.dispatcher == null)
                     {
                         return;
                     }
 
                     if (this.subscribedConnProblemHandler != null)
                     {
-                        this.dgramDispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
+                        this.dispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
                     }
 
                     this.subscribedConnProblemHandler = this.ConnProblem;
-                    this.dgramDispatcher.ConnectionProblem += this.ConnProblem;
+                    this.dispatcher.ConnectionProblem += this.ConnProblem;
                 }
             }
         }
@@ -345,9 +345,9 @@ namespace BESharp
                 if (notFromFinalizer)
                 {
                     // Dispose managed resources.
-                    if (this.dgramDispatcher != null)
+                    if (this.dispatcher != null)
                     {
-                        this.dgramDispatcher.Close();
+                        this.dispatcher.Close();
                     }
 
                     if (this.Client != null)
@@ -373,7 +373,7 @@ namespace BESharp
         {
             this.Log.Trace("BEFORE LOGIN await SendDatagram");
             ResponseHandler responseHandler =
-                    this.dgramDispatcher.SendDatagram(new LoginDatagram(this.password));
+                    this.dispatcher.SendDatagram(new LoginDatagram(this.password));
             this.Log.Trace("AFTER  LOGIN await SendDatagram");
 
             this.Log.Trace("BEFORE LOGIN await WaitForResponse");
@@ -427,45 +427,45 @@ namespace BESharp
 
         internal ResponseHandler SendCommand(string commandText)
         {
-            var dgram = new CommandDatagram(this.dgramDispatcher.GetNextCommandSequenceNumber(), commandText);
-            return this.dgramDispatcher.SendDatagram(dgram);
+            var dgram = new CommandDatagram(this.dispatcher.GetNextCommandSequenceNumber(), commandText);
+            return this.dispatcher.SendDatagram(dgram);
         }
 
 
         internal ResponseHandler SendCommand(byte sequenceNumber, string commandText)
         {
             var dgram = new CommandDatagram(sequenceNumber, commandText);
-            return this.dgramDispatcher.SendDatagram(dgram);
+            return this.dispatcher.SendDatagram(dgram);
         }
 
 
         private void StartListening()
         {
-            this.dgramDispatcher = new DatagramDispatcher(this.Client)
+            this.dispatcher = new DatagramDispatcher(this.Client)
                                      {
                                              DiscardConsoleMessages = this.DiscardConsoleMessages
                                      };
             this.subscribedMsgReceivedHandler = this.MsgReceived;
-            this.dgramDispatcher.MessageReceived += this.subscribedMsgReceivedHandler;
+            this.dispatcher.MessageReceived += this.subscribedMsgReceivedHandler;
             this.subscribedConnProblemHandler = this.ConnProblem;
-            this.dgramDispatcher.ConnectionProblem += this.subscribedConnProblemHandler;
-            this.dgramDispatcher.Disconnected += this.HandleDispatcherDisconnected;
-            this.dgramDispatcher.Start();
+            this.dispatcher.ConnectionProblem += this.subscribedConnProblemHandler;
+            this.dispatcher.Disconnected += this.HandleDispatcherDisconnected;
+            this.dispatcher.Start();
         }
 
 
         private void StopListening()
         {
-            if (this.dgramDispatcher != null)
+            if (this.dispatcher != null)
             {
-                this.dgramDispatcher.Close(); // disposes
+                this.dispatcher.Close(); // disposes
             }
         }
 
 
         private void HandleDispatcherDisconnected(object sender, DisconnectedEventArgs e)
         {
-            if (this.closingSession || this.dgramDispatcher == null)
+            if (this.closingSession || this.dispatcher == null)
             {
                 return;
             }
@@ -475,20 +475,20 @@ namespace BESharp
 
             if (this.subscribedMsgReceivedHandler != null)
             {
-                this.dgramDispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
+                this.dispatcher.MessageReceived -= this.subscribedMsgReceivedHandler;
             }
 
             this.subscribedMsgReceivedHandler = null;
             if (this.subscribedConnProblemHandler != null)
             {
-                this.dgramDispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
+                this.dispatcher.ConnectionProblem -= this.subscribedConnProblemHandler;
             }
 
             this.subscribedMsgReceivedHandler = null;
-            this.dgramDispatcher.Disconnected -= this.HandleDispatcherDisconnected;
-            this.dgramDispatcher.UpdateMetrics(this.Metrics);
+            this.dispatcher.Disconnected -= this.HandleDispatcherDisconnected;
+            this.dispatcher.UpdateMetrics(this.Metrics);
 
-            this.dgramDispatcher = null;
+            this.dispatcher = null;
             this.closingSession = false;
 
 #if DEBUG

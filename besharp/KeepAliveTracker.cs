@@ -14,7 +14,7 @@ namespace BESharp
 
     internal class KeepAliveTracker
     {
-        private readonly DatagramDispatcher msgDispatcher;
+        private readonly DatagramDispatcher dispatcher;
 
         private readonly RConMetrics metrics;
 
@@ -31,11 +31,11 @@ namespace BESharp
         private int sequenceNumber = -1;
 
 
-        public KeepAliveTracker(DatagramDispatcher msgDispatcher, RConMetrics metrics, ILog log)
+        public KeepAliveTracker(DatagramDispatcher dispatcher, RConMetrics metrics, ILog log)
         {
-            if (msgDispatcher == null)
+            if (dispatcher == null)
             {
-                throw new ArgumentNullException("msgDispatcher");
+                throw new ArgumentNullException("dispatcher");
             }
             if (metrics == null)
             {
@@ -49,7 +49,7 @@ namespace BESharp
 
             this.Log = log;
             this.MaxTries = 5;
-            this.msgDispatcher = msgDispatcher;
+            this.dispatcher = dispatcher;
             this.metrics = metrics;
         }
 
@@ -104,12 +104,12 @@ namespace BESharp
         {
             if (this.sequenceNumber == -1)
             {
-                this.sequenceNumber = this.msgDispatcher.GetNextCommandSequenceNumber();
+                this.sequenceNumber = this.dispatcher.GetNextCommandSequenceNumber();
             }
 
             Debug.WriteLine("keep alive datagram {0} sent", this.sentCount + 1);
             var keepAliveDgram = new CommandDatagram((byte)this.sequenceNumber, string.Empty);
-            this.sentHandlers.Add(this.msgDispatcher.SendDatagram(keepAliveDgram));
+            this.sentHandlers.Add(this.dispatcher.SendDatagram(keepAliveDgram));
             this.lastSendTime = DateTime.Now;
             this.sentCount++;
             this.metrics.KeepAliveDatagramsSent++;
