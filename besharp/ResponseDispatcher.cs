@@ -10,21 +10,12 @@ namespace BESharp
 
     internal sealed class ResponseDispatcher : IDisposable
     {
-
         private readonly Dictionary<byte, ResponseHandler> cmdResponseHandlers =
                 new Dictionary<byte, ResponseHandler>();
 
         private ResponseHandler loginHandler;
 
         private bool disposed;
-
-        internal DateTime LastAcknowledgedDatagramSentTime { get; set; }
-
-
-
-        public ResponseDispatcher()
-        {
-        }
 
 
         /// <summary>
@@ -39,6 +30,9 @@ namespace BESharp
         {
             this.Dispose(false);
         }
+
+
+        internal DateTime LastAcknowledgedDatagramSentTime { get; set; }
 
 
         /// <summary>
@@ -76,8 +70,14 @@ namespace BESharp
         }
 
 
+        /// <summary>
+        ///   Dispatches an inbound response datagram to its corresponding
+        ///   handler.
+        /// </summary>
+        /// <param name="dgram"> The inbound response datagram. </param>
         public void DispatchResponse(IInboundDatagram dgram)
         {
+            // is it the login response?
             if (dgram.Type == DatagramType.Login)
             {
                 if (this.loginHandler != null)

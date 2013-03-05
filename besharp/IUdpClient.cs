@@ -1,6 +1,7 @@
 ﻿// ----------------------------------------------------------------------------------------------------
 // <copyright file="IUdpClient.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
 // ----------------------------------------------------------------------------------------------------
+using System;
 using System.Runtime;
 using System.Security.Permissions;
 namespace BESharp
@@ -9,8 +10,15 @@ namespace BESharp
     using System.Threading.Tasks;
 
 
-    internal interface IUdpClient
+    internal interface IUdpClient : IDisposable
     {
+
+        /// <summary>
+        /// Establishes a default remote host using the specified host name and port number.
+        /// </summary>
+        /// <param name="hostname">The DNS name of the remote host to which you intend send data. </param><param name="port">The port number on the remote host to which you intend to send data. </param><exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.UdpClient"/> is closed. </exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="port"/> is not between <see cref="F:System.Net.IPEndPoint.MinPort"/> and <see cref="F:System.Net.IPEndPoint.MaxPort"/>. </exception><exception cref="T:System.Net.Sockets.SocketException">An error occurred when accessing the socket. See the Remarks section for more information. </exception><PermissionSet><IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/><IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/><IPermission class="System.Diagnostics.PerformanceCounterPermission, System, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/><IPermission class="System.Net.SocketPermission, System, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/></PermissionSet>
+        void Connect(string hostname, int port);
+
         /// <summary>
         ///   Sends a UDP datagram asynchronously to a remote host.
         /// </summary>

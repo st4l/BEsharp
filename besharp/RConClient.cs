@@ -1,17 +1,16 @@
 ﻿// ----------------------------------------------------------------------------------------------------
 // <copyright file="RConClient.cs" company="Me">Copyright (c) 2013 St4l.</copyright>
-// ----------------------------------------------------------------------------------------------------
-using System.ComponentModel;
 namespace BESharp
+// ----------------------------------------------------------------------------------------------------
 {
     using System;
+    using System.ComponentModel;
     using System.Runtime.ExceptionServices;
     using System.Security.Authentication;
     using System.Threading;
     using System.Threading.Tasks;
     using Datagrams;
     using log4net;
-
 
     /// <summary>
     ///   The <see cref='RConClient' /> class provides access to BattlEye RCon services.
@@ -45,31 +44,9 @@ namespace BESharp
         {
             this.password = password;
 
-            NetUdpClient client = null;
-            try
-            {
-                client = new NetUdpClient
-                             {
-                                     ExclusiveAddressUse = true,
-                                     DontFragment = true,
-                                     EnableBroadcast = false,
-                                     MulticastLoopback = false
-                             };
-                client.Connect(host, port);
-            }
-            catch (Exception ex)
-            {
-                // dispose and throw 
-                if (client != null)
-                {
-                    client.Close();
-                }
+            this.UdpClient = CreateUdpClient();
+            this.UdpClient.Connect(host, port);
 
-                ExceptionDispatchInfo nex = ExceptionDispatchInfo.Capture(ex);
-                nex.Throw();
-            }
-
-            this.UdpClient = client;
             this.Initialize();
         }
 
@@ -139,11 +116,40 @@ namespace BESharp
         public ShutdownReason ShutdownReason { get; private set; }
 
 
-        internal RConMetrics Metrics { get; set; }
+        internal RConMetrics Metrics { get; private set; }
 
-        internal IUdpClient UdpClient { get; set; }
+
+        internal IUdpClient UdpClient { get; private set; }
+
 
         private ILog Log { get; set; }
+
+
+        private static NetUdpClient CreateUdpClient()
+        {
+            NetUdpClient client = null;
+            try
+            {
+                client = new NetUdpClient
+                             {
+                                     ExclusiveAddressUse = true,
+                                     DontFragment = true,
+                                     EnableBroadcast = false,
+                                     MulticastLoopback = false
+                             };
+            }
+            catch (Exception ex)
+            {
+                // dispose and throw 
+                if (client != null)
+                {
+                    client.Close();
+                }
+
+                ExceptionDispatchInfo.Capture(ex).Throw();
+            }
+            return client;
+        }
 
 
         /// <summary>
@@ -160,7 +166,8 @@ namespace BESharp
                         "RConClient", "This RConClient has been disposed.");
             }
 
-            this.StartListening();
+            // Start listening for messages from the server
+            this.dispatcher = new DatagramDispatcher(this);
 
             bool loggedIn = false;
             try
@@ -174,7 +181,10 @@ namespace BESharp
                 this.Log.Trace("FINALLY LOGIN await Login()");
                 if (!loggedIn)
                 {
-                    this.StopListening();
+                    if (this.dispatcher != null)
+                    {
+                        this.dispatcher.Close(); // disposes
+                    }
                 }
             }
 
@@ -187,9 +197,8 @@ namespace BESharp
         /// </summary>
         public void Close()
         {
-            this.StopListening();
-            this.Metrics.StopCollecting();
             this.closed = true;
+            this.Metrics.StopCollecting();
             this.Dispose();
         }
 
@@ -326,47 +335,21 @@ namespace BESharp
         }
 
 
-        private void StartListening()
-        {
-            this.dispatcher = new DatagramDispatcher(this)
-                                  {
-                                          DiscardConsoleMessages = this.DiscardConsoleMessages
-                                  };
-            this.dispatcher.Start();
-        }
-
-
-        private void StopListening()
-        {
-            if (this.dispatcher != null)
-            {
-                this.dispatcher.Close(); // disposes
-            }
-        }
-
-
         /// <summary>
-        ///     Handles the event of the dispatcher closing (and disposing)
-        ///     because of a disconnect or a user request.
+        ///   Handles the event of the dispatcher closing (and disposing)
+        ///   because of a disconnect or a user request.
         /// </summary>
-        /// <param name="reason">The reason why the dispatcher closed.</param>
+        /// <param name="reason"> The reason why the dispatcher closed. </param>
         internal void HandleDispatcherClosed(ShutdownReason reason)
         {
-            if (this.dispatcher == null)
-            {
-                System.Diagnostics.Debugger.Break();
-                return;
-            }
-
             this.ShutdownReason = reason;
-            this.dispatcher.UpdateMetrics(this.Metrics);
             this.dispatcher = null;
 
 #if DEBUG
             this.runningLock.Set();
 #endif
-            var args = new DisconnectedEventArgs(reason);
-            this.OnDisconnected(args);
+
+            this.OnDisconnected(new DisconnectedEventArgs(reason));
         }
 
 
@@ -404,7 +387,7 @@ namespace BESharp
         {
             if (this.Disconnected != null)
             {
-                this.Disconnected(this, e);
+                this.RaiseEventAsync(o => this.Disconnected(this, (DisconnectedEventArgs)o), e);
             }
         }
 
@@ -425,4 +408,5 @@ namespace BESharp
             }
         }
     }
+
 }

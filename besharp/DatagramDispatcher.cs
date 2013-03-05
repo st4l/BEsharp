@@ -26,8 +26,6 @@ namespace BESharp
 
         private Task mainLoopTask;
 
-        private bool hasStarted;
-
         private bool disposed;
 
         private readonly RConClient rconClient;
@@ -42,7 +40,8 @@ namespace BESharp
         /// <param name="client"> The <see cref="RConClient" /> to be used to connect to the RCon server. </param>
         internal DatagramDispatcher(RConClient client)
         {
-            this.Metrics = new RConMetrics();
+            this.Metrics = client.Metrics;
+            this.DiscardConsoleMessages = client.DiscardConsoleMessages;
             this.KeepAlivePeriod = TimeSpan.FromSeconds(25);
             // throw new ArgumentException("Test shall not pass.");
             this.ConMsgsTracker = new SequenceTracker();
@@ -52,6 +51,7 @@ namespace BESharp
             this.ResponseDispatcher = new ResponseDispatcher();
             this.datagramSender = new DatagramSender(this);
             this.Log = LogManager.GetLogger(this.GetType());
+            this.Start();
         }
 
 
@@ -113,19 +113,8 @@ namespace BESharp
         /// <remarks>
         ///   Starts the main datagram pump in a new thread.
         /// </remarks>
-        public void Start()
+        private void Start()
         {
-            if (this.disposed)
-            {
-                throw new InvalidOperationException("Called Start() on a disposed instance.");
-            }
-            if (this.hasStarted)
-            {
-                throw new InvalidOperationException("Already running.");
-            }
-
-            this.hasStarted = true;
-
             this.mainLoopTask = new Task(this.MainLoop);
             this.mainLoopTask.ContinueWith(this.HandleMainLoopException, TaskContinuationOptions.OnlyOnFaulted);
             this.mainLoopTask.ContinueWith(this.AfterMainLoop, TaskContinuationOptions.OnlyOnRanToCompletion);
@@ -151,21 +140,6 @@ namespace BESharp
             {
                 this.ShutdownReason = ShutdownReason.UserRequested;
             }
-        }
-
-
-        /// <summary>
-        ///   Meant to be called after Close(), i.e. once after each session.
-        /// </summary>
-        /// <param name="rconMetrics"> The <see cref="RConMetrics" /> to update. </param>
-        public void UpdateMetrics(RConMetrics rconMetrics)
-        {
-            rconMetrics.InboundDatagramCount += this.Metrics.InboundDatagramCount;
-            rconMetrics.OutboundDatagramCount += this.Metrics.OutboundDatagramCount;
-            rconMetrics.ParsedDatagramsCount += this.Metrics.ParsedDatagramsCount;
-            rconMetrics.DispatchedConsoleMessages += this.Metrics.DispatchedConsoleMessages;
-            rconMetrics.KeepAliveDatagramsSent += this.Metrics.KeepAliveDatagramsSent;
-            rconMetrics.KeepAliveDatagramsAcknowledgedByServer += this.Metrics.KeepAliveDatagramsAcknowledgedByServer;
         }
 
 
@@ -196,7 +170,7 @@ namespace BESharp
                 // has completed (or we're shutting down for some reason)
                 do
                 {
-                    this.CheckKeepAlive(this.KeepAlivePeriod);
+                    this.CheckKeepAlive();
 
                     this.Log.TraceFormat("===== WAITING RECEIVE =====, Status={0}", task.Status);
                     task.Wait(500);
@@ -216,21 +190,13 @@ namespace BESharp
         ///   Checks whether we need to send a keep alive datagram,
         ///   and if needed sends it and checks for its acknowledgment.
         /// </summary>
-        /// <param name="keepAlivePeriod"> How often to send keep alive datagrams. </param>
-        private void CheckKeepAlive(TimeSpan keepAlivePeriod)
+        private void CheckKeepAlive()
         {
-            // test whether we sent a command too long ago, or
-            // whether we received the last acknowledgment from the server too long ago
-            // (prevents case: 
-            //      * we sent a command 10 secs ago but wasn't received by the server
-            //        and not acknowledged, but we have "10 secs ago" in lastCommandSentTime)
-            var keepAliveAgo = DateTime.Now.Subtract(keepAlivePeriod);
-            if (this.datagramSender.LastCommandSentTime < keepAliveAgo ||
-                this.ResponseDispatcher.LastAcknowledgedDatagramSentTime < keepAliveAgo)
+            if (this.keepAliveTracker == null)
             {
-                // spawn a keep alive tracker until server acknowledges
-                if (this.keepAliveTracker == null)
+                if (this.IsKeepAliveNeeded())
                 {
+                    // spawn a keep alive tracker until server acknowledges
                     this.keepAliveTracker = new KeepAliveTracker(this.datagramSender, this.Metrics, this.Log);
                 }
             }
@@ -246,26 +212,40 @@ namespace BESharp
                 else if (this.keepAliveTracker.Expired)
                 {
                     // no ack after several tries, shutdown
+                    this.keepAliveTracker = null;
                     this.ShutdownReason = ShutdownReason.NoResponseFromServer;
                 }
             }
         }
 
 
+        /// <summary>
+        ///   Checks whether we sent a command too long ago, or whether 
+        ///   we received the last acknowledgment from the server too long ago.
+        /// </summary>
+        /// <returns>True if a keep alive packet must be sent; false otherwise.</returns>
+        private bool IsKeepAliveNeeded()
+        {
+            // (prevents case: 
+            //      * we sent a command 10 secs ago but wasn't received by the server
+            //        and not acknowledged, but we have "10 secs ago" in LastCommandSentTime)
+            var maxTimeAgo = DateTime.Now.Subtract(this.KeepAlivePeriod);
+            return this.datagramSender.LastCommandSentTime < maxTimeAgo ||
+                   this.ResponseDispatcher.LastAcknowledgedDatagramSentTime < maxTimeAgo;
+        }
+
+
         private void HandleMainLoopException(Task task)
         {
-            var excInfo = ExceptionDispatchInfo.Capture(task.Exception);
             this.ShutdownReason = ShutdownReason.FatalException;
-            excInfo.Throw();
+            ExceptionDispatchInfo.Capture(task.Exception).Throw();
         }
 
 
         private void AfterMainLoop(Task task)
         {
             this.Log.Trace("AFTER MAIN LOOP");
-
             this.Dispose();
-
             this.rconClient.HandleDispatcherClosed(this.ShutdownReason);
         }
 
@@ -344,7 +324,7 @@ namespace BESharp
         {
             if (!processor.IsValidLength)
             {
-                this.DispatchConnectionProblem(new ConnectionProblemEventArgs(ConnectionProblemType.InvalidLength));
+                this.rconClient.OnConnectionProblem(new ConnectionProblemEventArgs(ConnectionProblemType.InvalidLength));
                 this.Log.Trace("INVALID datagram received");
                 return true;
             }
@@ -366,7 +346,7 @@ namespace BESharp
 
             if (!processor.VerifyCrc())
             {
-                this.DispatchConnectionProblem(new ConnectionProblemEventArgs(ConnectionProblemType.Corrupted));
+                this.rconClient.OnConnectionProblem(new ConnectionProblemEventArgs(ConnectionProblemType.Corrupted));
                 return true;
             }
             return false;
@@ -382,7 +362,9 @@ namespace BESharp
             if (dgram.Type == DatagramType.ConsoleMessage)
             {
                 var conMsg = (ConsoleMessageDatagram)dgram;
-                this.DispatchConsoleMessage(conMsg);
+                this.rconClient.OnMessageReceived(new MessageReceivedEventArgs(conMsg));
+
+                this.Metrics.DispatchedConsoleMessages++;
                 return;
             }
 
@@ -390,28 +372,6 @@ namespace BESharp
             this.Log.Trace("BEFORE response.DispatchResponse");
             this.ResponseDispatcher.DispatchResponse(dgram);
             this.Log.Trace("AFTER  response.DispatchResponse");
-        }
-
-
-        /// <summary>
-        ///   Dispatches received console messages.
-        /// </summary>
-        /// <param name="dgram"> The <see cref="ConsoleMessageDatagram" /> representing the received console message. </param>
-        private void DispatchConsoleMessage(ConsoleMessageDatagram dgram)
-        {
-            var args = new MessageReceivedEventArgs(dgram);
-            this.rconClient.OnMessageReceived(args);
-
-            this.Metrics.DispatchedConsoleMessages++;
-        }
-
-
-        /// <summary>
-        ///   Dispatches connection problem events.
-        /// </summary>
-        private void DispatchConnectionProblem(ConnectionProblemEventArgs args)
-        {
-            this.rconClient.OnConnectionProblem(args);
         }
 
 

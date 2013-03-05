@@ -3,5 +3,5 @@
 
 * Task<ConnectResult> Connect(string host, int port, string password)
 * bool KeepAlive
-* Task<ResponseHandler> SendCommand(Command)
-* MessageReceived(object sender, RConMessage msg)
+* Task<CommandResult> SendCommand(Command)
+* MessageReceived(string msg)

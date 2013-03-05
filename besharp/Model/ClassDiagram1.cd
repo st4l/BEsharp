@@ -7,7 +7,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAIAAAIAQCQAAQAAAASAAIGAAAgCJAAAGIwQEiCAAoA=</HashCode>
+      <HashCode>AAIAAAIAQCQAAQAAAASAAIGAAAgCJAAAGIwQAiCAAgA=</HashCode>
       <FileName>RConClient.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -24,7 +24,7 @@
       <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AQICUAABEDEgQCCAAAEAgACAAIgABgABCAAAAjCAAkA=</HashCode>
+      <HashCode>AQICUAABECEgQACAAAAAgACAAIgABgABCAAAAjCAAgA=</HashCode>
       <FileName>DatagramDispatcher.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -39,7 +39,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="BESharp.KeepAliveTracker">
-    <Position X="9.5" Y="4.25" Width="2.5" />
+    <Position X="9.5" Y="3.75" Width="2.5" />
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>
@@ -73,6 +73,12 @@
       <HashCode>AAIAIAgAICgAAAAAAAAAAAABAAQAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ResponseDispatcher.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="loginHandler" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="cmdResponseHandlers" />
+    </ShowAsCollectionAssociation>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="BESharp.SequenceTracker">
@@ -86,7 +92,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="BESharp.RConMetrics">
-    <Position X="13.75" Y="3.25" Width="2.5" />
+    <Position X="13.75" Y="3" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAABIAAAAACIIgAAAgAAAAAAEQAAAEA=</HashCode>
       <FileName>RConMetrics.cs</FileName>
@@ -94,6 +100,9 @@
   </Class>
   <Class Name="BESharp.DatagramSender">
     <Position X="9.5" Y="0.5" Width="2.75" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>IAAAAAAAABEAAAAAAAAAAAAAAAgADIgACAAAAAAAAAA=</HashCode>
       <FileName>DatagramSender.cs</FileName>
@@ -104,10 +113,21 @@
       <Property Name="Metrics" />
     </ShowAsAssociation>
   </Class>
+  <Class Name="BESharp.ResponseHandler">
+    <Position X="18" Y="0.5" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAIACAAAACAAAQIAAAAAAQAACggAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>ResponseHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
   <Interface Name="BESharp.IUdpClient" Collapsed="true">
     <Position X="5.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAAAAAAAAAAAAAAEAAAAAAAAAAAAAAABAAAACAAAA=</HashCode>
+      <HashCode>AABAAAAAAAAAAAAAAEAAAIAAAAAAAAAAABAAAACAAAA=</HashCode>
       <FileName>IUdpClient.cs</FileName>
     </TypeIdentifier>
   </Interface>
