@@ -20,6 +20,9 @@ namespace BESharp
 
         private bool disposed;
 
+        internal DateTime LastAcknowledgedDatagramSentTime { get; set; }
+
+
 
         public ResponseDispatcher(DatagramDispatcher dispatcher)
         {
@@ -76,7 +79,7 @@ namespace BESharp
             {
                 if (this.loginHandler != null)
                 {
-                    this.dispatcher.RegisterAcknowledgedDatagram(this.loginHandler.SentDatagram);
+                    this.RegisterAcknowledgedDatagram(this.loginHandler.SentDatagram);
                     this.loginHandler.AcceptResponse(dgram);
                 }
                 return;
@@ -91,7 +94,7 @@ namespace BESharp
                 lock (this.cmdResponseHandlers)
                 {
                     ResponseHandler handler = this.cmdResponseHandlers[cmdDgram.OriginalSequenceNumber];
-                    this.dispatcher.RegisterAcknowledgedDatagram(handler.SentDatagram);
+                    this.RegisterAcknowledgedDatagram(handler.SentDatagram);
                     this.cmdResponseHandlers.Remove(cmdDgram.OriginalSequenceNumber);
                     handler.AcceptResponse(cmdDgram);
                     Debug.WriteLine("handler for command datagram {0} invoked", cmdDgram.OriginalSequenceNumber);
@@ -108,7 +111,7 @@ namespace BESharp
                 // yes
                 CommandMultiPartResponseDatagram masterCmd;
                 ResponseHandler handler = this.cmdResponseHandlers[partDgram.OriginalSequenceNumber];
-                this.dispatcher.RegisterAcknowledgedDatagram(handler.SentDatagram);
+                this.RegisterAcknowledgedDatagram(handler.SentDatagram);
 
                 // is this the first part we ever received?
                 if (handler.ResponseDatagram == null)
@@ -191,5 +194,13 @@ namespace BESharp
         }
 
 
+        private void RegisterAcknowledgedDatagram(IOutboundDatagram acknowledgedDatagram)
+        {
+            var sentTime = acknowledgedDatagram.SentTime;
+            if (sentTime > this.LastAcknowledgedDatagramSentTime)
+            {
+                this.LastAcknowledgedDatagramSentTime = sentTime;
+            }
+        }
     }
 }

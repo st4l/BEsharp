@@ -7,7 +7,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAIAAAIAQCQIAQAAAASAAIGAAAgAJgAAGJwQEiCAAoA=</HashCode>
+      <HashCode>AAIAAAIAQCQAAQAAAASAAIGAAAgCJAAAGIwQEiCAAoA=</HashCode>
       <FileName>RConClient.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -22,13 +22,14 @@
       <Compartment Name="Properties" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>IUICUAgBEDEIQCAAAAEAgACAAIgADggBAAAAAgCAAkA=</HashCode>
+      <HashCode>IUICUAABEDEAQCAAAAEAgACAAIgADggBAAAAAgCAAkA=</HashCode>
       <FileName>DatagramDispatcher.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="responseDispatcher" />
       <Field Name="udpClient" />
       <Field Name="keepAliveTracker" />
+      <Field Name="rconClient" />
       <Property Name="CmdsTracker" />
       <Property Name="ConMsgsTracker" />
       <Property Name="Metrics" />
@@ -73,7 +74,7 @@
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAIAAAAAICgAAAAAAAAAAIABAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAIAIAgAICgAAAAAAAAAAIABAAQAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ResponseDispatcher.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -92,7 +93,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="BESharp.RConMetrics" Collapsed="true">
-    <Position X="9.25" Y="3.5" Width="2.5" />
+    <Position X="12.5" Y="4.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAABIAAAAACIIgAAAgAAAAAAEQAAAEA=</HashCode>
       <FileName>RConMetrics.cs</FileName>

@@ -94,9 +94,6 @@ namespace BESharp
 
         private ILog Log { get; set; }
 
-        internal DateTime LastAcknowledgedDatagramSentTime { get; set; }
-
-
         /// <summary>
         ///   Implement IDisposable.
         /// </summary>
@@ -223,16 +220,6 @@ namespace BESharp
         }
 
 
-        internal void RegisterAcknowledgedDatagram(IOutboundDatagram acknowledgedDatagram)
-        {
-            var sentTime = acknowledgedDatagram.SentTime;
-            if (sentTime > this.LastAcknowledgedDatagramSentTime)
-            {
-                this.LastAcknowledgedDatagramSentTime = sentTime;
-            }
-        }
-
-
         /// <summary>
         ///   Registers a handler to be notified when a response
         ///   datagram arrives, and which accepts the response datagram itself.
@@ -260,7 +247,7 @@ namespace BESharp
             }
 
             TimeSpan keepAlivePeriod = TimeSpan.FromSeconds(25);
-            this.lastCommandSentTime = this.LastAcknowledgedDatagramSentTime = DateTime.Now.AddSeconds(-20);
+            this.lastCommandSentTime = this.responseDispatcher.LastAcknowledgedDatagramSentTime = DateTime.Now.AddSeconds(-20);
 
             while (this.ShutdownReason == ShutdownReason.None)
             {
@@ -302,7 +289,7 @@ namespace BESharp
             //        and not acknowledged, but we have "10 secs ago" in lastCommandSentTime)
             var keepAliveAgo = DateTime.Now.Subtract(keepAlivePeriod);
             if (this.lastCommandSentTime < keepAliveAgo ||
-                this.LastAcknowledgedDatagramSentTime < keepAliveAgo)
+                this.responseDispatcher.LastAcknowledgedDatagramSentTime < keepAliveAgo)
             {
                 // spawn a keep alive tracker until server acknowledges
                 if (this.keepAliveTracker == null)
