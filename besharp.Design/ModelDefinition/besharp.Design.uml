@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<modelStoreModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+<modelStoreModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner"
   dslVersion="1.0.0.0"
   Id="65588e51-9b26-448a-8dc7-816917e3f2c2"
   name="besharp.Design" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
@@ -41,6 +41,3104 @@
         Id="3ed8454e-2bb6-4d84-bff0-944574e8f71a"
         LastKnownName="log4net"
         LastKnownLocation="Package4_0533.uml" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <interaction
+        Id="6f1ac9f4-848b-4c03-96f9-196fadf94a36"
+        name="Sequence1"
+        collapseFragmentsFlag="false"
+        isActiveClass="false"
+        isAbstract="false"
+        isLeaf="false"
+        isReentrant="false">
+        <fragments>
+          <behaviorExecutionSpecification
+            Id="a95576e1-dfb5-45d6-aa78-cc377d4434dc"
+            name="BehaviorExecutionSpecification7">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="5e2fb112-719b-4fcf-bfb2-dfc62ae6aa9f"
+                LastKnownName="ExecutionOccurrenceSpecification14"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="9f7999fa-78eb-4460-beda-3a2b0c329350"
+                LastKnownName="ExecutionOccurrenceSpecification13"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="53e38475-506d-4539-82c6-a05e4ea9744f"
+                LastKnownName="MessageOccurrenceSpecification16"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="f0695f26-7582-4d4f-9188-bee662b96160"
+                LastKnownName="MessageOccurrenceSpecification17"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="9f7999fa-78eb-4460-beda-3a2b0c329350"
+            name="ExecutionOccurrenceSpecification13">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="e89d8031-ea8c-425f-a1ab-220aa3edd9ec"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="53e38475-506d-4539-82c6-a05e4ea9744f"
+            name="MessageOccurrenceSpecification16">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="f2f43c4d-eef4-4a9e-a78f-a92cda85fb9f"
+            name="MessageOccurrenceSpecification15">
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="01c6997d-014c-418f-85e0-1ed2dcc9292f"
+            name="MessageOccurrenceSpecification18">
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="f0695f26-7582-4d4f-9188-bee662b96160"
+            name="MessageOccurrenceSpecification17">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="5e2fb112-719b-4fcf-bfb2-dfc62ae6aa9f"
+            name="ExecutionOccurrenceSpecification14">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="d5700305-6728-422e-8809-ccae9903449e"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="e48923d1-a178-450c-afa2-4df32b09f3ae"
+            name="BehaviorExecutionSpecification8">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="d8a59c83-d6d0-4cdd-9b48-322aacac5c62"
+                LastKnownName="ExecutionOccurrenceSpecification16"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="b7d12214-b7e2-4a75-b763-92c3c3221d13"
+                LastKnownName="ExecutionOccurrenceSpecification15"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="111c0128-9a8b-4d40-aa4e-0b07f67b9b8d"
+                LastKnownName="MessageOccurrenceSpecification20"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="bfd92003-743d-43ca-8623-4dbf40f86471"
+                LastKnownName="MessageOccurrenceSpecification3"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="3788d766-45ab-4a81-a6f5-a50972e17f1c"
+                LastKnownName="MessageOccurrenceSpecification6"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="5d11f0ad-0813-4152-9202-8f3edf40ade7"
+                LastKnownName="MessageOccurrenceSpecification27"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="5f3d0db0-271b-44a1-8bc6-bc4ed128e32a"
+                LastKnownName="MessageOccurrenceSpecification30"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="fb49a830-a28b-4144-b32a-c4239bc92e48"
+                LastKnownName="MessageOccurrenceSpecification35"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="f5083b34-41ce-4a1e-90d7-50bebf5e1ca8"
+                LastKnownName="ExecutionOccurrenceSpecification27"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="665999ff-b3b4-4cf4-ba1b-e7e09d439943"
+                LastKnownName="ExecutionOccurrenceSpecification28"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="b7d12214-b7e2-4a75-b763-92c3c3221d13"
+            name="ExecutionOccurrenceSpecification15">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="528bc2ab-2b7b-4649-a927-066faac89e55"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="111c0128-9a8b-4d40-aa4e-0b07f67b9b8d"
+            name="MessageOccurrenceSpecification20">
+            <event>
+              <receiveOperationEventMoniker
+                Id="0ac64bdd-79f0-4010-91b3-0e2b801005ff"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="a86a8829-afb1-4e4c-ae99-3b1ed28b7331"
+            name="MessageOccurrenceSpecification19">
+            <event>
+              <sendOperationEventMoniker
+                Id="c6ba8cca-c1f7-44b8-b342-de2110dd35fe"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="2a65198f-46ef-41cf-ba7e-e4fc8cc0295c"
+            name="BehaviorExecutionSpecification2">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="35de64f3-f0d7-4469-8fc1-5f244676d218"
+                LastKnownName="ExecutionOccurrenceSpecification4"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="3fab9ec4-f28f-4c2e-be88-b2bfe0143025"
+                LastKnownName="ExecutionOccurrenceSpecification3"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="89adb2df-3f55-42d4-983d-e596912a843a"
+                LastKnownName="MessageOccurrenceSpecification4"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="1e0844db-e946-4311-acd2-ba94c0b055dc"
+                LastKnownName="MessageOccurrenceSpecification5"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="3fab9ec4-f28f-4c2e-be88-b2bfe0143025"
+            name="ExecutionOccurrenceSpecification3">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="3f8a9a41-97db-4a83-b71a-3383a0092b27"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="bfd92003-743d-43ca-8623-4dbf40f86471"
+            name="MessageOccurrenceSpecification3">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="89adb2df-3f55-42d4-983d-e596912a843a"
+            name="MessageOccurrenceSpecification4">
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="1e0844db-e946-4311-acd2-ba94c0b055dc"
+            name="MessageOccurrenceSpecification5">
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="3788d766-45ab-4a81-a6f5-a50972e17f1c"
+            name="MessageOccurrenceSpecification6">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="35de64f3-f0d7-4469-8fc1-5f244676d218"
+            name="ExecutionOccurrenceSpecification4">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="b2b0e6aa-3dc1-455f-bc78-6732a5d563dc"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="cda30e2d-bd31-4a68-95af-a031255d1c8c"
+            name="BehaviorExecutionSpecification11">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="f5a5ee6c-e9ea-4124-8018-6ea49d081e0e"
+                LastKnownName="ExecutionOccurrenceSpecification22"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="974b488c-9e97-4868-bb93-75aa2d343f74"
+                LastKnownName="ExecutionOccurrenceSpecification21"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="fb28b071-97c8-4d9c-8cfc-332e5d1c64d6"
+                LastKnownName="MessageOccurrenceSpecification28"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="cbcfa4b8-5dec-4cb9-94f0-b904bea338c3"
+                LastKnownName="MessageOccurrenceSpecification31"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="8c8940bb-fb83-4821-8dea-20b30466bd01"
+                LastKnownName="MessageOccurrenceSpecification34"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="4ed42b2f-9e96-48d1-b859-bbcd7cac88ad"
+                LastKnownName="MessageOccurrenceSpecification29"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="974b488c-9e97-4868-bb93-75aa2d343f74"
+            name="ExecutionOccurrenceSpecification21">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="89f1ece0-bcf3-4f71-8142-bb95f0a48643"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="fb28b071-97c8-4d9c-8cfc-332e5d1c64d6"
+            name="MessageOccurrenceSpecification28">
+            <event>
+              <receiveOperationEventMoniker
+                Id="b7ba1f8d-e12a-48c5-b5ca-d94ac8fc6c83"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="5d11f0ad-0813-4152-9202-8f3edf40ade7"
+            name="MessageOccurrenceSpecification27">
+            <event>
+              <sendOperationEventMoniker
+                Id="e119f44e-55e1-49d1-bc22-597036e185a4"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="65dbc9f1-ea50-4acf-8c3e-7efda96b93f3"
+            name="BehaviorExecutionSpecification12">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="7e8fa3a0-d403-4ba9-b64c-181425c42098"
+                LastKnownName="loginResponseHandler : ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="f583276f-5eaf-4270-bbb6-c08ab142d260"
+                LastKnownName="ExecutionOccurrenceSpecification24"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="4b6b1842-f4a9-4905-ad51-5b759c98c48f"
+                LastKnownName="ExecutionOccurrenceSpecification23"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="7759ec13-89a6-4d6d-8a12-914a9fc85fcb"
+                LastKnownName="MessageOccurrenceSpecification32"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="2886a52f-5f10-4057-a5fd-7b3248089fe3"
+                LastKnownName="MessageOccurrenceSpecification33"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="4b6b1842-f4a9-4905-ad51-5b759c98c48f"
+            name="ExecutionOccurrenceSpecification23">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="76746b37-a595-444c-a438-5bb359e5c7f2"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="7e8fa3a0-d403-4ba9-b64c-181425c42098"
+                LastKnownName="loginResponseHandler : ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="cbcfa4b8-5dec-4cb9-94f0-b904bea338c3"
+            name="MessageOccurrenceSpecification31">
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="7759ec13-89a6-4d6d-8a12-914a9fc85fcb"
+            name="MessageOccurrenceSpecification32">
+            <covered>
+              <lifelineMoniker
+                Id="7e8fa3a0-d403-4ba9-b64c-181425c42098"
+                LastKnownName="loginResponseHandler : ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="2886a52f-5f10-4057-a5fd-7b3248089fe3"
+            name="MessageOccurrenceSpecification33">
+            <covered>
+              <lifelineMoniker
+                Id="7e8fa3a0-d403-4ba9-b64c-181425c42098"
+                LastKnownName="loginResponseHandler : ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="8c8940bb-fb83-4821-8dea-20b30466bd01"
+            name="MessageOccurrenceSpecification34">
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="f583276f-5eaf-4270-bbb6-c08ab142d260"
+            name="ExecutionOccurrenceSpecification24">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="3baadd53-4766-4f11-9be6-479588b87ed3"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="7e8fa3a0-d403-4ba9-b64c-181425c42098"
+                LastKnownName="loginResponseHandler : ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="5f3d0db0-271b-44a1-8bc6-bc4ed128e32a"
+            name="MessageOccurrenceSpecification30">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="4ed42b2f-9e96-48d1-b859-bbcd7cac88ad"
+            name="MessageOccurrenceSpecification29">
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="f5a5ee6c-e9ea-4124-8018-6ea49d081e0e"
+            name="ExecutionOccurrenceSpecification22">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="21bd6c8e-c821-46cb-a703-4983baa2aa18"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="b78cff92-2078-4046-b4f1-a7f1a985c437"
+            name="BehaviorExecutionSpecification13">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="7e8fa3a0-d403-4ba9-b64c-181425c42098"
+                LastKnownName="loginResponseHandler : ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="5a4a1260-8de4-450e-9140-f965c6963fe0"
+                LastKnownName="ExecutionOccurrenceSpecification26"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="8df616ee-17cf-451c-ae11-e2626b3e2798"
+                LastKnownName="ExecutionOccurrenceSpecification25"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="e082bea3-84d1-4dff-ac81-36bc341382c0"
+                LastKnownName="MessageOccurrenceSpecification36"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="a77bb22f-70a8-44da-a111-d56943b33a5c"
+                LastKnownName="MessageOccurrenceSpecification37"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="8df616ee-17cf-451c-ae11-e2626b3e2798"
+            name="ExecutionOccurrenceSpecification25">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="68936eaf-dd0b-4b94-9629-733fe9e87c16"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="7e8fa3a0-d403-4ba9-b64c-181425c42098"
+                LastKnownName="loginResponseHandler : ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="fb49a830-a28b-4144-b32a-c4239bc92e48"
+            name="MessageOccurrenceSpecification35">
+            <event>
+              <sendOperationEventMoniker
+                Id="e1b35016-f912-42b6-82b2-15435d055ad2"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="e082bea3-84d1-4dff-ac81-36bc341382c0"
+            name="MessageOccurrenceSpecification36">
+            <event>
+              <receiveOperationEventMoniker
+                Id="97d46408-c6e7-4f74-8e27-35bbeea29c91"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="7e8fa3a0-d403-4ba9-b64c-181425c42098"
+                LastKnownName="loginResponseHandler : ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="7e91baae-c72b-4b7e-859e-1af1ea5d31e8"
+            name="BehaviorExecutionSpecification14">
+            <description>Continuation</description>
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="665999ff-b3b4-4cf4-ba1b-e7e09d439943"
+                LastKnownName="ExecutionOccurrenceSpecification28"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="f5083b34-41ce-4a1e-90d7-50bebf5e1ca8"
+                LastKnownName="ExecutionOccurrenceSpecification27"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="42e84310-f8b0-46bf-83f8-475acfa18798"
+                LastKnownName="MessageOccurrenceSpecification38"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="3cbc1715-d22b-4e7d-ac53-3c034de8ddd1"
+                LastKnownName="MessageOccurrenceSpecification39"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="f5083b34-41ce-4a1e-90d7-50bebf5e1ca8"
+            name="ExecutionOccurrenceSpecification27">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="25f3c57e-779f-425f-83e5-5ca58d44b014"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="a77bb22f-70a8-44da-a111-d56943b33a5c"
+            name="MessageOccurrenceSpecification37">
+            <covered>
+              <lifelineMoniker
+                Id="7e8fa3a0-d403-4ba9-b64c-181425c42098"
+                LastKnownName="loginResponseHandler : ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="42e84310-f8b0-46bf-83f8-475acfa18798"
+            name="MessageOccurrenceSpecification38">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="5a4a1260-8de4-450e-9140-f965c6963fe0"
+            name="ExecutionOccurrenceSpecification26">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="0470081f-4286-4cef-a075-3cc98c8b583c"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="7e8fa3a0-d403-4ba9-b64c-181425c42098"
+                LastKnownName="loginResponseHandler : ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="92681c2f-35be-44f4-abbc-2e751856ea21"
+            name="BehaviorExecutionSpecification15">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="1a5bae76-9331-41b6-9b71-975c1d28d6f9"
+                LastKnownName="ExecutionOccurrenceSpecification30"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="4ab2770b-e81f-48f0-9ada-9d071e48bf1f"
+                LastKnownName="ExecutionOccurrenceSpecification29"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="6e7006ce-5489-4376-9216-2683dee1e47f"
+                LastKnownName="MessageOccurrenceSpecification40"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="4ab2770b-e81f-48f0-9ada-9d071e48bf1f"
+            name="ExecutionOccurrenceSpecification29">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="2366881c-858e-48b9-b9de-094690f0484e"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="6e7006ce-5489-4376-9216-2683dee1e47f"
+            name="MessageOccurrenceSpecification40">
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="3cbc1715-d22b-4e7d-ac53-3c034de8ddd1"
+            name="MessageOccurrenceSpecification39">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="665999ff-b3b4-4cf4-ba1b-e7e09d439943"
+            name="ExecutionOccurrenceSpecification28">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="3e98c222-8030-4d25-9c91-a6da83c4ca8b"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="1a5bae76-9331-41b6-9b71-975c1d28d6f9"
+            name="ExecutionOccurrenceSpecification30">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="0e24e7a5-fc74-4f59-a8a3-809b5c71bae8"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="d8a59c83-d6d0-4cdd-9b48-322aacac5c62"
+            name="ExecutionOccurrenceSpecification16">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="770c4573-f671-48fc-8f33-818593a3a0cb"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="00a712a2-11e6-482d-90ec-24fa14105f18"
+            name="BehaviorExecutionSpecification18">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="8b905b81-7ad4-41dd-bb19-102f70b8bf48"
+                LastKnownName="ExecutionOccurrenceSpecification36"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="dcdda9de-96b4-44f0-9c3b-1db9533f54e7"
+                LastKnownName="ExecutionOccurrenceSpecification35"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="c67ad334-5f92-435b-a0fb-6a256cf1d05b"
+                LastKnownName="MessageOccurrenceSpecification46"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="36d36c38-56ba-42ca-8dfc-15e4c539a1fd"
+                LastKnownName="MessageOccurrenceSpecification51"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="de897e02-1d77-46f2-844a-f75e62f0dffb"
+                LastKnownName="MessageOccurrenceSpecification54"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="ec9af662-588e-4d3d-ab31-e28fce2dff52"
+                LastKnownName="MessageOccurrenceSpecification59"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="a52e9e80-c5e5-4e53-967b-4bc850b219fe"
+                LastKnownName="ExecutionOccurrenceSpecification45"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="b204573e-e319-42a1-82b2-cc2699ace712"
+                LastKnownName="ExecutionOccurrenceSpecification46"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="dcdda9de-96b4-44f0-9c3b-1db9533f54e7"
+            name="ExecutionOccurrenceSpecification35">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="d4c10a9d-9d8b-4cc6-bede-53520aa50ef6"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="3a01fab2-dc4f-40fd-bec0-603a55f314e9"
+            name="MessageOccurrenceSpecification45">
+            <event>
+              <sendOperationEventMoniker
+                Id="9135f463-d594-4f23-af45-776cb5a55221"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="c67ad334-5f92-435b-a0fb-6a256cf1d05b"
+            name="MessageOccurrenceSpecification46">
+            <event>
+              <receiveOperationEventMoniker
+                Id="4fbd6fc2-ec0f-4100-9887-3c5243ae8654"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="e4a8385e-661e-4f67-81a7-840b3fbc5598"
+            name="BehaviorExecutionSpecification20">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="cafaf975-f69a-4fee-bac9-9e86f296aa32"
+                LastKnownName="ExecutionOccurrenceSpecification40"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="7334892a-cd44-4b40-afc5-32302cdae29e"
+                LastKnownName="ExecutionOccurrenceSpecification39"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="d6d79326-f8be-467b-91bc-d1bebb5afa6c"
+                LastKnownName="MessageOccurrenceSpecification52"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="dbbf055d-e289-4889-bbb9-e90a7e7ebd1d"
+                LastKnownName="MessageOccurrenceSpecification55"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="47c788dd-f9a2-4f4d-a562-c28f50cfe2b6"
+                LastKnownName="MessageOccurrenceSpecification58"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="80dc848b-07aa-4d89-b4b1-4dde34c9df52"
+                LastKnownName="MessageOccurrenceSpecification53"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="7334892a-cd44-4b40-afc5-32302cdae29e"
+            name="ExecutionOccurrenceSpecification39">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="52905b7e-cec9-4f59-b3f1-e2ccf10abde2"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="d6d79326-f8be-467b-91bc-d1bebb5afa6c"
+            name="MessageOccurrenceSpecification52">
+            <event>
+              <receiveOperationEventMoniker
+                Id="8a28f89a-78ce-421a-8616-bc7df04ee248"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="36d36c38-56ba-42ca-8dfc-15e4c539a1fd"
+            name="MessageOccurrenceSpecification51">
+            <event>
+              <sendOperationEventMoniker
+                Id="caccba86-ec14-46e3-bd50-5bb7c2daedc3"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="2169eb1a-9ad5-4c4b-b48a-30f65c7f71f8"
+            name="BehaviorExecutionSpecification21">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="7e9d4bce-9ed8-4a01-8ac7-825615445911"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="14a453cc-8beb-4d92-b887-6d4b76c0bd92"
+                LastKnownName="ExecutionOccurrenceSpecification42"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="36065e42-20ba-4163-9f28-c5877a8c7487"
+                LastKnownName="ExecutionOccurrenceSpecification41"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="dd956b6f-a5a0-4110-869a-22e4305142bd"
+                LastKnownName="MessageOccurrenceSpecification56"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="dfe6008d-eab5-4514-937b-f2c832d5a6c9"
+                LastKnownName="MessageOccurrenceSpecification57"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="36065e42-20ba-4163-9f28-c5877a8c7487"
+            name="ExecutionOccurrenceSpecification41">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="e9f716e7-bd2d-4d3d-af2a-7437061b28e0"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="7e9d4bce-9ed8-4a01-8ac7-825615445911"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="dd956b6f-a5a0-4110-869a-22e4305142bd"
+            name="MessageOccurrenceSpecification56">
+            <covered>
+              <lifelineMoniker
+                Id="7e9d4bce-9ed8-4a01-8ac7-825615445911"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="dbbf055d-e289-4889-bbb9-e90a7e7ebd1d"
+            name="MessageOccurrenceSpecification55">
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="47c788dd-f9a2-4f4d-a562-c28f50cfe2b6"
+            name="MessageOccurrenceSpecification58">
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="dfe6008d-eab5-4514-937b-f2c832d5a6c9"
+            name="MessageOccurrenceSpecification57">
+            <covered>
+              <lifelineMoniker
+                Id="7e9d4bce-9ed8-4a01-8ac7-825615445911"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="14a453cc-8beb-4d92-b887-6d4b76c0bd92"
+            name="ExecutionOccurrenceSpecification42">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="4ec7306f-aa52-4a23-b72c-098b423b96c7"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="7e9d4bce-9ed8-4a01-8ac7-825615445911"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="de897e02-1d77-46f2-844a-f75e62f0dffb"
+            name="MessageOccurrenceSpecification54">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="80dc848b-07aa-4d89-b4b1-4dde34c9df52"
+            name="MessageOccurrenceSpecification53">
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="cafaf975-f69a-4fee-bac9-9e86f296aa32"
+            name="ExecutionOccurrenceSpecification40">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="3ffe4614-4754-47b6-b665-0eb4ada98d32"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="46ca7036-76ab-4c81-9b20-0eaa687a5be1"
+            name="BehaviorExecutionSpecification22">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="7e9d4bce-9ed8-4a01-8ac7-825615445911"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="b7c035b7-a68d-41c9-9559-53dfe3dbfbeb"
+                LastKnownName="ExecutionOccurrenceSpecification44"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="96fa8c65-64f9-4a8d-8cb0-4a702787eddd"
+                LastKnownName="ExecutionOccurrenceSpecification43"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="5b927f68-0611-4ec4-816b-1ba5a2afff8a"
+                LastKnownName="MessageOccurrenceSpecification60"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="b7dc77c0-381e-4192-b8f5-cd8138fe8145"
+                LastKnownName="MessageOccurrenceSpecification61"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="96fa8c65-64f9-4a8d-8cb0-4a702787eddd"
+            name="ExecutionOccurrenceSpecification43">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="52124878-93bd-4672-be4a-1c5c8ac32e87"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="7e9d4bce-9ed8-4a01-8ac7-825615445911"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="5b927f68-0611-4ec4-816b-1ba5a2afff8a"
+            name="MessageOccurrenceSpecification60">
+            <event>
+              <receiveOperationEventMoniker
+                Id="0e3ac692-8c70-4d42-a994-60e93271d5f4"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="7e9d4bce-9ed8-4a01-8ac7-825615445911"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="ec9af662-588e-4d3d-ab31-e28fce2dff52"
+            name="MessageOccurrenceSpecification59">
+            <event>
+              <sendOperationEventMoniker
+                Id="e366e707-82a2-4e8d-a460-89f5d5246af8"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="32e3d4b5-3173-4f3a-8ba3-386963247d28"
+            name="BehaviorExecutionSpecification23">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="b204573e-e319-42a1-82b2-cc2699ace712"
+                LastKnownName="ExecutionOccurrenceSpecification46"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="a52e9e80-c5e5-4e53-967b-4bc850b219fe"
+                LastKnownName="ExecutionOccurrenceSpecification45"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="06a30bd6-b4bb-46c6-927c-98c8973b69f9"
+                LastKnownName="MessageOccurrenceSpecification62"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="440ddbbc-5e37-47f3-a337-9499f3935a9a"
+                LastKnownName="MessageOccurrenceSpecification63"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="a52e9e80-c5e5-4e53-967b-4bc850b219fe"
+            name="ExecutionOccurrenceSpecification45">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="9ed9ff01-7f63-4ad9-8628-ea3d7c090840"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="06a30bd6-b4bb-46c6-927c-98c8973b69f9"
+            name="MessageOccurrenceSpecification62">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="b7dc77c0-381e-4192-b8f5-cd8138fe8145"
+            name="MessageOccurrenceSpecification61">
+            <covered>
+              <lifelineMoniker
+                Id="7e9d4bce-9ed8-4a01-8ac7-825615445911"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="08338a55-d2c1-49b1-b072-9ce117686467"
+            name="BehaviorExecutionSpecification24">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="1dd0c01b-3fe2-4d53-bf8c-953fe7dec541"
+                LastKnownName="ExecutionOccurrenceSpecification48"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="6fb06daf-eba4-47ee-bf1d-5841f6cacfdf"
+                LastKnownName="ExecutionOccurrenceSpecification47"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="ba014e4d-23d2-4303-a78f-2016cb8fda78"
+                LastKnownName="MessageOccurrenceSpecification64"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="6fb06daf-eba4-47ee-bf1d-5841f6cacfdf"
+            name="ExecutionOccurrenceSpecification47">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="06068dfa-28ef-44d6-9d7e-6b2df70e1ae3"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="b7c035b7-a68d-41c9-9559-53dfe3dbfbeb"
+            name="ExecutionOccurrenceSpecification44">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="2274036b-8bb5-44a9-8429-4e77d73a4b56"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="7e9d4bce-9ed8-4a01-8ac7-825615445911"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="ba014e4d-23d2-4303-a78f-2016cb8fda78"
+            name="MessageOccurrenceSpecification64">
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="440ddbbc-5e37-47f3-a337-9499f3935a9a"
+            name="MessageOccurrenceSpecification63">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="b204573e-e319-42a1-82b2-cc2699ace712"
+            name="ExecutionOccurrenceSpecification46">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="2050cf43-c1ae-4417-bf8a-eb54c2837be2"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="1dd0c01b-3fe2-4d53-bf8c-953fe7dec541"
+            name="ExecutionOccurrenceSpecification48">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="4a6cc633-dec6-4080-a777-ba339d2ceace"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="8b905b81-7ad4-41dd-bb19-102f70b8bf48"
+            name="ExecutionOccurrenceSpecification36">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="1a228cdd-12af-4ce8-9826-7597c81608b1"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="b61e2b10-8987-4633-b226-c673fca23fe1"
+            name="BehaviorExecutionSpecification6">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="d59151c3-ea16-479f-a6d9-744f27a02af6"
+                LastKnownName="ExecutionOccurrenceSpecification12"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="8bc6b5d6-2b25-44df-a3a6-5c78636fa757"
+                LastKnownName="ExecutionOccurrenceSpecification11"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="22c59c81-5489-4710-aa21-4433c6b17e45"
+                LastKnownName="MessageOccurrenceSpecification14"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="aa078a2c-5016-4efc-a7de-aba616a65b63"
+                LastKnownName="MessageOccurrenceSpecification41"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="8bc6b5d6-2b25-44df-a3a6-5c78636fa757"
+            name="ExecutionOccurrenceSpecification11">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="ef396b6c-306a-4df2-9983-bfc8b31e90b4"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="22c59c81-5489-4710-aa21-4433c6b17e45"
+            name="MessageOccurrenceSpecification14">
+            <event>
+              <receiveOperationEventMoniker
+                Id="5821a569-4f37-404f-8136-fea73bc44cb3"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="c42f85e9-4ef3-40f0-bf07-5748d49371b3"
+            name="MessageOccurrenceSpecification13">
+            <event>
+              <sendOperationEventMoniker
+                Id="8cac13ed-ca7a-4eff-9f2d-6adadc720401"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="e389ef0b-e0c0-4ab0-a0ec-ba5089e031de"
+            name="BehaviorExecutionSpecification16">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="7c4e2d79-eb8b-40f8-aeaf-ba9662344dad"
+                LastKnownName="ExecutionOccurrenceSpecification32"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="000fdaf6-5b15-40d1-8dc8-723f0c59fcc2"
+                LastKnownName="ExecutionOccurrenceSpecification31"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="b0e7ddbd-0635-4af0-83d3-e08920009d2f"
+                LastKnownName="MessageOccurrenceSpecification42"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="000fdaf6-5b15-40d1-8dc8-723f0c59fcc2"
+            name="ExecutionOccurrenceSpecification31">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="c68e077b-26f2-4188-8bea-bb08d0dc28aa"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="b0e7ddbd-0635-4af0-83d3-e08920009d2f"
+            name="MessageOccurrenceSpecification42">
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="aa078a2c-5016-4efc-a7de-aba616a65b63"
+            name="MessageOccurrenceSpecification41">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="d59151c3-ea16-479f-a6d9-744f27a02af6"
+            name="ExecutionOccurrenceSpecification12">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="d59c42a0-6a72-4144-8f35-cf63bdeebae3"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="7c4e2d79-eb8b-40f8-aeaf-ba9662344dad"
+            name="ExecutionOccurrenceSpecification32">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="dd1e7e70-bda3-4549-82b8-e7813b5ed650"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="00d62f05-1d5d-46a5-9f40-dfbfd666d3da"
+            name="BehaviorExecutionSpecification3">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="93fd125a-693d-4c25-b883-18a6b6c040bd"
+                LastKnownName="ExecutionOccurrenceSpecification6"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="c1b82c3b-78fa-4b9a-8891-db891bfe0f9e"
+                LastKnownName="ExecutionOccurrenceSpecification5"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="0a8ba0d8-2299-418c-ab89-b9a2df355bd8"
+                LastKnownName="MessageOccurrenceSpecification8"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="020ee103-ad72-4312-aedc-12158f368065"
+                LastKnownName="MessageOccurrenceSpecification9"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="c1b82c3b-78fa-4b9a-8891-db891bfe0f9e"
+            name="ExecutionOccurrenceSpecification5">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="0b9967d9-f94a-40e0-be42-b7195c1e06c5"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="62dfa0f4-1d68-4a4a-861c-f8924959d88f"
+            name="MessageOccurrenceSpecification7">
+            <event>
+              <sendOperationEventMoniker
+                Id="5ef5024b-118b-4c79-aa74-56cad8e3ad77"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="0a8ba0d8-2299-418c-ab89-b9a2df355bd8"
+            name="MessageOccurrenceSpecification8">
+            <event>
+              <receiveOperationEventMoniker
+                Id="2a6a06cc-3298-458a-ba22-0a2ad66444ee"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="b7178394-4196-4307-a82d-7eb45c608b69"
+            name="BehaviorExecutionSpecification4">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="3b01a5ca-4dd4-4e5a-81b3-ddd240d0e56f"
+                LastKnownName="ExecutionOccurrenceSpecification8"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="24e4cc5d-2264-46ec-9855-145398a4f74f"
+                LastKnownName="ExecutionOccurrenceSpecification7"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="fcb01e20-9321-49ea-ba3e-a5e442998c44"
+                LastKnownName="MessageOccurrenceSpecification10"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="9ecdec36-dcf0-4489-87a4-7ba1d340a4a3"
+                LastKnownName="MessageOccurrenceSpecification43"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="24e4cc5d-2264-46ec-9855-145398a4f74f"
+            name="ExecutionOccurrenceSpecification7">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="91e479d0-8137-4074-be5b-f7aeb174124e"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="fcb01e20-9321-49ea-ba3e-a5e442998c44"
+            name="MessageOccurrenceSpecification10">
+            <event>
+              <receiveOperationEventMoniker
+                Id="e931d36e-ca82-45b0-ac1e-5f8a457f32da"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="020ee103-ad72-4312-aedc-12158f368065"
+            name="MessageOccurrenceSpecification9">
+            <event>
+              <sendOperationEventMoniker
+                Id="79cb89f0-5576-4368-8a40-924716426fab"
+                LastKnownLocation="besharp.Design.uml" />
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <behaviorExecutionSpecification
+            Id="d6d2a223-c791-4dce-9540-fb01a94ae8c4"
+            name="BehaviorExecutionSpecification17">
+            <coveredLifelines>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker
+                Id="a065e313-d6cf-4071-8f6b-c582ec8eb59d"
+                LastKnownName="ExecutionOccurrenceSpecification34"
+                LastKnownLocation="besharp.Design.uml" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker
+                Id="603e1d42-397c-474f-bf28-3f2c2d0960e0"
+                LastKnownName="ExecutionOccurrenceSpecification33"
+                LastKnownLocation="besharp.Design.uml" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="7d3d2a7a-94d3-46ba-9bbd-af7d4cf5ad54"
+                LastKnownName="MessageOccurrenceSpecification44"
+                LastKnownLocation="besharp.Design.uml" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification
+            Id="603e1d42-397c-474f-bf28-3f2c2d0960e0"
+            name="ExecutionOccurrenceSpecification33">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="3c5cd9a0-1aca-42a7-a7a7-d8fa16f7ed8c"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="93fd125a-693d-4c25-b883-18a6b6c040bd"
+            name="ExecutionOccurrenceSpecification6">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="f9e159e2-e712-4a1a-89d4-a476dd764967"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+                LastKnownName="dgramDispatcher : DatagramDispatcher"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="9ecdec36-dcf0-4489-87a4-7ba1d340a4a3"
+            name="MessageOccurrenceSpecification43">
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification
+            Id="7d3d2a7a-94d3-46ba-9bbd-af7d4cf5ad54"
+            name="MessageOccurrenceSpecification44">
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="3b01a5ca-4dd4-4e5a-81b3-ddd240d0e56f"
+            name="ExecutionOccurrenceSpecification8">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="54b82b79-4b93-4917-aeef-323af2537a68"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+                LastKnownName="rcc : RConClient"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <executionOccurrenceSpecification
+            Id="a065e313-d6cf-4071-8f6b-c582ec8eb59d"
+            name="ExecutionOccurrenceSpecification34">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker
+                  Id="195494cb-be39-4602-a34e-fb0fa4435ca5"
+                  LastKnownName="ExecutionEvent"
+                  LastKnownLocation="besharp.Design.uml" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker
+                Id="913b3dff-171c-4aea-8729-981877bd76c8"
+                LastKnownName="Client"
+                LastKnownLocation="besharp.Design.uml" />
+            </covered>
+          </executionOccurrenceSpecification>
+        </fragments>
+        <lifelines>
+          <lifeline
+            Id="913b3dff-171c-4aea-8729-981877bd76c8"
+            name="Client"
+            isActor="false"
+            lifelineDisplayName="Client">
+            <topLevelOccurrences>
+              <messageOccurrenceSpecificationMoniker
+                Id="f2f43c4d-eef4-4a9e-a78f-a92cda85fb9f"
+                LastKnownName="MessageOccurrenceSpecification15"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="01c6997d-014c-418f-85e0-1ed2dcc9292f"
+                LastKnownName="MessageOccurrenceSpecification18"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="a86a8829-afb1-4e4c-ae99-3b1ed28b7331"
+                LastKnownName="MessageOccurrenceSpecification19"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="4ab2770b-e81f-48f0-9ada-9d071e48bf1f"
+                LastKnownName="ExecutionOccurrenceSpecification29"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="1a5bae76-9331-41b6-9b71-975c1d28d6f9"
+                LastKnownName="ExecutionOccurrenceSpecification30"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="3a01fab2-dc4f-40fd-bec0-603a55f314e9"
+                LastKnownName="MessageOccurrenceSpecification45"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="6fb06daf-eba4-47ee-bf1d-5841f6cacfdf"
+                LastKnownName="ExecutionOccurrenceSpecification47"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="1dd0c01b-3fe2-4d53-bf8c-953fe7dec541"
+                LastKnownName="ExecutionOccurrenceSpecification48"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="000fdaf6-5b15-40d1-8dc8-723f0c59fcc2"
+                LastKnownName="ExecutionOccurrenceSpecification31"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="7c4e2d79-eb8b-40f8-aeaf-ba9662344dad"
+                LastKnownName="ExecutionOccurrenceSpecification32"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="603e1d42-397c-474f-bf28-3f2c2d0960e0"
+                LastKnownName="ExecutionOccurrenceSpecification33"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="a065e313-d6cf-4071-8f6b-c582ec8eb59d"
+                LastKnownName="ExecutionOccurrenceSpecification34"
+                LastKnownLocation="besharp.Design.uml" />
+            </topLevelOccurrences>
+          </lifeline>
+          <lifeline
+            Id="1d8d5c3c-ce79-4c18-aef9-f6552b86ca10"
+            name="rcc : RConClient"
+            isActor="false"
+            lifelineDisplayName="rcc : RConClient">
+            <represents>
+              <propertyMoniker
+                Id="9ed3baa9-3885-44fe-b967-96c44e0632c7"
+                LastKnownLocation="besharp.Design.uml" />
+            </represents>
+            <topLevelOccurrences>
+              <executionOccurrenceSpecificationMoniker
+                Id="9f7999fa-78eb-4460-beda-3a2b0c329350"
+                LastKnownName="ExecutionOccurrenceSpecification13"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="5e2fb112-719b-4fcf-bfb2-dfc62ae6aa9f"
+                LastKnownName="ExecutionOccurrenceSpecification14"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="b7d12214-b7e2-4a75-b763-92c3c3221d13"
+                LastKnownName="ExecutionOccurrenceSpecification15"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="d8a59c83-d6d0-4cdd-9b48-322aacac5c62"
+                LastKnownName="ExecutionOccurrenceSpecification16"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="dcdda9de-96b4-44f0-9c3b-1db9533f54e7"
+                LastKnownName="ExecutionOccurrenceSpecification35"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="8b905b81-7ad4-41dd-bb19-102f70b8bf48"
+                LastKnownName="ExecutionOccurrenceSpecification36"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="8bc6b5d6-2b25-44df-a3a6-5c78636fa757"
+                LastKnownName="ExecutionOccurrenceSpecification11"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="d59151c3-ea16-479f-a6d9-744f27a02af6"
+                LastKnownName="ExecutionOccurrenceSpecification12"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="62dfa0f4-1d68-4a4a-861c-f8924959d88f"
+                LastKnownName="MessageOccurrenceSpecification7"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="24e4cc5d-2264-46ec-9855-145398a4f74f"
+                LastKnownName="ExecutionOccurrenceSpecification7"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="3b01a5ca-4dd4-4e5a-81b3-ddd240d0e56f"
+                LastKnownName="ExecutionOccurrenceSpecification8"
+                LastKnownLocation="besharp.Design.uml" />
+            </topLevelOccurrences>
+          </lifeline>
+          <lifeline
+            Id="132ff573-2376-48d1-9f7a-f5b9cdfb4f60"
+            name="dgramDispatcher : DatagramDispatcher"
+            isActor="false"
+            lifelineDisplayName="dgramDispatcher : DatagramDispatcher">
+            <represents>
+              <propertyMoniker
+                Id="b64f998d-4bd4-43fd-8a08-7681c2547e60"
+                LastKnownLocation="besharp.Design.uml" />
+            </represents>
+            <topLevelOccurrences>
+              <executionOccurrenceSpecificationMoniker
+                Id="3fab9ec4-f28f-4c2e-be88-b2bfe0143025"
+                LastKnownName="ExecutionOccurrenceSpecification3"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="35de64f3-f0d7-4469-8fc1-5f244676d218"
+                LastKnownName="ExecutionOccurrenceSpecification4"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="974b488c-9e97-4868-bb93-75aa2d343f74"
+                LastKnownName="ExecutionOccurrenceSpecification21"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="f5a5ee6c-e9ea-4124-8018-6ea49d081e0e"
+                LastKnownName="ExecutionOccurrenceSpecification22"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="7334892a-cd44-4b40-afc5-32302cdae29e"
+                LastKnownName="ExecutionOccurrenceSpecification39"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="cafaf975-f69a-4fee-bac9-9e86f296aa32"
+                LastKnownName="ExecutionOccurrenceSpecification40"
+                LastKnownLocation="besharp.Design.uml" />
+              <messageOccurrenceSpecificationMoniker
+                Id="c42f85e9-4ef3-40f0-bf07-5748d49371b3"
+                LastKnownName="MessageOccurrenceSpecification13"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="c1b82c3b-78fa-4b9a-8891-db891bfe0f9e"
+                LastKnownName="ExecutionOccurrenceSpecification5"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="93fd125a-693d-4c25-b883-18a6b6c040bd"
+                LastKnownName="ExecutionOccurrenceSpecification6"
+                LastKnownLocation="besharp.Design.uml" />
+            </topLevelOccurrences>
+          </lifeline>
+          <lifeline
+            Id="7e8fa3a0-d403-4ba9-b64c-181425c42098"
+            name="loginResponseHandler : ResponseHandler"
+            isActor="false"
+            lifelineDisplayName="loginResponseHandler : ResponseHandler">
+            <represents>
+              <propertyMoniker
+                Id="9bc2ad55-f011-4fd2-ad27-2ea8c281ba92"
+                LastKnownLocation="besharp.Design.uml" />
+            </represents>
+            <topLevelOccurrences>
+              <executionOccurrenceSpecificationMoniker
+                Id="4b6b1842-f4a9-4905-ad51-5b759c98c48f"
+                LastKnownName="ExecutionOccurrenceSpecification23"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="f583276f-5eaf-4270-bbb6-c08ab142d260"
+                LastKnownName="ExecutionOccurrenceSpecification24"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="8df616ee-17cf-451c-ae11-e2626b3e2798"
+                LastKnownName="ExecutionOccurrenceSpecification25"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="5a4a1260-8de4-450e-9140-f965c6963fe0"
+                LastKnownName="ExecutionOccurrenceSpecification26"
+                LastKnownLocation="besharp.Design.uml" />
+            </topLevelOccurrences>
+          </lifeline>
+          <lifeline
+            Id="7e9d4bce-9ed8-4a01-8ac7-825615445911"
+            name="ResponseHandler"
+            isActor="false"
+            lifelineDisplayName="ResponseHandler">
+            <represents>
+              <propertyMoniker
+                Id="d7456e90-b075-4167-a44d-1880de55aa33"
+                LastKnownLocation="besharp.Design.uml" />
+            </represents>
+            <topLevelOccurrences>
+              <executionOccurrenceSpecificationMoniker
+                Id="36065e42-20ba-4163-9f28-c5877a8c7487"
+                LastKnownName="ExecutionOccurrenceSpecification41"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="14a453cc-8beb-4d92-b887-6d4b76c0bd92"
+                LastKnownName="ExecutionOccurrenceSpecification42"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="96fa8c65-64f9-4a8d-8cb0-4a702787eddd"
+                LastKnownName="ExecutionOccurrenceSpecification43"
+                LastKnownLocation="besharp.Design.uml" />
+              <executionOccurrenceSpecificationMoniker
+                Id="b7c035b7-a68d-41c9-9559-53dfe3dbfbeb"
+                LastKnownName="ExecutionOccurrenceSpecification44"
+                LastKnownLocation="besharp.Design.uml" />
+            </topLevelOccurrences>
+          </lifeline>
+        </lifelines>
+        <messages>
+          <message
+            Id="b587f9f5-4193-4ae9-94c9-d801576f3849"
+            name="&lt;&lt;create&gt;&gt;"
+            messageKind="Complete"
+            messageSort="CreateMessage"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="f2f43c4d-eef4-4a9e-a78f-a92cda85fb9f"
+                LastKnownName="MessageOccurrenceSpecification15"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="53e38475-506d-4539-82c6-a05e4ea9744f"
+                LastKnownName="MessageOccurrenceSpecification16"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="d8dfeaeb-12e6-446f-8df7-8f22f0d419b1"
+            name="&lt;&lt;return&gt;&gt;"
+            messageKind="Complete"
+            messageSort="Reply"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="f0695f26-7582-4d4f-9188-bee662b96160"
+                LastKnownName="MessageOccurrenceSpecification17"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="01c6997d-014c-418f-85e0-1ed2dcc9292f"
+                LastKnownName="MessageOccurrenceSpecification18"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="01357363-ddb9-4997-9353-dc30a6936272"
+            name="Connect"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false"
+            signatureText="+ ConnectAsync() : Task&lt;Boolean‎&gt;">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="a86a8829-afb1-4e4c-ae99-3b1ed28b7331"
+                LastKnownName="MessageOccurrenceSpecification19"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="111c0128-9a8b-4d40-aa4e-0b07f67b9b8d"
+                LastKnownName="MessageOccurrenceSpecification20"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="8e9c0de2-b9e4-4d32-8325-21dc8e3ceb39"
+            name="&lt;&lt;create&gt;&gt;"
+            messageKind="Complete"
+            messageSort="CreateMessage"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="bfd92003-743d-43ca-8623-4dbf40f86471"
+                LastKnownName="MessageOccurrenceSpecification3"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="89adb2df-3f55-42d4-983d-e596912a843a"
+                LastKnownName="MessageOccurrenceSpecification4"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="d7809047-21e3-45bd-b20f-39ce96eccb37"
+            name="&lt;&lt;return&gt;&gt;"
+            messageKind="Complete"
+            messageSort="Reply"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="1e0844db-e946-4311-acd2-ba94c0b055dc"
+                LastKnownName="MessageOccurrenceSpecification5"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="3788d766-45ab-4a81-a6f5-a50972e17f1c"
+                LastKnownName="MessageOccurrenceSpecification6"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="c06e3810-aed3-4389-b753-53ec1eb95063"
+            name="Send Login Datagram"
+            messageKind="Complete"
+            messageSort="SynchCall"
+            createSelfMessage="false"
+            signatureText="~ SendDatagram(dgram : IOutboundDatagram) : ResponseHandler">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="5d11f0ad-0813-4152-9202-8f3edf40ade7"
+                LastKnownName="MessageOccurrenceSpecification27"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="fb28b071-97c8-4d9c-8cfc-332e5d1c64d6"
+                LastKnownName="MessageOccurrenceSpecification28"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="b5339f7f-0464-486d-8323-3957651f36ae"
+            name="&lt;&lt;create&gt;&gt;"
+            messageKind="Complete"
+            messageSort="CreateMessage"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="cbcfa4b8-5dec-4cb9-94f0-b904bea338c3"
+                LastKnownName="MessageOccurrenceSpecification31"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="7759ec13-89a6-4d6d-8a12-914a9fc85fcb"
+                LastKnownName="MessageOccurrenceSpecification32"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="8b50bfdb-2b89-48ba-aa9b-2e032e2b5ef5"
+            name="&lt;&lt;return&gt;&gt;"
+            messageKind="Complete"
+            messageSort="Reply"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="2886a52f-5f10-4057-a5fd-7b3248089fe3"
+                LastKnownName="MessageOccurrenceSpecification33"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="8c8940bb-fb83-4821-8dea-20b30466bd01"
+                LastKnownName="MessageOccurrenceSpecification34"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="17890921-9e17-4c1e-a8b9-e3a334542d33"
+            name="&lt;&lt;return&gt;&gt;"
+            messageKind="Complete"
+            messageSort="Reply"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="4ed42b2f-9e96-48d1-b859-bbcd7cac88ad"
+                LastKnownName="MessageOccurrenceSpecification29"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="5f3d0db0-271b-44a1-8bc6-bc4ed128e32a"
+                LastKnownName="MessageOccurrenceSpecification30"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="b706855b-99bd-483d-b684-d7c35742b2e0"
+            name="Wait"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false"
+            signatureText="+ WaitForResponse() : Task&lt;Boolean‎&gt;">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="fb49a830-a28b-4144-b32a-c4239bc92e48"
+                LastKnownName="MessageOccurrenceSpecification35"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="e082bea3-84d1-4dff-ac81-36bc341382c0"
+                LastKnownName="MessageOccurrenceSpecification36"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="78357ef7-2211-4e79-b7a7-f858f879276c"
+            name="Login response received or timeout"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="a77bb22f-70a8-44da-a111-d56943b33a5c"
+                LastKnownName="MessageOccurrenceSpecification37"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="42e84310-f8b0-46bf-83f8-475acfa18798"
+                LastKnownName="MessageOccurrenceSpecification38"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="52b224c8-a923-4713-85c9-23b685031ae0"
+            name="Login result (success or error)"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="3cbc1715-d22b-4e7d-ac53-3c034de8ddd1"
+                LastKnownName="MessageOccurrenceSpecification39"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="6e7006ce-5489-4376-9216-2683dee1e47f"
+                LastKnownName="MessageOccurrenceSpecification40"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="c63f2c78-80e2-4640-9047-d109d927b7b0"
+            name="Message6"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false"
+            signatureText="+ SendCommandAsync(commandText : String) : Task&lt;CommandResult‎&gt;">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="3a01fab2-dc4f-40fd-bec0-603a55f314e9"
+                LastKnownName="MessageOccurrenceSpecification45"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="c67ad334-5f92-435b-a0fb-6a256cf1d05b"
+                LastKnownName="MessageOccurrenceSpecification46"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="a9a8138f-09a2-4f8f-a08f-5494f2768924"
+            name="Message7"
+            messageKind="Complete"
+            messageSort="SynchCall"
+            createSelfMessage="false"
+            signatureText="+ SendCommand(commandText : String) : ResponseHandler">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="36d36c38-56ba-42ca-8dfc-15e4c539a1fd"
+                LastKnownName="MessageOccurrenceSpecification51"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="d6d79326-f8be-467b-91bc-d1bebb5afa6c"
+                LastKnownName="MessageOccurrenceSpecification52"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="6a9e41e7-77d6-4189-ba1b-e4c4805b67a1"
+            name="&lt;&lt;create&gt;&gt;"
+            messageKind="Complete"
+            messageSort="CreateMessage"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="dbbf055d-e289-4889-bbb9-e90a7e7ebd1d"
+                LastKnownName="MessageOccurrenceSpecification55"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="dd956b6f-a5a0-4110-869a-22e4305142bd"
+                LastKnownName="MessageOccurrenceSpecification56"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="373215a8-53cd-49bd-86a8-8f75d430c080"
+            name="&lt;&lt;return&gt;&gt;"
+            messageKind="Complete"
+            messageSort="Reply"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="dfe6008d-eab5-4514-937b-f2c832d5a6c9"
+                LastKnownName="MessageOccurrenceSpecification57"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="47c788dd-f9a2-4f4d-a562-c28f50cfe2b6"
+                LastKnownName="MessageOccurrenceSpecification58"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="5bbb4f69-93ce-4a0c-a0e7-2d5db6a222f0"
+            name="&lt;&lt;return&gt;&gt;"
+            messageKind="Complete"
+            messageSort="Reply"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="80dc848b-07aa-4d89-b4b1-4dde34c9df52"
+                LastKnownName="MessageOccurrenceSpecification53"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="de897e02-1d77-46f2-844a-f75e62f0dffb"
+                LastKnownName="MessageOccurrenceSpecification54"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="f3f29069-cfbd-4b45-a343-0e25493f05b3"
+            name="Message8"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false"
+            signatureText="+ WaitForResponse() : Task&lt;Boolean‎&gt;">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="ec9af662-588e-4d3d-ab31-e28fce2dff52"
+                LastKnownName="MessageOccurrenceSpecification59"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="5b927f68-0611-4ec4-816b-1ba5a2afff8a"
+                LastKnownName="MessageOccurrenceSpecification60"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="444dc83f-cd09-4414-8881-f8cbe14a2d1e"
+            name="Command response received or timeout"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="b7dc77c0-381e-4192-b8f5-cd8138fe8145"
+                LastKnownName="MessageOccurrenceSpecification61"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="06a30bd6-b4bb-46c6-927c-98c8973b69f9"
+                LastKnownName="MessageOccurrenceSpecification62"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="b2488c61-e741-4f3b-bf4c-a04d83ed421c"
+            name="Command result (success and response, or timeout)"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="440ddbbc-5e37-47f3-a337-9499f3935a9a"
+                LastKnownName="MessageOccurrenceSpecification63"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="ba014e4d-23d2-4303-a78f-2016cb8fda78"
+                LastKnownName="MessageOccurrenceSpecification64"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="87baa323-0e6f-428d-acc8-62e966466f69"
+            name="Message3"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false"
+            signatureText="~ OnMessageReceived(e : MessageReceivedEventArgs)">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="c42f85e9-4ef3-40f0-bf07-5748d49371b3"
+                LastKnownName="MessageOccurrenceSpecification13"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="22c59c81-5489-4710-aa21-4433c6b17e45"
+                LastKnownName="MessageOccurrenceSpecification14"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="a122d769-d97d-4aa9-bb64-9ca5cba71c68"
+            name="Message Received"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="aa078a2c-5016-4efc-a7de-aba616a65b63"
+                LastKnownName="MessageOccurrenceSpecification41"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="b0e7ddbd-0635-4af0-83d3-e08920009d2f"
+                LastKnownName="MessageOccurrenceSpecification42"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="cf737b4e-2217-408a-be55-f9f282341343"
+            name="Message1"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false"
+            signatureText="+ Close()">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="62dfa0f4-1d68-4a4a-861c-f8924959d88f"
+                LastKnownName="MessageOccurrenceSpecification7"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="0a8ba0d8-2299-418c-ab89-b9a2df355bd8"
+                LastKnownName="MessageOccurrenceSpecification8"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="d0e2fbae-ede0-41be-82ac-d32c967a08f7"
+            name="Message2"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false"
+            signatureText="~ HandleDispatcherClosed(reason : ShutdownReason)">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="020ee103-ad72-4312-aedc-12158f368065"
+                LastKnownName="MessageOccurrenceSpecification9"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="fcb01e20-9321-49ea-ba3e-a5e442998c44"
+                LastKnownName="MessageOccurrenceSpecification10"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+          <message
+            Id="64b868b5-985e-4317-b2a0-34f35d3a8d39"
+            name="Disconnected"
+            messageKind="Complete"
+            messageSort="AsynchCall"
+            createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="9ecdec36-dcf0-4489-87a4-7ba1d340a4a3"
+                LastKnownName="MessageOccurrenceSpecification43"
+                LastKnownLocation="besharp.Design.uml" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker
+                Id="7d3d2a7a-94d3-46ba-9bbd-af7d4cf5ad54"
+                LastKnownName="MessageOccurrenceSpecification44"
+                LastKnownLocation="besharp.Design.uml" />
+            </receiveEvent>
+          </message>
+        </messages>
+        <ownedAttributesInternal>
+          <property
+            Id="9ed3baa9-3885-44fe-b967-96c44e0632c7"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <type_NamedElement>
+              <classMoniker
+                Id="0367ad14-c938-4729-934a-179d9942ebfb"
+                LastKnownName="RConClient"
+                LastKnownLocation="Package_0533.uml" />
+            </type_NamedElement>
+          </property>
+          <property
+            Id="b64f998d-4bd4-43fd-8a08-7681c2547e60"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <type_NamedElement>
+              <classMoniker
+                Id="2caafad3-285c-492d-9819-855dae6db80c"
+                LastKnownName="DatagramDispatcher"
+                LastKnownLocation="Package_0533.uml" />
+            </type_NamedElement>
+          </property>
+          <property
+            Id="9bc2ad55-f011-4fd2-ad27-2ea8c281ba92"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <type_NamedElement>
+              <classMoniker
+                Id="eb7e47d7-c214-422e-b5fb-8aa4db3a22bd"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="Package_0533.uml" />
+            </type_NamedElement>
+          </property>
+          <property
+            Id="d7456e90-b075-4167-a44d-1880de55aa33"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false">
+            <type_NamedElement>
+              <classMoniker
+                Id="eb7e47d7-c214-422e-b5fb-8aa4db3a22bd"
+                LastKnownName="ResponseHandler"
+                LastKnownLocation="Package_0533.uml" />
+            </type_NamedElement>
+          </property>
+        </ownedAttributesInternal>
+      </interaction>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="0b9967d9-f94a-40e0-be42-b7195c1e06c5"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="f9e159e2-e712-4a1a-89d4-a476dd764967"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <sendOperationEvent
+        Id="5ef5024b-118b-4c79-aa74-56cad8e3ad77">
+        <operation>
+          <operationMoniker
+            Id="c395da6c-8649-40a4-b640-786a9e15a355"
+            LastKnownName="Close"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </sendOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <receiveOperationEvent
+        Id="2a6a06cc-3298-458a-ba22-0a2ad66444ee">
+        <operation>
+          <operationMoniker
+            Id="c395da6c-8649-40a4-b640-786a9e15a355"
+            LastKnownName="Close"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </receiveOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="91e479d0-8137-4074-be5b-f7aeb174124e"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="54b82b79-4b93-4917-aeef-323af2537a68"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <sendOperationEvent
+        Id="79cb89f0-5576-4368-8a40-924716426fab">
+        <operation>
+          <operationMoniker
+            Id="9958cc26-6fe7-4d6e-8bd1-d763aeccb0da"
+            LastKnownName="HandleDispatcherClosed"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </sendOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <receiveOperationEvent
+        Id="e931d36e-ca82-45b0-ac1e-5f8a457f32da">
+        <operation>
+          <operationMoniker
+            Id="9958cc26-6fe7-4d6e-8bd1-d763aeccb0da"
+            LastKnownName="HandleDispatcherClosed"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </receiveOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="ef396b6c-306a-4df2-9983-bfc8b31e90b4"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="d59c42a0-6a72-4144-8f35-cf63bdeebae3"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <sendOperationEvent
+        Id="8cac13ed-ca7a-4eff-9f2d-6adadc720401">
+        <operation>
+          <operationMoniker
+            Id="9856ff30-ca63-4d29-bf98-4e70b29b4bbf"
+            LastKnownName="OnMessageReceived"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </sendOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <receiveOperationEvent
+        Id="5821a569-4f37-404f-8136-fea73bc44cb3">
+        <operation>
+          <operationMoniker
+            Id="9856ff30-ca63-4d29-bf98-4e70b29b4bbf"
+            LastKnownName="OnMessageReceived"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </receiveOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="e89d8031-ea8c-425f-a1ab-220aa3edd9ec"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="d5700305-6728-422e-8809-ccae9903449e"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="528bc2ab-2b7b-4649-a927-066faac89e55"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="770c4573-f671-48fc-8f33-818593a3a0cb"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <sendOperationEvent
+        Id="c6ba8cca-c1f7-44b8-b342-de2110dd35fe">
+        <operation>
+          <operationMoniker
+            Id="ccc66f1f-180f-46c2-aaca-42648b0a9a9e"
+            LastKnownName="ConnectAsync"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </sendOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <receiveOperationEvent
+        Id="0ac64bdd-79f0-4010-91b3-0e2b801005ff">
+        <operation>
+          <operationMoniker
+            Id="ccc66f1f-180f-46c2-aaca-42648b0a9a9e"
+            LastKnownName="ConnectAsync"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </receiveOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="3f8a9a41-97db-4a83-b71a-3383a0092b27"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="b2b0e6aa-3dc1-455f-bc78-6732a5d563dc"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="89f1ece0-bcf3-4f71-8142-bb95f0a48643"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="21bd6c8e-c821-46cb-a703-4983baa2aa18"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <sendOperationEvent
+        Id="e119f44e-55e1-49d1-bc22-597036e185a4">
+        <operation>
+          <operationMoniker
+            Id="18dbd811-2a41-4ce5-bc62-c66075667498"
+            LastKnownName="SendDatagram"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </sendOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <receiveOperationEvent
+        Id="b7ba1f8d-e12a-48c5-b5ca-d94ac8fc6c83">
+        <operation>
+          <operationMoniker
+            Id="18dbd811-2a41-4ce5-bc62-c66075667498"
+            LastKnownName="SendDatagram"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </receiveOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="76746b37-a595-444c-a438-5bb359e5c7f2"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="3baadd53-4766-4f11-9be6-479588b87ed3"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="68936eaf-dd0b-4b94-9629-733fe9e87c16"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="0470081f-4286-4cef-a075-3cc98c8b583c"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <sendOperationEvent
+        Id="e1b35016-f912-42b6-82b2-15435d055ad2">
+        <operation>
+          <operationMoniker
+            Id="a221b73f-f4ee-47f0-bcb8-969048257486"
+            LastKnownName="WaitForResponse"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </sendOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <receiveOperationEvent
+        Id="97d46408-c6e7-4f74-8e27-35bbeea29c91">
+        <operation>
+          <operationMoniker
+            Id="a221b73f-f4ee-47f0-bcb8-969048257486"
+            LastKnownName="WaitForResponse"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </receiveOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="25f3c57e-779f-425f-83e5-5ca58d44b014"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="3e98c222-8030-4d25-9c91-a6da83c4ca8b"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="2366881c-858e-48b9-b9de-094690f0484e"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="0e24e7a5-fc74-4f59-a8a3-809b5c71bae8"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="c68e077b-26f2-4188-8bea-bb08d0dc28aa"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="dd1e7e70-bda3-4549-82b8-e7813b5ed650"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="3c5cd9a0-1aca-42a7-a7a7-d8fa16f7ed8c"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="195494cb-be39-4602-a34e-fb0fa4435ca5"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="d4c10a9d-9d8b-4cc6-bede-53520aa50ef6"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="1a228cdd-12af-4ce8-9826-7597c81608b1"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <sendOperationEvent
+        Id="9135f463-d594-4f23-af45-776cb5a55221">
+        <operation>
+          <operationMoniker
+            Id="fee0a9d9-230f-448e-b255-3c0aef27c7b1"
+            LastKnownName="SendCommandAsync"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </sendOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <receiveOperationEvent
+        Id="4fbd6fc2-ec0f-4100-9887-3c5243ae8654">
+        <operation>
+          <operationMoniker
+            Id="fee0a9d9-230f-448e-b255-3c0aef27c7b1"
+            LastKnownName="SendCommandAsync"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </receiveOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="52905b7e-cec9-4f59-b3f1-e2ccf10abde2"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="3ffe4614-4754-47b6-b665-0eb4ada98d32"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <sendOperationEvent
+        Id="caccba86-ec14-46e3-bd50-5bb7c2daedc3">
+        <operation>
+          <operationMoniker
+            Id="408c6c8b-ea4f-4f2a-b5dd-bde75626c39a"
+            LastKnownName="SendCommand"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </sendOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <receiveOperationEvent
+        Id="8a28f89a-78ce-421a-8616-bc7df04ee248">
+        <operation>
+          <operationMoniker
+            Id="408c6c8b-ea4f-4f2a-b5dd-bde75626c39a"
+            LastKnownName="SendCommand"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </receiveOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="e9f716e7-bd2d-4d3d-af2a-7437061b28e0"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="4ec7306f-aa52-4a23-b72c-098b423b96c7"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="52124878-93bd-4672-be4a-1c5c8ac32e87"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="2274036b-8bb5-44a9-8429-4e77d73a4b56"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <sendOperationEvent
+        Id="e366e707-82a2-4e8d-a460-89f5d5246af8">
+        <operation>
+          <operationMoniker
+            Id="a221b73f-f4ee-47f0-bcb8-969048257486"
+            LastKnownName="WaitForResponse"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </sendOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <receiveOperationEvent
+        Id="0e3ac692-8c70-4d42-a994-60e93271d5f4">
+        <operation>
+          <operationMoniker
+            Id="a221b73f-f4ee-47f0-bcb8-969048257486"
+            LastKnownName="WaitForResponse"
+            LastKnownLocation="Package_0533.uml" />
+        </operation>
+      </receiveOperationEvent>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="9ed9ff01-7f63-4ad9-8628-ea3d7c090840"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="2050cf43-c1ae-4417-bf8a-eb54c2837be2"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="06068dfa-28ef-44d6-9d7e-6b2df70e1ae3"
+        name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent
+        Id="4a6cc633-dec6-4080-a777-ba339d2ceace"
+        name="ExecutionEvent" />
     </packageHasNamedElement>
   </packagedElements>
   <primitiveType

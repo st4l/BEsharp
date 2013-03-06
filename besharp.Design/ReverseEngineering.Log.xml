@@ -6,14 +6,24 @@
   <MessageClass Name="Error" Label="Error" Option="Show errors" />
   <MessageClass Name="Property" Label="Property" Option="Show metadata" />
   <MessageClass Name="Diagnostic" Label="Message" Option="Show diagnostic messages" />
-  <Message Timestamp="2013-03-02T06:04:44" Importance="High" Text="Reverse Engineering Started." />
-  <Message Timestamp="2013-03-02T06:04:46" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp' -  (Package)" />
-  <Message Timestamp="2013-03-02T06:04:46" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::Datagrams' -  (Package)" />
-  <Message Timestamp="2013-03-02T06:04:46" Importance="Medium" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::Datagrams::DatagramType' -  (Enumeration)" />
-  <Message Timestamp="2013-03-02T06:04:46" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::Datagrams::DatagramType::Command' -  (EnumerationLiteral)" />
-  <Message Timestamp="2013-03-02T06:04:46" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::Datagrams::DatagramType::Login' -  (EnumerationLiteral)" />
-  <Message Timestamp="2013-03-02T06:04:46" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::Datagrams::DatagramType::Message' -  (EnumerationLiteral)" />
-  <Message Timestamp="2013-03-02T06:04:46" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::Datagrams::DatagramType::TestServerShutdown' -  (EnumerationLiteral)" />
-  <Message Timestamp="2013-03-02T06:04:46" Importance="High" Text="(1) type(s) fully reverse engineered." />
-  <Message Timestamp="2013-03-02T06:04:46" Importance="High" Text="The reverse engineering operation completed with (0) error(s), and (0) warning(s)." />
+  <Message Timestamp="2013-03-06T13:36:01" Importance="High" Text="Reverse Engineering Started." />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp' -  (Package)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Medium" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::SequenceTracker' -  (Class)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::SequenceTracker::buffer' -  (Property)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::SequenceTracker::Capacity' -  (Property)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::SequenceTracker::Contains' -  (Operation)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::SequenceTracker::Contains::sequenceNumber' -  (Parameter)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::SequenceTracker::current' -  (Property)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::SequenceTracker::max' -  (Property)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::SequenceTracker::SequenceTracker' -  (Operation)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::SequenceTracker::SequenceTracker::capacity' -  (Parameter)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::SequenceTracker::StartTracking' -  (Operation)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::BESharp::SequenceTracker::StartTracking::sequenceNumber' -  (Parameter)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::System' -  (Package)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'besharp.Design::System::Byte' -  (Class)   (partially reverse engineered - definition not updated) " />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'Boolean' -  (PrimitiveType)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="Diagnostic" Text="Element reverse engineered into the UML model: 'Integer' -  (PrimitiveType)" />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="High" Text="(1) type(s) fully reverse engineered." />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="High" Text="(1) type(s) partially reverse engineered.  These types were not included in the original selection so their full definitions are not reverse engineered.  Instead, this shallow operation has simply ensured these types exist in the UML model because they are needed in order to fully describe other elements." />
+  <Message Timestamp="2013-03-06T13:36:02" Importance="High" Text="The reverse engineering operation completed with (0) error(s), and (0) warning(s)." />
 </Log>

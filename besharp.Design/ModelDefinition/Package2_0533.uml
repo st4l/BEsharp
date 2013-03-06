@@ -193,5 +193,49 @@
         </appliedStereotypesInternal>
       </class>
     </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="a25b8991-bab5-4264-9794-1429c6e2b0fb"
+        name="SendOrPostCallback"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <referencesInternal>
+          <reference
+            Id="7377d1ac-e700-49ae-95ac-d63bddafbd93"
+            handle="viewcode://./CodeSchema_Delegate?Assembly%3D&quot;file:%2F%2F%2FD:%2FProgram Files (x86)%2FReference Assemblies%2FMicrosoft%2FFramework%2F.NETFramework%2Fv4.5%2Fmscorlib.dll&quot; Namespace%3DSystem.Threading Type%3DSendOrPostCallback"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="8f4a98a2-44c0-446a-a24b-bcb0bfcf7cda"
+            name="delegate"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="b98e9434-84c6-492b-b040-4776572eea2d">
+                <propertyInstance
+                  Id="b5c6c4e9-c5aa-4788-b550-ae49f1991ca4"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="f6bf326d-e571-4e0d-b883-9007a008b8f6">
+                <propertyInstance
+                  Id="46a86b4d-2cbe-4a29-8a30-ed1c6e2329b0"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="dd94d396-db1a-47fb-ad5b-eaea98ac41f7">
+                <propertyInstance
+                  Id="e5a64387-7010-42bb-83f5-ead4e9af22ef"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+      </class>
+    </packageHasNamedElement>
   </packagedElements>
 </package>

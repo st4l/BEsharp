@@ -21,7 +21,7 @@
         <referencesInternal>
           <reference
             Id="433f03d5-5b89-471c-8345-223a843f665f"
-            handle="viewcode://./CodeSchema_Interface?Assembly%3Dfile:%2F%2F%2FE:%2Fdev%2Fdayzcp%2Fmain%2FSolution%2FBEsharp%2Fbesharp%2Fbin%2FDebug%2Fbesharp.dll Namespace%3DBESharp.Datagrams Type%3DIOutboundDatagram"
+            handle="viewcode://./CodeSchema_Interface?Assembly%3Dfile:%2F%2F%2FE:%2Fdev%2Fdayzcp%2Fmain%2FSolution%2FBEsharp%2FSource%2Fbesharp%2Fbin%2FDebug%2Fbesharp.dll Namespace%3DBESharp.Datagrams Type%3DIOutboundDatagram"
             tag="ViewCode" />
         </referencesInternal>
         <appliedStereotypesInternal>
@@ -407,7 +407,7 @@
         <referencesInternal>
           <reference
             Id="a9d33e0c-ff44-4891-943e-7bf338887e26"
-            handle="viewcode://./CodeSchema_Class?Assembly%3Dfile:%2F%2F%2FE:%2Fdev%2Fdayzcp%2Fmain%2FSolution%2FBEsharp%2Fbesharp%2Fbin%2FDebug%2Fbesharp.dll Namespace%3DBESharp.Datagrams Type%3DConsoleMessageDatagram"
+            handle="viewcode://./CodeSchema_Class?Assembly%3Dfile:%2F%2F%2FE:%2Fdev%2Fdayzcp%2Fmain%2FSolution%2FBEsharp%2FSource%2Fbesharp%2Fbin%2FDebug%2Fbesharp.dll Namespace%3DBESharp.Datagrams Type%3DConsoleMessageDatagram"
             tag="ViewCode" />
         </referencesInternal>
         <appliedStereotypesInternal>
@@ -986,7 +986,7 @@
         <referencesInternal>
           <reference
             Id="7a2233ef-44ac-4283-a6c9-a86e714864ad"
-            handle="viewcode://./CodeSchema_Interface?Assembly%3Dfile:%2F%2F%2FE:%2Fdev%2Fdayzcp%2Fmain%2FSolution%2FBEsharp%2Fbesharp%2Fbin%2FDebug%2Fbesharp.dll Namespace%3DBESharp.Datagrams Type%3DIInboundDatagram"
+            handle="viewcode://./CodeSchema_Interface?Assembly%3Dfile:%2F%2F%2FE:%2Fdev%2Fdayzcp%2Fmain%2FSolution%2FBEsharp%2FSource%2Fbesharp%2Fbin%2FDebug%2Fbesharp.dll Namespace%3DBESharp.Datagrams Type%3DIInboundDatagram"
             tag="ViewCode" />
         </referencesInternal>
         <appliedStereotypesInternal>
@@ -1398,7 +1398,7 @@
         <referencesInternal>
           <reference
             Id="82123183-b4df-4617-9294-8e0e2cdd6c49"
-            handle="viewcode://./CodeSchema_Enum?Assembly%3Dfile:%2F%2F%2FE:%2Fdev%2Fdayzcp%2Fmain%2FSolution%2FBEsharp%2Fbesharp%2Fbin%2FDebug%2Fbesharp.dll Namespace%3DBESharp.Datagrams Type%3DDatagramType"
+            handle="viewcode://./CodeSchema_Enum?Assembly%3Dfile:%2F%2F%2FE:%2Fdev%2Fdayzcp%2Fmain%2FSolution%2FBEsharp%2FSource%2Fbesharp%2Fbin%2FDebug%2Fbesharp.dll Namespace%3DBESharp.Datagrams Type%3DDatagramType"
             tag="ViewCode" />
         </referencesInternal>
         <appliedStereotypesInternal>

@@ -20,7 +20,7 @@
         <referencesInternal>
           <reference
             Id="88bbeafc-17d0-449f-aa47-ee79795a8d4e"
-            handle="viewcode://./CodeSchema_Interface?Assembly%3Dfile:%2F%2F%2FE:%2Fdev%2Fdayzcp%2Fmain%2FSolution%2FBEsharp%2Fpackages%2Flog4net.2.0.0%2Flib%2Fnet40-full%2Flog4net.dll Namespace%3Dlog4net Type%3DILog"
+            handle="viewcode://./CodeSchema_Interface?Assembly%3Dfile:%2F%2F%2FE:%2Fdev%2Fdayzcp%2Fmain%2FSolution%2FBEsharp%2FSource%2Fbesharp%2Fbin%2FDebug%2Flog4net.dll Namespace%3Dlog4net Type%3DILog"
             tag="ViewCode" />
         </referencesInternal>
         <appliedStereotypesInternal>
@@ -59,7 +59,23 @@
             </propertyInstances>
           </stereotypeInstance>
         </appliedStereotypesInternal>
+        <generalsInternal>
+          <generalization
+            Id="a1d9cfaf-47ad-405f-b946-b2f525217aa5"
+            isSubstitutable="false">
+            <interfaceMoniker
+              Id="b3ad6f65-73ac-40bd-bad6-0f7c893f9cff"
+              LastKnownName="ILoggerWrapper"
+              LastKnownLocation="Package2_1333.uml" />
+          </generalization>
+        </generalsInternal>
       </Interface>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="358c78a4-d728-41ff-8462-00396275b5f5"
+        LastKnownName="Core"
+        LastKnownLocation="Package2_1333.uml" />
     </packageHasNamedElement>
   </packagedElements>
 </package>

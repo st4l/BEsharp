@@ -31,7 +31,13 @@
     <Content Include="ModelDefinition\Package1_0535.uml">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="ModelDefinition\Package1_1333.uml">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ModelDefinition\Package2_0533.uml">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="ModelDefinition\Package2_1333.uml">
       <SubType>Content</SubType>
     </Content>
     <Content Include="ModelDefinition\Package3_0533.uml">
@@ -49,6 +55,9 @@
     <Content Include="ModelDefinition\Package_0535.uml">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="ModelDefinition\Package_1333.uml">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="UMLClassDiagram1.classdiagram">
       <SubType>Content</SubType>
     </Content>
@@ -62,6 +71,13 @@
     <Content Include="Datagrams.classdiagram.layout">
       <SubType>Content</SubType>
       <DependentUpon>Datagrams.classdiagram</DependentUpon>
+    </Content>
+    <Content Include="UMLSequenceDiagram1.sequencediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UMLSequenceDiagram1.sequencediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>UMLSequenceDiagram1.sequencediagram</DependentUpon>
     </Content>
     <Folder Include="ModelDefinition\" />
     <Content Include="ModelDefinition\besharp.Design.uml">
