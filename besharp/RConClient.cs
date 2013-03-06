@@ -95,7 +95,8 @@ namespace BESharp
         /// <summary>
         ///   Gets or sets a <see cref="bool" /> value that specifies
         ///   whether this <see cref="RConClient" /> tries to keep the
-        ///   connection to the remote RCon server alive.
+        ///   connection to the remote RCon server alive after a 
+        ///   disconnect (the server didn't respond for a time).
         /// </summary>
         public bool KeepAlive
         {
@@ -113,10 +114,17 @@ namespace BESharp
         public bool DiscardConsoleMessages { get; set; }
 
 
+        /// <summary>
+        ///   Provides the reason for the last connection shutdown.
+        /// </summary>
         public ShutdownReason ShutdownReason { get; private set; }
 
 
-        internal RConMetrics Metrics { get; private set; }
+        /// <summary>
+        ///   Provides a set of metrics regarding the operation of
+        ///   this instance.
+        /// </summary>
+        public RConMetrics Metrics { get; private set; }
 
 
         internal IUdpClient UdpClient { get; private set; }
@@ -125,7 +133,11 @@ namespace BESharp
         private ILog Log { get; set; }
 
 
-        private static NetUdpClient CreateUdpClient()
+        /// <summary>
+        ///   Safely creates and instance of the Udp client.
+        /// </summary>
+        /// <returns> A newly created <see cref="IUdpClient"/> instance. </returns>
+        private static IUdpClient CreateUdpClient()
         {
             NetUdpClient client = null;
             try
@@ -146,9 +158,31 @@ namespace BESharp
                     client.Close();
                 }
 
+                // re-throw with original call stack
                 ExceptionDispatchInfo.Capture(ex).Throw();
             }
             return client;
+        }
+
+
+        /// <summary>
+        ///   Stops all processing gracefully and disposes this instance.
+        /// </summary>
+        public void Close()
+        {
+            this.closed = true;
+            this.Metrics.StopCollecting();
+            this.Dispose();
+        }
+
+
+        /// <summary>
+        ///   Implement IDisposable.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
 
@@ -158,6 +192,12 @@ namespace BESharp
         ///   from it.
         /// </summary>
         /// <returns> True if connection and login are successful, false otherwise. </returns>
+        /// <exception cref="InvalidCredentialException"> 
+        ///     The server rejected the connection with the specified credentials. 
+        /// </exception>
+        /// <exception cref="TimeoutException"> 
+        ///     The server did not respond to the login request.
+        /// </exception>
         public async Task<bool> ConnectAsync()
         {
             if (this.closed)
@@ -192,27 +232,6 @@ namespace BESharp
         }
 
 
-        /// <summary>
-        ///   Stops all processing gracefully and disposes this instance.
-        /// </summary>
-        public void Close()
-        {
-            this.closed = true;
-            this.Metrics.StopCollecting();
-            this.Dispose();
-        }
-
-
-        /// <summary>
-        ///   Implement IDisposable.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-
 #if DEBUG
         internal void WaitUntilShutdown()
         {
@@ -220,7 +239,9 @@ namespace BESharp
         }
 #endif
 
-
+        /// <summary>
+        ///   Initializes this instance when it's created.
+        /// </summary>
         private void Initialize()
         {
             this.asyncOperation = AsyncOperationManager.CreateOperation(null);
@@ -266,6 +287,16 @@ namespace BESharp
         }
 
 
+        /// <summary>
+        ///   Tries to login to the specified server.
+        /// </summary>
+        /// <returns> True if the login succeeded; false otherwise. </returns>
+        /// <exception cref="InvalidCredentialException"> 
+        ///     The server rejected the connection with the specified credentials. 
+        /// </exception>
+        /// <exception cref="TimeoutException"> 
+        ///     The server did not respond to the login request.
+        /// </exception>
         private async Task<bool> Login()
         {
             this.Log.Trace("BEFORE LOGIN await SendDatagram");
@@ -295,12 +326,33 @@ namespace BESharp
         }
 
 
+        /// <summary>
+        ///   Sends a command to the server and returns the response from the server, 
+        ///   waiting for a maximum of 3 seconds for it to respond.
+        /// </summary>
+        /// <param name="commandText"> The command text to send. </param>
+        /// <returns>
+        ///  A <see cref="CommandResult"/> object that details the results
+        ///  of the operation. 
+        /// </returns>
         public async Task<CommandResult> SendCommandAsync(string commandText)
         {
             return await this.SendCommandAsync(commandText, 1000 * 3);
         }
 
 
+        /// <summary>
+        ///   Sends a command to the server and returns the response from the server.
+        /// </summary>
+        /// <param name="commandText"> The command text to send. </param>
+        /// <param name="timeout"> 
+        ///   The period of time in milliseconds to wait for a response from the
+        ///   server.
+        /// </param>
+        /// <returns>
+        ///  A <see cref="CommandResult"/> object that details the results
+        ///  of the operation. 
+        /// </returns>
         public async Task<CommandResult> SendCommandAsync(string commandText, int timeout)
         {
             this.Log.Trace("       COMMAND SendDatagram");
@@ -309,6 +361,7 @@ namespace BESharp
             this.Log.Trace("BEFORE COMMAND await WaitForResponse");
             bool received = await responseHandler.WaitForResponse(timeout);
             this.Log.Trace("AFTER  COMMAND await WaitForResponse");
+
             if (!received)
             {
                 this.Log.Trace("       COMMAND TIMEOUT");
@@ -322,12 +375,33 @@ namespace BESharp
         }
 
 
+        /// <summary>
+        ///   Sends a command to the server and returns a <see cref="ResponseHandler"/>
+        ///   object that can be used to wait for the response and to retrieve it.
+        /// </summary>
+        /// <param name="commandText"> The command text to send. </param>
+        /// <returns>
+        ///   A <see cref="ResponseHandler"/> object that can be used used to 
+        ///   wait for the response and to retrieve it.
+        /// </returns>
         internal ResponseHandler SendCommand(string commandText)
         {
             return this.dispatcher.SendCommand(commandText);
         }
 
 
+        /// <summary>
+        ///   Sends a command to the server with the specified sequenceNumber,
+        ///   and returns a <see cref="ResponseHandler"/> object that can be 
+        ///   used to wait for the response and to retrieve it.
+        /// </summary>
+        /// <param name="sequenceNumber"> The sequence number for the datagram to be sent. </param>
+        /// <param name="commandText"> The command text to send. </param>
+        /// <returns>
+        ///   A <see cref="ResponseHandler"/> object that can be used used to 
+        ///   wait for the response and to retrieve it.
+        /// </returns>
+        /// <remarks> This method is only used for testing. </remarks>
         internal ResponseHandler SendCommand(byte sequenceNumber, string commandText)
         {
             var dgram = new CommandDatagram(sequenceNumber, commandText);

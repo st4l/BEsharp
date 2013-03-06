@@ -13,7 +13,7 @@ namespace BESharp
     ///   is being tracker, where n is the <see cref="Capacity" /> 
     ///   of this tracker.
     /// </summary>
-    internal class SequenceTracker
+    internal sealed class SequenceTracker
     {
         private readonly byte[] buffer;
 

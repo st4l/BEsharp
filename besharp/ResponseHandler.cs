@@ -11,7 +11,7 @@ namespace BESharp
     using log4net;
 
 
-    internal class ResponseHandler : IDisposable
+    internal sealed class ResponseHandler : IDisposable
     {
         private ManualResetEventSlim waitHandle;
 
@@ -26,7 +26,7 @@ namespace BESharp
         internal ResponseHandler(IOutboundDatagram sentDatagram)
         {
             this.SentDatagram = sentDatagram;
-            this.Log = LogManager.GetLogger(this.GetType());
+            this.log = LogManager.GetLogger(this.GetType());
         }
 
 
@@ -60,7 +60,7 @@ namespace BESharp
 
         public bool Completed { get; set; }
 
-        protected ILog Log { get; set; }
+        private readonly ILog log;
 
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace BESharp
         {
             if (this.Completed)
             {
-                this.Log.TraceFormat("Handler for type {0} didn't need to wait.", this.SentDatagram.Type);
+                this.log.TraceFormat("Handler for type {0} didn't need to wait.", this.SentDatagram.Type);
                 return Task.FromResult(true);
             }
 
@@ -128,9 +128,9 @@ namespace BESharp
 
         private bool DoWait(int timeout)
         {
-            this.Log.TraceFormat("Handler for type {0} starting wait.", this.SentDatagram.Type);
+            this.log.TraceFormat("Handler for type {0} starting wait.", this.SentDatagram.Type);
             bool result = this.waitHandle.Wait(timeout);
-            this.Log.TraceFormat("Handler for type {0} done waiting, result={1}.", this.SentDatagram.Type, result);
+            this.log.TraceFormat("Handler for type {0} done waiting, result={1}.", this.SentDatagram.Type, result);
             return result;
         }
 

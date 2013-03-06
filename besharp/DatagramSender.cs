@@ -8,7 +8,7 @@ namespace BESharp
     using Datagrams;
     using log4net;
 
-    internal class DatagramSender
+    internal sealed class DatagramSender
     {
         private RConMetrics Metrics { get; set; }
 
@@ -98,5 +98,18 @@ namespace BESharp
             var dgram = new CommandDatagram(this.GetNextCommandSequenceNumber(), commandText);
             return this.SendDatagram(dgram);
         }
+
+
+        /// <summary>
+        ///   Sends a datagram back to the server acknowledging receipt of
+        ///   a console message datagram.
+        /// </summary>
+        /// <param name="sequenceNumber"> The sequence number of the received <see cref="ConsoleMessageDatagram" /> . </param>
+        internal void AcknowledgeMessage(byte sequenceNumber)
+        {
+            this.SendDatagram(new AcknowledgeMessageDatagram(sequenceNumber));
+            this.Log.TraceFormat("M#{0:000} Acknowledged", sequenceNumber);
+        }
+
     }
 }

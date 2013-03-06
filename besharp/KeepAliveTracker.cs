@@ -12,9 +12,23 @@ namespace BESharp
     using Datagrams;
 
 
-    internal class KeepAliveTracker
+    /// <summary>
+    ///    Sends a "keep alive" datagram to the server and checks for its
+    ///    acknowledgment by the server. If an acknowledgment isn't received,
+    ///    keeps sending more datagrams until one is acknowledged, up to a 
+    ///    limit of <see cref="MaxTries"/>.
+    /// </summary>
+    /// <remarks>
+    ///     This class is intended to be called assiduously while a keep alive
+    ///     acknowledgment by the server is needed. An instance should be 
+    ///     created when one is needed, and <see cref="SendAndCheckForAck"/>
+    ///     should be called at least once a second to check whether a datagram
+    ///     needs to be sent or a previous try has already been acknowledged by
+    ///     the server.
+    /// </remarks>
+    internal sealed class KeepAliveTracker
     {
-        private readonly DatagramSender outProcessor;
+        private readonly DatagramSender datagramSender;
 
         private readonly RConMetrics metrics;
 
@@ -29,11 +43,11 @@ namespace BESharp
         private int sequenceNumber = -1;
 
 
-        internal KeepAliveTracker(DatagramSender outProcessor, RConMetrics metrics, ILog log)
+        internal KeepAliveTracker(DatagramSender datagramSender, RConMetrics metrics, ILog log)
         {
-            if (outProcessor == null)
+            if (datagramSender == null)
             {
-                throw new ArgumentNullException("outProcessor");
+                throw new ArgumentNullException("datagramSender");
             }
             if (metrics == null)
             {
@@ -47,7 +61,7 @@ namespace BESharp
 
             this.Log = log;
             this.MaxTries = 5;
-            this.outProcessor = outProcessor;
+            this.datagramSender = datagramSender;
             this.metrics = metrics;
         }
 
@@ -108,12 +122,12 @@ namespace BESharp
         {
             if (this.sequenceNumber == -1)
             {
-                this.sequenceNumber = this.outProcessor.GetNextCommandSequenceNumber();
+                this.sequenceNumber = this.datagramSender.GetNextCommandSequenceNumber();
             }
 
             Debug.WriteLine("keep alive datagram {0} sent", this.sentCount + 1);
             var keepAliveDgram = new CommandDatagram((byte)this.sequenceNumber, string.Empty);
-            var responseHandler = this.outProcessor.SendDatagram(keepAliveDgram);
+            var responseHandler = this.datagramSender.SendDatagram(keepAliveDgram);
             this.sentHandlers.Add(responseHandler);
             this.lastSendTime = DateTime.Now;
             this.sentCount++;

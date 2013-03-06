@@ -19,17 +19,15 @@ namespace BESharp
     /// </summary>
     internal sealed class DatagramDispatcher : IDisposable
     {
-        internal IUdpClient UdpClient { get; private set; }
+        private readonly RConClient rconClient;
+
+        private readonly DatagramSender datagramSender;
 
         private KeepAliveTracker keepAliveTracker;
 
         private Task mainLoopTask;
 
         private bool disposed;
-
-        private readonly RConClient rconClient;
-
-        private readonly DatagramSender datagramSender;
 
 
         /// <summary>
@@ -68,13 +66,6 @@ namespace BESharp
         }
 
 
-
-        /// <summary>
-        ///     Signals whether a shutdown is in progress and the reason why it is.
-        /// </summary>
-        private ShutdownReason ShutdownReason { get; set; }
-
-
         /// <summary>
         ///   Gets or sets a <see cref="Boolean" /> value that specifies
         ///   whether this <see cref="DatagramDispatcher" /> discards all
@@ -82,18 +73,25 @@ namespace BESharp
         /// </summary>
         public bool DiscardConsoleMessages { get; set; }
 
+        internal IUdpClient UdpClient { get; private set; }
 
-        internal SequenceTracker CmdsTracker { get; private set; }
 
-        internal SequenceTracker ConMsgsTracker { get; private set; }
+        private SequenceTracker CmdsTracker { get; set; }
+
+        private SequenceTracker ConMsgsTracker { get; set; }
 
         internal RConMetrics Metrics { get; set; }
-
-        private ILog Log { get; set; }
 
         internal ResponseDispatcher ResponseDispatcher { get; private set; }
 
         internal TimeSpan KeepAlivePeriod { get; private set; }
+
+        /// <summary>
+        ///   Signals whether a shutdown is in progress and the reason why it is.
+        /// </summary>
+        private ShutdownReason ShutdownReason { get; set; }
+
+        private ILog Log { get; set; }
 
 
         /// <summary>
@@ -103,22 +101,6 @@ namespace BESharp
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
-        }
-
-
-        /// <summary>
-        ///   Starts acquiring and dispatching inbound datagrams in a new thread.
-        /// </summary>
-        /// <remarks>
-        ///   Starts the main datagram pump in a new thread.
-        /// </remarks>
-        private void Start()
-        {
-            this.mainLoopTask = new Task(this.MainLoop);
-            this.mainLoopTask.ContinueWith(this.HandleMainLoopException, TaskContinuationOptions.OnlyOnFaulted);
-            this.mainLoopTask.ContinueWith(this.AfterMainLoop, TaskContinuationOptions.OnlyOnRanToCompletion);
-            this.mainLoopTask.ConfigureAwait(continueOnCapturedContext: true);
-            this.mainLoopTask.Start();
         }
 
 
@@ -142,6 +124,34 @@ namespace BESharp
         }
 
 
+        public ResponseHandler SendCommand(string commandText)
+        {
+            return this.datagramSender.SendCommand(commandText);
+        }
+
+
+        internal ResponseHandler SendDatagram(IOutboundDatagram dgram)
+        {
+            return this.datagramSender.SendDatagram(dgram);
+        }
+
+
+        /// <summary>
+        ///   Starts acquiring and dispatching inbound datagrams in a new thread.
+        /// </summary>
+        /// <remarks>
+        ///   Starts the main datagram pump in a new thread.
+        /// </remarks>
+        private void Start()
+        {
+            this.mainLoopTask = new Task(this.MainLoop);
+            this.mainLoopTask.ContinueWith(this.HandleMainLoopException, TaskContinuationOptions.OnlyOnFaulted);
+            this.mainLoopTask.ContinueWith(this.HandleMainLoopExited, TaskContinuationOptions.OnlyOnRanToCompletion);
+            this.mainLoopTask.ConfigureAwait(continueOnCapturedContext: true);
+            this.mainLoopTask.Start();
+        }
+
+
         /// <summary>
         ///   The main datagram pump.
         /// </summary>
@@ -157,8 +167,10 @@ namespace BESharp
                 Thread.CurrentThread.Name = "MainPUMP" + Thread.CurrentThread.ManagedThreadId;
             }
 
-            this.ResponseDispatcher.LastAcknowledgedDatagramSentTime = DateTime.Now.Subtract(this.KeepAlivePeriod).AddSeconds(5);
+            this.ResponseDispatcher.LastAcknowledgedDatagramSentTime =
+                    DateTime.Now.Subtract(this.KeepAlivePeriod).AddSeconds(5);
 
+            // main loop
             while (this.ShutdownReason == ShutdownReason.None)
             {
                 this.Log.Trace("Scheduling new receive task.");
@@ -191,7 +203,7 @@ namespace BESharp
         /// </summary>
         private void CheckKeepAlive()
         {
-            if (this.keepAliveTracker == null 
+            if (this.keepAliveTracker == null
                 && this.IsKeepAliveNeeded())
             {
                 // spawn a keep alive tracker until server acknowledges
@@ -220,7 +232,7 @@ namespace BESharp
         ///   Checks whether we sent a command too long ago, or whether 
         ///   we received the last acknowledgment from the server too long ago.
         /// </summary>
-        /// <returns>True if a keep alive packet must be sent; false otherwise.</returns>
+        /// <returns> True if a keep alive packet must be sent; false otherwise. </returns>
         private bool IsKeepAliveNeeded()
         {
             // (prevents case: 
@@ -232,14 +244,25 @@ namespace BESharp
         }
 
 
+        /// <summary>
+        ///   Handles an exception raised on the main loop thread.
+        /// </summary>
+        /// <param name="task"> The main loop task that captured the exception. </param>
         private void HandleMainLoopException(Task task)
         {
             this.ShutdownReason = ShutdownReason.FatalException;
+
+            // re-throw with original call stack
             ExceptionDispatchInfo.Capture(task.Exception).Throw();
         }
 
 
-        private void AfterMainLoop(Task task)
+        /// <summary>
+        ///   Handles the graceful completion of the main loop thread. 
+        ///   "When the loop is closed the deal is finished."
+        /// </summary>
+        /// <param name="task"> The task that encapsulates the main loop thread. </param>
+        private void HandleMainLoopExited(Task task)
         {
             this.Log.Trace("AFTER MAIN LOOP");
             this.Dispose();
@@ -263,8 +286,9 @@ namespace BESharp
                                                     //// do not incurr ANOTHER context switch cost
                                                     .ConfigureAwait(false);
 
+            // Async continuation; we are probably in a different thread now
             this.Log.Trace("AFTER  await ReceiveAsync");
-            var processor = new InboundProcessor(result.Buffer, this, this.Log);
+            var processor = new InboundProcessor(result.Buffer, this.datagramSender, this.Log);
             if (this.TryPreProcessInboundDatagram(processor))
             {
                 return;
@@ -273,19 +297,18 @@ namespace BESharp
             var concreteDgram = processor.Parse();
             this.Metrics.ParsedDatagramsCount++;
 
-            this.DispatchReceivedDatagram(concreteDgram);
+            this.Dispatch(concreteDgram);
         }
 
 
         /// <summary>
-        ///     Tries to pre-process a datagram without further parsing
-        ///     and processing.
+        ///   Tries to pre-process a datagram without further parsing and processing.
         /// </summary>
-        /// <param name="processor">The inbound processor for the datagram to be pre-processed.</param>
-        /// <returns>True if it was pre-processed and no further processing is needed; false otherwise.</returns>
+        /// <param name="processor"> The inbound processor for the datagram to be pre-processed. </param>
+        /// <returns> True if it was pre-processed and no further processing is needed; false otherwise. </returns>
         private bool TryPreProcessInboundDatagram(InboundProcessor processor)
         {
-            if (!processor.IsValidLength)
+            if (!processor.ValidateLength())
             {
                 this.rconClient.OnConnectionProblem(new ConnectionProblemEventArgs(ConnectionProblemType.InvalidLength));
                 this.Log.Trace("INVALID datagram received");
@@ -302,7 +325,7 @@ namespace BESharp
             }
 #endif
 
-            if (processor.TryPreProcess())
+            if (processor.TryPreProcess(this.DiscardConsoleMessages, this.ConMsgsTracker, this.CmdsTracker))
             {
                 return true;
             }
@@ -320,7 +343,7 @@ namespace BESharp
         ///   Dispatches the received datagram to the appropriate target.
         /// </summary>
         /// <param name="dgram"> The received datagram. </param>
-        private void DispatchReceivedDatagram(IInboundDatagram dgram)
+        private void Dispatch(IInboundDatagram dgram)
         {
             if (dgram.Type == DatagramType.ConsoleMessage)
             {
@@ -338,23 +361,10 @@ namespace BESharp
         }
 
 
-        internal ResponseHandler SendDatagram(IOutboundDatagram dgram)
-        {
-            return this.datagramSender.SendDatagram(dgram);
-        }
-
-
-        public ResponseHandler SendCommand(string commandText)
-        {
-            return this.datagramSender.SendCommand(commandText);
-        }
-
-
         /// <summary>
         ///   Dispose managed and unmanaged resources.
         /// </summary>
-        /// <param name="notFromFinalizer"> True unless we're called from the finalizer, 
-        /// in which case only unmanaged resources can be disposed. </param>
+        /// <param name="notFromFinalizer"> True unless we're called from the finalizer, in which case only unmanaged resources can be disposed. </param>
         private void Dispose(bool notFromFinalizer)
         {
             // Check to see if Dispose has already been called. 

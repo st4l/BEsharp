@@ -104,6 +104,7 @@
     <Compile Include="Datagrams\LoginDatagram.cs" />
     <Compile Include="Datagrams\LoginResponseDatagram.cs" />
     <Compile Include="DisconnectedEventArgs.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="InboundProcessor.cs" />
     <Compile Include="DatagramSender.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
@@ -127,7 +128,7 @@
     <Content Include="reqs.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Model\ClassDiagram1.cd" />
+    <None Include="Model\Behavior.cd" />
     <None Include="Model\Datagrams.cd" />
     <None Include="packages.config" />
   </ItemGroup>
